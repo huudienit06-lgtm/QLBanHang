@@ -1,0 +1,6 @@
+{
+  "java.project.referencedLibraries": [
+    "lib/**/*.jar",
+    "QLBanHang/lib/mssql-jdbc-13.6.0.jre11.jar"
+  ]
+}
