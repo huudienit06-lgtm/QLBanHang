@@ -17,13 +17,15 @@ create table NhanVien (
 	maNV varchar(10) primary key,
 	tenNV nvarchar(50),
 	sdt varchar(10),
-	chucVu nvarchar(20),
+	gioiTinh nvarchar(5),
+	chucVu nvarchar(20)
 )
 
 create table TaiKhoan(
-	maNV varchar(10) ,
+	maNV varchar(10) primary key,
 	matKhau varchar(10),
-	constraint fk_TaiKhoan_NhanVien foreign key (maNV) references NhanVien(maNV),
+	trangThai nvarchar(20),
+	constraint fk_TaiKhoan_NhanVien foreign key (maNV) references NhanVien(maNV)
 )
 
 
@@ -34,13 +36,13 @@ create table KhuyenMai(
 	loaiKM nvarchar(20),
 	ngayBatDau date,
 	ngayKetThuc date,
-	trangThai nvarchar(20),
+	trangThai nvarchar(20)
 )
 
 
 create table DanhMuc (
 	maDM varchar(10) primary key,
-	tenDM nvarchar(30),
+	tenDM nvarchar(30)
 )
 
 
@@ -52,7 +54,7 @@ create table SanPham (
 	maKM varchar(10),
 	maDM varchar(10),
 	constraint fk_SanPham_KhuyenMai foreign key (maKM) references KhuyenMai(maKM),
-	constraint fk_SanPham_DanhMuc foreign key (maDM) references DanhMuc(maDM),
+	constraint fk_SanPham_DanhMuc foreign key (maDM) references DanhMuc(maDM)
 )
 
 
@@ -77,7 +79,7 @@ create table HoaDon(
 	constraint fk_HoaDon_KhachHang foreign key (maKH) references KhachHang(maKH),
 	constraint fk_HoaDon_NhanVien foreign key (maNV) references NhanVien(maNV),
 	constraint fk_HoaDon_KhuyenMai foreign key (maKM) references KhuyenMai(maKM),
-	constraint fk_HoaDon_Thue foreign key (maThue) references Thue(maThue),
+	constraint fk_HoaDon_Thue foreign key (maThue) references Thue(maThue)
 )
 
 create table ChiTietHoaDon (
@@ -85,7 +87,7 @@ create table ChiTietHoaDon (
 	maSP varchar(10),
 	soLuong int,
 
-
+	constraint pk_ChiTietHoaDon primary key (maHD,maSP),
 	constraint fk_ChiTietHoaDon_HoaDon foreign key (maHD) references HoaDon(maHD),
 	constraint fk_ChiTietHoaDon_SanPham foreign key (maSP) references SanPham(maSP),
 )
@@ -95,6 +97,8 @@ create table PhieuNhapKho (
 	ngayLap date ,
 	maNV varchar(10),
 	trangThai nvarchar(20),
+
+	constraint fk_PhieuNhapKho_NhanVien foreign key (maNV) references NhanVien(maNV)
 )
 
 create table ChiTietPhieuNhapKho(
@@ -102,8 +106,9 @@ create table ChiTietPhieuNhapKho(
 	maSP varchar(10),
 	soLuong int,
 
+	constraint pf_PhieuNhapKho primary key (maPNK,maSP),
 	constraint fk_ChiTietPhieuNhapKHo_PhieuNhapKho foreign key (maPNK) references PhieuNhapKho(maPNK),
-	constraint fk_ChiTietPhieuNhapKho_SanPham foreign key (maSP) references SanPham(maSP),
+	constraint fk_ChiTietPhieuNhapKho_SanPham foreign key (maSP) references SanPham(maSP)
 )
 
 

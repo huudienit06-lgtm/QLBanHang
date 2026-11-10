@@ -1,140 +1,167 @@
+
+USE QLBH;
+GO
+
 -- =============================================
---  THEM DU LIEU KHACH HANG
+-- 1. KHACHHANG
 -- =============================================
 INSERT INTO KhachHang
     (maKH, tenKH, sdt, gmail, diaChi, loaiKH)
 VALUES
-('KH001', N'Nguyễn Văn An', '0901234567', 'an@gmail.com', N'Quận 1, TP.HCM', N'Thường'),
-('KH002', N'Trần Thị Bình', '0912345678', 'binh@gmail.com', N'Quận 3, TP.HCM', N'Thân thiết'),
-('KH003', N'Lê Văn Cường', '0923456789', 'cuong@gmail.com', N'Thủ Đức, TP.HCM', N'Thường'),
-('KH004', N'Phạm Thị Dung', '0934567890', 'dung@gmail.com', N'Quận 7, TP.HCM', N'VIP'),
-('KH005', N'Hoàng Văn Em', '0945678901', 'em@gmail.com', N'Gò Vấp, TP.HCM', N'Thường');
+('KH001', N'Nguyễn Văn An', '0901234567', N'an@gmail.com', N'Quận 1, TP.HCM', N'Thường'),
+('KH002', N'Trần Thị Bình', '0912345678', N'binh@gmail.com', N'Quận 3, TP.HCM', N'VIP'),
+('KH003', N'Lê Hoàng Nam', '0923456789', N'nam@gmail.com', N'Thủ Đức, TP.HCM', N'Thân thiết'),
+('KH004', N'Phạm Minh Tuấn', '0934567890', N'tuan@gmail.com', N'Quận 7, TP.HCM', N'Thường'),
+('KH005', N'Hoàng Thị Mai', '0945678901', N'mai@gmail.com', N'Quận 5, TP.HCM', N'VIP'),
+('KH006', N'Đỗ Văn Hùng', '0956789012', N'hung@gmail.com', N'Bình Thạnh, TP.HCM', N'Thân thiết'),
+('KH007', N'Vũ Thị Lan', '0967890123', N'lan@gmail.com', N'Gò Vấp, TP.HCM', N'Thường'),
+('KH008', N'Ngô Quốc Việt', '0978901234', N'viet@gmail.com', N'Quận 10, TP.HCM', N'Thường');
 
 -- =============================================
---  THEM DU LIEU NHAN VIEN
+-- 2. NHANVIEN
 -- =============================================
-
 INSERT INTO NhanVien
-    (maNV, tenNV, sdt, chucVu)
+    (maNV, tenNV, sdt, gioiTinh, chucVu)
 VALUES
-('NV001', N'Nguyễn Hoàng Nam', '0901111111', N'Quản lý'),
-('NV002', N'Trần Minh Tuấn', '0902222222', N'Nhân viên'),
-('NV003', N'Lê Thị Hồng', '0903333333', N'Thu ngân'),
-('NV004', N'Phạm Văn Bình', '0904444444', N'Nhân viên');
+('NV001', N'Nguyễn Thành Đạt', '0981234567', N'Nam', N'Quản lý'),
+('NV002', N'Trần Thị Hương', '0982345678', N'Nữ', N'Nhân viên'),
+('NV003', N'Lê Minh Khang', '0983456789', N'Nam', N'Nhân viên'),
+('NV004', N'Phạm Hoàng Long', '0984567890', N'Nam', N'Thu ngân'),
+('NV005', N'Đỗ Ngọc Ánh', '0985678901', N'Nữ', N'Nhân viên');
 
 -- =============================================
---  THEM DU LIEU TAI KHOAN
+-- 3. TAIKHOAN
+-- maNV vua la PK vua la FK
 -- =============================================
-
-INSERT INTO TaiKhoan (maNV, matKhau)
+INSERT INTO TaiKhoan
+    (maNV, matKhau, trangThai)
 VALUES
-('NV001', 'admin123'),
-('NV002', 'nv002123'),
-('NV003', 'nv003123'),
-('NV004', 'nv004123');
+('NV001', '123456', N'Hoạt động'),
+('NV002', '123456', N'Hoạt động'),
+('NV003', '123456', N'Hoạt động'),
+('NV004', '123456', N'Hoạt động'),
+('NV005', '123456', N'Bị khóa');
 
 -- =============================================
---  THEM DU LIEU KHUYEN MAI
+-- 4. KHUYENMAI
+-- tiLeGiamGia tinh theo phan tram
 -- =============================================
-
 INSERT INTO KhuyenMai
-    (maKM, tenKM, tiLeGiamGia, loaiKM,
-     ngayBatDau, ngayKetThuc, trangThai)
+    (maKM, tenKM, tiLeGiamGia, loaiKM, ngayBatDau, ngayKetThuc, trangThai)
 VALUES
-('KM001', N'Giảm giá mùa hè', 10, N'Phần trăm', '2026-01-01', '2026-12-31', N'Đang áp dụng'),
-('KM002', N'Khuyến mãi thành viên', 15, N'Phần trăm', '2026-01-01', '2026-12-31', N'Đang áp dụng'),
-('KM003', N'Khuyến mãi cuối năm', 20, N'Phần trăm', '2026-11-01', '2026-12-31', N'Đang áp dụng');
+('KM001', N'Khuyến mãi khai trương', 10, N'Phần trăm', '20261001', '20261231', N'Đang áp dụng'),
+('KM002', N'Ưu đãi khách hàng VIP', 15, N'Phần trăm', '20261101', '20261130', N'Đang áp dụng'),
+('KM003', N'Khuyến mãi mùa hè', 20, N'Phần trăm', '20260601', '20260831', N'Đã kết thúc'),
+('KM004', N'Ưu đãi cuối năm', 25, N'Phần trăm', '20261101', '20261231', N'Đang áp dụng'),
+('KM005', N'Giảm giá đặc biệt', 5, N'Phần trăm', '20260101', '20260331', N'Đã kết thúc');
 
 -- =============================================
---  THEM DU LIEU DANH MUC
+-- 5. DANHMUC
 -- =============================================
-
 INSERT INTO DanhMuc (maDM, tenDM)
 VALUES
 ('DM001', N'Đồ uống'),
-('DM002', N'Thực phẩm'),
-('DM003', N'Đồ gia dụng'),
-('DM004', N'Văn phòng phẩm');
+('DM002', N'Đồ ăn'),
+('DM003', N'Gia dụng'),
+('DM004', N'Điện tử'),
+('DM005', N'Văn phòng phẩm');
 
 -- =============================================
---  THEM DU LIEU SAN PHAM
+-- 6. SANPHAM
 -- =============================================
-
 INSERT INTO SanPham
     (maSP, tenSP, giaNhap, soLuongTon, maKM, maDM)
 VALUES
-('SP001', N'Coca Cola', 8000, 100, 'KM001', 'DM001'),
-('SP002', N'Pepsi', 7500, 120, 'KM001', 'DM001'),
-('SP003', N'Sữa tươi', 9000, 80, 'KM002', 'DM001'),
+('SP001', N'Nước suối', 5000, 100, 'KM001', 'DM001'),
+('SP002', N'Coca Cola', 8000, 80, 'KM001', 'DM001'),
+('SP003', N'Pepsi', 8000, 75, 'KM002', 'DM001'),
 ('SP004', N'Mì Hảo Hảo', 3500, 200, NULL, 'DM002'),
-('SP005', N'Bánh Oreo', 12000, 90, 'KM003', 'DM002'),
-('SP006', N'Nồi cơm điện', 350000, 20, NULL, 'DM003'),
-('SP007', N'Bút bi Thiên Long', 4000, 150, NULL, 'DM004'),
-('SP008', N'Vở học sinh', 8000, 100, 'KM002', 'DM004');
+('SP005', N'Bánh Oreo', 12000, 60, 'KM002', 'DM002'),
+('SP006', N'Bánh Chocopie', 25000, 40, NULL, 'DM002'),
+('SP007', N'Ấm siêu tốc', 150000, 20, 'KM004', 'DM003'),
+('SP008', N'Quạt mini', 90000, 30, NULL, 'DM003'),
+('SP009', N'Tai nghe', 120000, 25, 'KM004', 'DM004'),
+('SP010', N'Chuột không dây', 180000, 35, 'KM001', 'DM004'),
+('SP011', N'Bút bi', 3000, 300, NULL, 'DM005'),
+('SP012', N'Vở học sinh', 7000, 150, 'KM002', 'DM005');
 
 -- =============================================
---  THEM DU LIEU THUE
+-- 7. THUE
+-- tiLeThue tinh theo phan tram
 -- =============================================
-
 INSERT INTO Thue (maThue, tenThue, tiLeThue)
 VALUES
 ('TH001', N'Thuế VAT 5%', 5),
-('TH002', N'Thuế VAT 10%', 10);
+('TH002', N'Thuế VAT 8%', 8),
+('TH003', N'Thuế VAT 10%', 10);
 
 -- =============================================
---  THEM DU LIEU HOA DON
+-- 8. HOADON
 -- =============================================
-
 INSERT INTO HoaDon
-    (maHD, ngayLap, maNV, maKH, maKM,
-     maThue, trangThai, phuongThucThanhToan)
+    (maHD, ngayLap, maKH, maNV, maKM, maThue, trangThai, phuongThucThanhToan)
 VALUES
-('HD001', '2026-11-01', 'NV001', 'KH001', NULL, 'TH002', N'Đã thanh toán', N'Tiền mặt'),
-('HD002', '2026-11-02', 'NV002', 'KH002', 'KM001', 'TH002', N'Đã thanh toán', N'Chuyển khoản'),
-('HD003', '2026-11-03', 'NV003', 'KH003', NULL, 'TH001', N'Đã thanh toán', N'Tiền mặt'),
-('HD004', '2026-11-04', 'NV002', 'KH004', 'KM002', 'TH002', N'Chưa thanh toán', N'Tiền mặt'),
-('HD005', '2026-11-05', 'NV004', 'KH005', 'KM003', 'TH001', N'Đã thanh toán', N'Chuyển khoản');
+('HD001', '20261101', 'KH001', 'NV004', 'KM001', 'TH002', N'Đã thanh toán', N'Tiền mặt'),
+('HD002', '20261102', 'KH002', 'NV004', 'KM002', 'TH003', N'Đã thanh toán', N'Chuyển khoản'),
+('HD003', '20261103', 'KH003', 'NV002', NULL, 'TH002', N'Đã thanh toán', N'Tiền mặt'),
+('HD004', '20261104', 'KH004', 'NV003', 'KM001', 'TH001', N'Chưa thanh toán', N'Tiền mặt'),
+('HD005', '20261105', 'KH005', 'NV004', NULL, 'TH003', N'Đã thanh toán', N'Chuyển khoản'),
+('HD006', '20261106', 'KH006', 'NV002', 'KM004', 'TH002', N'Đã thanh toán', N'Tiền mặt'),
+('HD007', '20261107', 'KH007', 'NV003', NULL, 'TH001', N'Đã hủy', N'Tiền mặt'),
+('HD008', '20261108', 'KH008', 'NV004', 'KM002', 'TH003', N'Chưa thanh toán', N'Chuyển khoản');
 
 -- =============================================
--- THEM DU LIEU CHI TIET HOA DON
+-- 9. CHITIETHOADON
+-- Moi cap maHD + maSP chi xuat hien mot lan
 -- =============================================
-
 INSERT INTO ChiTietHoaDon (maHD, maSP, soLuong)
 VALUES
-('HD001', 'SP001', 2),
-('HD001', 'SP004', 5),
-('HD002', 'SP002', 3),
+('HD001', 'SP001', 5),
+('HD001', 'SP002', 3),
 ('HD002', 'SP005', 2),
-('HD003', 'SP003', 4),
-('HD003', 'SP007', 10),
-('HD004', 'SP006', 1),
-('HD004', 'SP008', 5),
-('HD005', 'SP001', 5),
-('HD005', 'SP005', 3);
+('HD002', 'SP006', 1),
+('HD003', 'SP004', 10),
+('HD003', 'SP011', 5),
+('HD004', 'SP007', 1),
+('HD004', 'SP008', 2),
+('HD005', 'SP009', 1),
+('HD005', 'SP010', 1),
+('HD006', 'SP003', 4),
+('HD006', 'SP012', 10),
+('HD007', 'SP001', 2),
+('HD008', 'SP005', 3),
+('HD008', 'SP011', 10);
 
 -- =============================================
---  THEM DU LIEU PHIEU NHAP KHO
+-- 10. PHIEUNHAPKHO
 -- =============================================
-
 INSERT INTO PhieuNhapKho
     (maPNK, ngayLap, maNV, trangThai)
 VALUES
-('PNK001', '2026-10-25', 'NV001', N'Đã nhập'),
-('PNK002', '2026-10-28', 'NV002', N'Đã nhập'),
-('PNK003', '2026-11-05', 'NV004', N'Chờ nhập');
+('PNK001', '20261025', 'NV001', N'Đã nhập'),
+('PNK002', '20261027', 'NV002', N'Đã nhập'),
+('PNK003', '20261029', 'NV003', N'Đã nhập'),
+('PNK004', '20261105', 'NV001', N'Chưa nhập'),
+('PNK005', '20261108', 'NV002', N'Đã nhập');
 
 -- =============================================
---  THEM DU LIEU CHI TIET PHIEU NHAP KHO
+-- 11. CHITIETPHIEUNHAPKHO
+-- Moi cap maPNK + maSP chi xuat hien mot lan
 -- =============================================
-
 INSERT INTO ChiTietPhieuNhapKho
     (maPNK, maSP, soLuong)
 VALUES
 ('PNK001', 'SP001', 50),
-('PNK001', 'SP002', 60),
-('PNK001', 'SP003', 40),
+('PNK001', 'SP002', 30),
 ('PNK002', 'SP004', 100),
-('PNK002', 'SP005', 50),
-('PNK003', 'SP006', 10),
-('PNK003', 'SP007', 100),
-('PNK003', 'SP008', 80);
+('PNK002', 'SP005', 40),
+('PNK003', 'SP007', 10),
+('PNK003', 'SP008', 15),
+('PNK004', 'SP009', 20),
+('PNK004', 'SP010', 25),
+('PNK005', 'SP003', 40),
+('PNK005', 'SP006', 30),
+('PNK005', 'SP011', 100),
+('PNK005', 'SP012', 60);
+
+GO
