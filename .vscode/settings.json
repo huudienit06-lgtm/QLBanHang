@@ -1,6 +1,8 @@
 {
+  "java.project.sourcePaths": ["src"],
+  "java.project.outputPath": "bin",
   "java.project.referencedLibraries": [
-    "lib/**/*.jar",
-    "QLBanHang/lib/mssql-jdbc-13.6.0.jre11.jar"
-  ]
+    "lib/**/*.jar"
+  ],
+  "java.configuration.runtimes": []
 }
