@@ -1,25 +1,20 @@
 package entity;
 
-import java.time.LocalDate;
 
 public class NhanVien {
     private String maNV;
     private String tenNV;
-    private String gioiTinh;
-    private LocalDate ngaySinh;
     private String sdt;
-    private String diaChi;
+    private String gioiTinh;
     private String chucVu;
 
     public NhanVien() {
     }
-    public NhanVien(String maNV, String tenNV, String gioiTinh, LocalDate ngaySinh, String sdt, String diaChi, String chucVu) {
+    public NhanVien(String maNV, String tenNV,String sdt, String gioiTinh, String chucVu) {
         this.maNV = maNV;
         this.tenNV = tenNV;
-        this.gioiTinh = gioiTinh;
-        this.ngaySinh = ngaySinh;
         this.sdt = sdt;
-        this.diaChi = diaChi;
+        this.gioiTinh = gioiTinh;
         this.chucVu = chucVu;
     }
 
@@ -42,23 +37,11 @@ public class NhanVien {
     public void setGioiTinh(String gioiTinh) {
         this.gioiTinh = gioiTinh;
     }
-    public LocalDate getNgaySinh() {
-        return ngaySinh;
-    }
-    public void setNgaySinh(LocalDate ngaySinh) {
-        this.ngaySinh = ngaySinh;
-    }
     public String getSdt() {
         return sdt;
     }
     public void setSdt(String sdt) {
         this.sdt = sdt;
-    }
-    public String getDiaChi() {
-        return diaChi;
-    }
-    public void setDiaChi(String diaChi) {
-        this.diaChi = diaChi;
     }
     public String getChucVu() {
         return chucVu;
@@ -66,12 +49,9 @@ public class NhanVien {
     public void setChucVu(String chucVu) {
         this.chucVu = chucVu;
     }
-    @Override
-    public String toString() {
-        return "NhanVien [maNV=" + maNV + ", tenNV=" + tenNV + ", gioiTinh=" + gioiTinh + ", ngaySinh=" + ngaySinh
-                + ", sdt=" + sdt + ", diaChi=" + diaChi + ", chucVu=" + chucVu + "]";
-    }
-    
-    
+        @Override
+        public String toString() {
+            return "NhanVien [maNV=" + maNV + ", tenNV=" + tenNV + ", sdt=" + sdt +  ", gioiTinh=" + gioiTinh +", chucVu=" + chucVu + "]";
+        }
 
 }
