@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,9 +10,9 @@ import java.util.ArrayList;
 import connectdb.ConnectDB;
 import entity.NhanVien;
 
-public class NhanVienDAO {
+public class NhanVien_DAO {
 
-    public NhanVienDAO(){
+    public NhanVien_DAO(){
 
     }
     public ArrayList<NhanVien> getAllNhanVien(){
@@ -19,8 +20,8 @@ public class NhanVienDAO {
         try {
             Connection con = ConnectDB.getConnection();
             String sql = "SELECT * FROM NhanVien";
-            PreparedStatement ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 NhanVien nv = new NhanVien();
                 nv.setMaNV(rs.getString("MaNV"));
@@ -40,12 +41,11 @@ public class NhanVienDAO {
         ArrayList<NhanVien> dsnv = new ArrayList<>();
         ConnectDB.getInstance();
         Connection con = ConnectDB.getConnection();
-        PreparedStatement statement = null;
+        Statement statement = null;
         try{
             String sql = "Select * from NhanVien where manv = ?";
-            statement = con.prepareStatement(sql);
-            statement.setString(1, maNV);
-            ResultSet rs = statement.executeQuery();
+            statement = con.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
 
             while(rs.next()){
                 String tennv= rs.getString(2);
