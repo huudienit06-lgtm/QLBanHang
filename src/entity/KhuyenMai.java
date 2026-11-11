@@ -84,4 +84,11 @@ public class KhuyenMai {
     public void setTrangThai(String trangThai) {
         this.trangThai = trangThai;
     }
+
+    @Override
+    public String toString() {
+        return "KhuyenMai [maKM=" + maKM + ", tenKM=" + tenKM + ", tiLeGiamGia=" + tiLeGiamGia
+                + ", loaiKM=" + loaiKM + ", ngayBatDau=" + ngayBatDau + ", ngayKetThuc=" + ngayKetThuc
+                + ", trangThai=" + trangThai + "]";
+    }
 }

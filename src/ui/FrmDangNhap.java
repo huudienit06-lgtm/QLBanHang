@@ -1,11 +1,15 @@
 package ui;
 
+import dao.TaiKhoan_Dao;
+import entity.TaiKhoan;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -14,15 +18,18 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class FrmDangNhap extends JPanel {
+public class FrmDangNhap extends JPanel implements ActionListener {
 
+    private Main main;
+    private final TaiKhoan_Dao taiKhoanDao = new TaiKhoan_Dao();
     private final JTextField txtTenDN;
     private final JPasswordField txtMatKhau;
     private final JCheckBox chkHienMK;
     private final JButton btnDangNhap;
     private final JButton btnQuenMK;
 
-    public FrmDangNhap() {
+    public FrmDangNhap(Main main) {
+        this.main = main;
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 1;
@@ -64,5 +71,42 @@ public class FrmDangNhap extends JPanel {
         b.add(pnlButton);
         pnlDangNhap.add(b, BorderLayout.CENTER);
         add(pnlDangNhap, gbc);
+
+        btnDangNhap.addActionListener(this);
+        btnQuenMK.addActionListener(this);
+
     }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object o = e.getSource();
+        if (o.equals(btnDangNhap)) {
+            TaiKhoan tk = kiemTraTaiKhoan();
+            if (tk != null) {
+                main.dangNhapThanhCong(tk);
+            }
+
+        } else if (o.equals(btnQuenMK)) {
+            // TODO: xử lý quên mật khẩu
+        }
+    }
+
+    public TaiKhoan kiemTraTaiKhoan() {
+        String tenDN = txtTenDN.getText().trim();
+        String matKhau = new String(txtMatKhau.getPassword()).trim();
+        if (tenDN.isEmpty() || matKhau.isEmpty()) {
+            return null;
+        } else {
+            TaiKhoan tk = taiKhoanDao.dangNhap(tenDN, matKhau);
+            if (tk == null) {
+                return null;
+            }
+            if (!"Hoạt động".equalsIgnoreCase(tk.getTrangThai().trim())) {
+                // Hiển thị thông báo tài khoản bị khóa
+                return null;
+            }
+            return tk;
+        }
+    }
+
 }
