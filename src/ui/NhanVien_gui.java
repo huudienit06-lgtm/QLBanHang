@@ -28,18 +28,30 @@ public class NhanVien_gui extends JPanel {
 
         JPanel form = new JPanel(new GridLayout(3, 4, 10, 10));
         form.setBorder(BorderFactory.createTitledBorder("Thông tin nhân viên"));
-        form.add(new JLabel("Mã NV:"));      form.add(txtMa);
-        form.add(new JLabel("Tên NV:"));     form.add(txtTen);
-        form.add(new JLabel("SĐT:"));        form.add(txtSdt);
-        form.add(new JLabel("Giới tính:"));  form.add(cboGT);
-        form.add(new JLabel("Chức vụ:"));    form.add(txtChucVu);
+        form.add(new JLabel("Mã NV:"));      
+        form.add(txtMa);
+        form.add(new JLabel("Tên NV:"));     
+        form.add(txtTen);
+        form.add(new JLabel("SĐT:"));        
+        form.add(txtSdt);
+        form.add(new JLabel("Giới tính:"));  
+        form.add(cboGT);
+        form.add(new JLabel("Chức vụ:"));    
+        form.add(txtChucVu);
 
         JPanel btns = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-        JButton btnThem = new JButton("Thêm"), btnSua = new JButton("Sửa"),
-                btnXoa = new JButton("Xóa"), btnLam = new JButton("Làm mới"),
-                btnTim = new JButton("Tìm theo mã");
-        btns.add(btnThem); btns.add(btnSua); btns.add(btnXoa); btns.add(btnLam);
-        btns.add(new JLabel("   Mã NV:")); btns.add(txtTim); btns.add(btnTim);
+        JButton btnThem = new JButton("Thêm");
+        JButton btnSua = new JButton("Sửa");
+        JButton btnXoa = new JButton("Xóa");
+        JButton btnLam = new JButton("Làm mới");
+        JButton btnTim = new JButton("Tìm theo mã");
+        btns.add(btnThem); 
+        btns.add(btnSua); 
+        btns.add(btnXoa); 
+        btns.add(btnLam);
+        btns.add(new JLabel("   Mã NV:")); 
+        btns.add(txtTim); 
+        btns.add(btnTim);
 
         JPanel top = new JPanel(new BorderLayout());
         top.add(form, BorderLayout.CENTER);

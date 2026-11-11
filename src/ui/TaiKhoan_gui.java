@@ -33,15 +33,24 @@ public class TaiKhoan_gui extends JPanel {
 
         JPanel form = new JPanel(new GridLayout(2, 4, 10, 10));
         form.setBorder(BorderFactory.createTitledBorder("Thông tin tài khoản"));
-        form.add(new JLabel("Mã NV (tên đăng nhập):")); form.add(txtMa);
-        form.add(new JLabel("Mật khẩu:"));              form.add(txtMk);
-        form.add(new JLabel("Trạng thái:"));            form.add(cboTrangThai);
+        form.add(new JLabel("Mã NV (tên đăng nhập):")); 
+        form.add(txtMa);
+        form.add(new JLabel("Mật khẩu:"));              
+        form.add(txtMk);
+        form.add(new JLabel("Trạng thái:"));            
+        form.add(cboTrangThai);
 
         JPanel btns = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-        JButton btnThem = new JButton("Thêm"), btnSua = new JButton("Sửa"), btnXoa = new JButton("Xóa"),
-                btnDoiMk = new JButton("Đổi mật khẩu"), btnLam = new JButton("Làm mới");
-        btns.add(btnThem); btns.add(btnSua); btns.add(btnXoa); btns.add(btnDoiMk); btns.add(btnLam);
-
+        JButton btnThem = new JButton("Thêm");
+        JButton btnSua = new JButton("Sửa");
+        JButton btnXoa = new JButton("Xóa");
+        JButton btnDoiMk = new JButton("Đổi mật khẩu");
+        JButton btnLam = new JButton("Làm mới");
+        btns.add(btnThem); 
+        btns.add(btnSua); 
+        btns.add(btnXoa); 
+        btns.add(btnDoiMk); 
+        btns.add(btnLam);
         JPanel north = new JPanel(new BorderLayout());
         north.add(title, BorderLayout.NORTH);
         north.add(form, BorderLayout.CENTER);
