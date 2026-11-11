@@ -28,19 +28,32 @@ public class KhachHang_gui extends JPanel {
 
         JPanel form = new JPanel(new GridLayout(3, 4, 10, 10));
         form.setBorder(BorderFactory.createTitledBorder("Thông tin khách hàng"));
-        form.add(new JLabel("Mã KH:"));    form.add(txtMa);
-        form.add(new JLabel("Tên KH:"));   form.add(txtTen);
-        form.add(new JLabel("SĐT:"));      form.add(txtSdt);
-        form.add(new JLabel("Gmail:"));    form.add(txtGmail);
-        form.add(new JLabel("Địa chỉ:"));  form.add(txtDiaChi);
-        form.add(new JLabel("Loại KH:"));  form.add(cboLoai);
+        form.add(new JLabel("Mã KH:"));    
+        form.add(txtMa);
+        form.add(new JLabel("Tên KH:"));   
+        form.add(txtTen);
+        form.add(new JLabel("SĐT:"));      
+        form.add(txtSdt);
+        form.add(new JLabel("Gmail:"));    
+        form.add(txtGmail);
+        form.add(new JLabel("Địa chỉ:"));  
+        form.add(txtDiaChi);
+        form.add(new JLabel("Loại KH:"));  
+        form.add(cboLoai);
 
         JPanel btns = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-        JButton btnThem = new JButton("Thêm"), btnSua = new JButton("Sửa"),
-                btnXoa = new JButton("Xóa"), btnLam = new JButton("Làm mới"),
-                btnTim = new JButton("Tìm theo mã");
-        btns.add(btnThem); btns.add(btnSua); btns.add(btnXoa); btns.add(btnLam);
-        btns.add(new JLabel("   Mã KH:")); btns.add(txtTim); btns.add(btnTim);
+        JButton btnThem = new JButton("Thêm");
+        JButton btnSua = new JButton("Sửa");
+        JButton btnXoa = new JButton("Xóa");
+        JButton btnLam = new JButton("Làm mới");
+        JButton btnTim = new JButton("Tìm theo mã");
+        btns.add(btnThem); 
+        btns.add(btnSua); 
+        btns.add(btnXoa); 
+        btns.add(btnLam);
+        btns.add(new JLabel("   Mã KH:")); 
+        btns.add(txtTim); 
+        btns.add(btnTim);
 
         JPanel north = new JPanel(new BorderLayout());
         north.add(title, BorderLayout.NORTH);
