@@ -24,11 +24,11 @@ public class NhanVien_DAO {
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 NhanVien nv = new NhanVien();
-                nv.setMaNV(rs.getString("MaNV"));
-                nv.setTenNV(rs.getString("TenNV"));
-                nv.setSdt(rs.getString("SoDienThoai"));
-                nv.setGioiTinh(rs.getString("GioiTinh"));
-                nv.setChucVu(rs.getString("ChucVu"));
+                nv.setMaNV(rs.getString("maNV"));
+                nv.setTenNV(rs.getString("tenNV"));
+                nv.setSdt(rs.getString("sdt"));
+                nv.setGioiTinh(rs.getString("gioiTinh"));
+                nv.setChucVu(rs.getString("chucVu"));
                 dsnv.add(nv);
             }
         } catch (SQLException e) {
@@ -43,7 +43,7 @@ public class NhanVien_DAO {
         Connection con = ConnectDB.getConnection();
         Statement statement = null;
         try{
-            String sql = "Select * from NhanVien where manv = ?";
+            String sql = "Select * from NhanVien where maNV = ?";
             statement = con.createStatement();
             ResultSet rs = statement.executeQuery(sql);
 
