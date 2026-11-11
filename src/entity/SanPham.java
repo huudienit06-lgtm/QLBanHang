@@ -70,4 +70,12 @@ public class SanPham {
     public void setDanhMuc(DanhMuc danhMuc) {
         this.danhMuc = danhMuc;
     }
+
+    @Override
+    public String toString() {
+        return "SanPham [maSP=" + maSP + ", tenSP=" + tenSP + ", giaNhap=" + giaNhap
+                + ", soLuongTon=" + soLuongTon
+                + ", khuyenMai=" + (khuyenMai == null ? null : khuyenMai.getMaKM())
+                + ", danhMuc=" + (danhMuc == null ? null : danhMuc.getMaDM()) + "]";
+    }
 }
