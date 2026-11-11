@@ -14,6 +14,7 @@ public class ChiTietHoaDon {
         this.soLuong = soLuong;
     }
 
+
     public HoaDon getHoaDon() {
         return hoaDon;
     }
@@ -36,5 +37,9 @@ public class ChiTietHoaDon {
 
     public void setSoLuong(Integer soLuong) {
         this.soLuong = soLuong;
+    }
+
+    public double tinhThanhTien(){
+        return this.soLuong*this.sanPham.getGiaNhap().doubleValue();
     }
 }

@@ -25,6 +25,10 @@ public class KhuyenMai {
         this.trangThai = trangThai;
     }
 
+    public KhuyenMai(String maKM) {
+        this.maKM = maKM;
+    }
+    
     public String getMaKM() {
         return maKM;
     }

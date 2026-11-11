@@ -3,6 +3,7 @@ package entity;
 import java.time.LocalDate;
 
 public class HoaDon {
+
     private String maHD;
     private LocalDate ngayLap;
     private KhachHang khachHang;
@@ -25,6 +26,10 @@ public class HoaDon {
         this.thue = thue;
         this.trangThai = trangThai;
         this.phuongThucThanhToan = phuongThucThanhToan;
+    }
+
+    public HoaDon(String maHD) {
+        this.maHD = maHD;
     }
 
     public String getMaHD() {
@@ -101,19 +106,39 @@ public class HoaDon {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         HoaDon other = (HoaDon) obj;
         if (maHD == null) {
-            if (other.maHD != null)
+            if (other.maHD != null) {
                 return false;
-        } else if (!maHD.equals(other.maHD))
+            }
+        } else if (!maHD.equals(other.maHD)) {
             return false;
+        }
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "HoaDon [maHD=" + maHD + ", ngayLap=" + ngayLap + ", khachHang=" + khachHang + ", nhanVien=" + nhanVien
+                + ", khuyenMai=" + khuyenMai + ", thue=" + thue + ", trangThai=" + trangThai + ", phuongThucThanhToan="
+                + phuongThucThanhToan + "]";
+    }
+
+    // public double tinhThanhTien(String maHD){
+    //     double tongTien = 0 ;
+    //     ArrayList<ChiTietHoaDon> chiTietHoaDons = new ChiTietHoaDonDAO().getChiTietHoaDonByMaHD(maHD);
+    //     for (ChiTietHoaDon chiTietHoaDon : chiTietHoaDons) {
+    //         tongTien += chiTietHoaDon.tinhThanhTien();
+    //     }
+    //     return tongTien;
+    // }
 }

@@ -1,15 +1,14 @@
 package dao;
 
-import java.sql.Statement;
+import connectdb.ConnectDB;
+import entity.NhanVien;
+import entity.TaiKhoan;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-
-import connectdb.ConnectDB;
-import entity.NhanVien;
-import entity.TaiKhoan;
 
 public class TaiKhoan_Dao {
     public TaiKhoan_Dao(){
@@ -47,8 +46,10 @@ public class TaiKhoan_Dao {
             ConnectDB.getInstance();
             Connection con = ConnectDB.getConnection();
 
-            String sql = "SELECT * FROM TaiKhoan "
-                       + "WHERE MaNV = ? AND MatKhau = ?";
+            String sql = "SELECT tk.MaNV, tk.MatKhau, tk.TrangThai, "
+                       + "nv.TenNV, nv.ChucVu "
+                       + "FROM TaiKhoan tk JOIN NhanVien nv ON nv.MaNV = tk.MaNV "
+                       + "WHERE tk.MaNV = ? AND tk.MatKhau = ?";
 
             try (PreparedStatement ps = con.prepareStatement(sql)) {
                 ps.setString(1, tenDangNhap);
@@ -58,11 +59,14 @@ public class TaiKhoan_Dao {
                     if (rs.next()) {
                         NhanVien nv = new NhanVien();
                         nv.setMaNV(rs.getString("MaNV"));
-
+                        nv.setTenNV(rs.getString("TenNV"));
+                        nv.setChucVu(rs.getString("ChucVu"));
                         String mk = rs.getString("MatKhau");
                         String tt = rs.getString("TrangThai");
-
                         tk = new TaiKhoan(nv, mk, tt);
+                        if (tt != null && tt.trim().equalsIgnoreCase("bị khóa")) {
+                            return null;
+                        }
                     }
                 }
             }
