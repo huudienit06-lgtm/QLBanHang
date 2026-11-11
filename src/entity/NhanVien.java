@@ -1,25 +1,34 @@
 package entity;
+
+import java.time.LocalDate;
+
 public class NhanVien {
+
     private String maNV;
     private String tenNV;
-    private String sdt;
     private String gioiTinh;
+    private LocalDate ngaySinh;
+    private String sdt;
+    private String diaChi;
     private String chucVu;
 
     public NhanVien() {
     }
 
-    public NhanVien(String maNV, String tenNV, String sdt, String gioiTinh, String chucVu) {
+    public NhanVien(String maNV, String tenNV, String gioiTinh, LocalDate ngaySinh, String sdt, String diaChi, String chucVu) {
         this.maNV = maNV;
         this.tenNV = tenNV;
-        this.sdt = sdt;
         this.gioiTinh = gioiTinh;
+        this.ngaySinh = ngaySinh;
+        this.sdt = sdt;
+        this.diaChi = diaChi;
         this.chucVu = chucVu;
     }
 
     public NhanVien(String maNV) {
         this.maNV = maNV;
     }
+
     public NhanVien(String maNV, String tenNV, String chucVu, String soDienThoai) {
         this(maNV, tenNV, soDienThoai, null, chucVu);
     }
@@ -40,6 +49,22 @@ public class NhanVien {
         this.tenNV = tenNV;
     }
 
+    public String getGioiTinh() {
+        return gioiTinh;
+    }
+
+    public void setGioiTinh(String gioiTinh) {
+        this.gioiTinh = gioiTinh;
+    }
+
+    public LocalDate getNgaySinh() {
+        return ngaySinh;
+    }
+
+    public void setNgaySinh(LocalDate ngaySinh) {
+        this.ngaySinh = ngaySinh;
+    }
+
     public String getSdt() {
         return sdt;
     }
@@ -48,12 +73,12 @@ public class NhanVien {
         this.sdt = sdt;
     }
 
-    public String getGioiTinh() {
-        return gioiTinh;
+    public String getDiaChi() {
+        return diaChi;
     }
 
-    public void setGioiTinh(String gioiTinh) {
-        this.gioiTinh = gioiTinh;
+    public void setDiaChi(String diaChi) {
+        this.diaChi = diaChi;
     }
 
     public String getChucVu() {
@@ -64,11 +89,10 @@ public class NhanVien {
         this.chucVu = chucVu;
     }
 
-    public String getSoDienThoai() {
-        return sdt;
+    @Override
+    public String toString() {
+        return "NhanVien [maNV=" + maNV + ", tenNV=" + tenNV + ", gioiTinh=" + gioiTinh + ", ngaySinh=" + ngaySinh
+                + ", sdt=" + sdt + ", diaChi=" + diaChi + ", chucVu=" + chucVu + "]";
     }
 
-    public void setSoDienThoai(String soDienThoai) {
-        this.sdt = soDienThoai;
-    }
 }
