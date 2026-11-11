@@ -17,6 +17,9 @@ public class NhanVien {
         this.chucVu = chucVu;
     }
 
+    public NhanVien(String maNV) {
+        this.maNV = maNV;
+    }
     public NhanVien(String maNV, String tenNV, String chucVu, String soDienThoai) {
         this(maNV, tenNV, soDienThoai, null, chucVu);
     }

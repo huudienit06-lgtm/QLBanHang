@@ -23,6 +23,10 @@ public class SanPham {
         this.danhMuc = danhMuc;
     }
 
+    public SanPham(String maSP) {
+        this.maSP = maSP;
+    }
+
     public String getMaSP() {
         return maSP;
     }

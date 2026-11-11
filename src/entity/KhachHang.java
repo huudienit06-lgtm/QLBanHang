@@ -20,6 +20,10 @@ public class KhachHang {
         this.loaiKH = loaiKH;
     }
 
+    public KhachHang(String maKH) {
+        this.maKH = maKH;
+    }
+
     public String getMaKH() {
         return maKH;
     }

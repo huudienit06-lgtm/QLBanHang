@@ -14,6 +14,11 @@ public class Thue {
         this.tiLeThue = tiLeThue;
     }
 
+    public Thue(String maThue) {
+        this.maThue = maThue;
+    }
+
+    
     public String getMaThue() {
         return maThue;
     }
