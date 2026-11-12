@@ -1,5 +1,9 @@
 package dao;
 
+import connectdb.ConnectDB;
+import entity.DanhMuc;
+import entity.KhuyenMai;
+import entity.SanPham;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -8,11 +12,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.util.ArrayList;
-
-import connectdb.ConnectDB;
-import entity.DanhMuc;
-import entity.KhuyenMai;
-import entity.SanPham;
 
 public class SanPhamDAO {
 
@@ -30,12 +29,12 @@ public class SanPhamDAO {
         SanPham sp = new SanPham();
         sp.setMaSP(rs.getString("maSP"));
         sp.setTenSP(rs.getString("tenSP"));
-        sp.setGiaNhap(rs.getBigDecimal("giaNhap"));
+        sp.setGiaNhap(rs.getDouble("giaNhap"));
         sp.setSoLuongTon(rs.getInt("soLuongTon"));
 
         String maDM = rs.getString("maDM");
         if (maDM != null) {
-            sp.setDanhMuc(new DanhMuc(maDM, rs.getString("tenDM")));
+            sp.setDanhMuc(new DanhMuc(maDM, rs.getString("tenDM"),rs.getFloat("loiNhuan")));
         }
 
         String maKM = rs.getString("maKM");
@@ -92,7 +91,7 @@ public class SanPhamDAO {
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, sp.getMaSP());
             ps.setString(2, sp.getTenSP());
-            ps.setBigDecimal(3, sp.getGiaNhap());
+            ps.setDouble(3, sp.getGiaNhap());
             ps.setInt(4, sp.getSoLuongTon() == null ? 0 : sp.getSoLuongTon());
             setMaTuyChon(ps, 5, sp.getKhuyenMai() == null ? null : sp.getKhuyenMai().getMaKM());
             setMaTuyChon(ps, 6, sp.getDanhMuc() == null ? null : sp.getDanhMuc().getMaDM());
@@ -108,7 +107,7 @@ public class SanPhamDAO {
         String sql = "UPDATE SanPham SET tenSP = ?, giaNhap = ?, soLuongTon = ?, maKM = ?, maDM = ? WHERE maSP = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, sp.getTenSP());
-            ps.setBigDecimal(2, sp.getGiaNhap());
+            ps.setDouble(2, sp.getGiaNhap());
             ps.setInt(3, sp.getSoLuongTon() == null ? 0 : sp.getSoLuongTon());
             setMaTuyChon(ps, 4, sp.getKhuyenMai() == null ? null : sp.getKhuyenMai().getMaKM());
             setMaTuyChon(ps, 5, sp.getDanhMuc() == null ? null : sp.getDanhMuc().getMaDM());

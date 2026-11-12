@@ -1,10 +1,11 @@
 package ui;
 
+import dao.DanhMucDAO;
+import entity.DanhMuc;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -16,15 +17,12 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
-import dao.DanhMucDAO;
-import entity.DanhMuc;
-
 public class DanhMucPanel extends JPanel {
 
     private final DanhMucDAO dao = new DanhMucDAO();
 
     private final DefaultTableModel model = new DefaultTableModel(
-            new String[] { "Mã danh mục", "Tên danh mục" }, 0) {
+            new String[] { "Mã danh mục", "Tên danh mục","Lợi nhuận"}, 0) {
         @Override
         public boolean isCellEditable(int row, int column) {
             return false;
@@ -35,6 +33,7 @@ public class DanhMucPanel extends JPanel {
     private final JTextField txtMa = new JTextField(12);
     private final JTextField txtTen = new JTextField(25);
     private final JTextField txtTim = new JTextField(20);
+    private final JTextField txtLoiNhuan = new JTextField();
 
     public DanhMucPanel() {
         setLayout(new BorderLayout(10, 10));
@@ -45,6 +44,8 @@ public class DanhMucPanel extends JPanel {
         pnlForm.add(txtMa);
         pnlForm.add(new JLabel("Tên danh mục:"));
         pnlForm.add(txtTen);
+        pnlForm.add(new JLabel("Lợi nhuận:"));
+        pnlForm.add(txtLoiNhuan);
 
         JButton btnThem = new JButton("Thêm");
         JButton btnSua = new JButton("Sửa");
@@ -142,7 +143,7 @@ public class DanhMucPanel extends JPanel {
         if (!kiemTra()) {
             return;
         }
-        DanhMuc dm = new DanhMuc(txtMa.getText().trim(), txtTen.getText().trim());
+        DanhMuc dm = new DanhMuc(txtMa.getText().trim(), txtTen.getText().trim(), Float.valueOf(txtLoiNhuan.getText()));
         if (dao.themDanhMuc(dm)) {
             JOptionPane.showMessageDialog(this, "Thêm danh mục thành công!");
             lamMoi();
@@ -159,7 +160,7 @@ public class DanhMucPanel extends JPanel {
         if (!kiemTra()) {
             return;
         }
-        DanhMuc dm = new DanhMuc(txtMa.getText().trim(), txtTen.getText().trim());
+        DanhMuc dm = new DanhMuc(txtMa.getText().trim(), txtTen.getText().trim(),Float.valueOf(txtLoiNhuan.getText()));
         if (dao.suaDanhMuc(dm)) {
             JOptionPane.showMessageDialog(this, "Sửa danh mục thành công!");
             lamMoi();

@@ -47,7 +47,7 @@ VALUES
 -- tiLeGiamGia tinh theo phan tram
 -- =============================================
 INSERT INTO KhuyenMai
-    (maKM, tenKM, tiLeGiamGia, loaiKM, ngayBatDau, ngayKetThuc, trangThai)
+    (maKM, tenKM, tiLeGiamGia, donViTinh, ngayBatDau, ngayKetThuc, trangThai)
 VALUES
 ('KM001', N'Khuyến mãi khai trương', 10, N'Phần trăm', '20261001', '20261231', N'Đang áp dụng'),
 ('KM002', N'Ưu đãi khách hàng VIP', 15, N'Phần trăm', '20261101', '20261130', N'Đang áp dụng'),
@@ -58,13 +58,13 @@ VALUES
 -- =============================================
 -- 5. DANHMUC
 -- =============================================
-INSERT INTO DanhMuc (maDM, tenDM)
+INSERT INTO DanhMuc (maDM, tenDM, loiNhuan)
 VALUES
-('DM001', N'Đồ uống'),
-('DM002', N'Đồ ăn'),
-('DM003', N'Gia dụng'),
-('DM004', N'Điện tử'),
-('DM005', N'Văn phòng phẩm');
+('DM001', N'Đồ uống',0.05),
+('DM002', N'Đồ ăn',0.025),
+('DM003', N'Gia dụng',0.03),
+('DM004', N'Điện tử',0.05),
+('DM005', N'Văn phòng phẩm',0.025);
 
 -- =============================================
 -- 6. SANPHAM

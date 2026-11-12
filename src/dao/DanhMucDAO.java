@@ -1,13 +1,12 @@
 package dao;
 
+import connectdb.ConnectDB;
+import entity.DanhMuc;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import connectdb.ConnectDB;
-import entity.DanhMuc;
 
 public class DanhMucDAO {
 
@@ -20,7 +19,7 @@ public class DanhMucDAO {
         String sql = "SELECT maDM, tenDM FROM DanhMuc ORDER BY maDM";
         try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                ds.add(new DanhMuc(rs.getString("maDM"), rs.getString("tenDM")));
+                ds.add(new DanhMuc(rs.getString("maDM"), rs.getString("tenDM"),rs.getFloat("loiNhuan")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -37,7 +36,7 @@ public class DanhMucDAO {
             ps.setString(2, "%" + tuKhoa + "%");
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    ds.add(new DanhMuc(rs.getString("maDM"), rs.getString("tenDM")));
+                    ds.add(new DanhMuc(rs.getString("maDM"), rs.getString("tenDM"),rs.getFloat("loiNhuan")));
                 }
             }
         } catch (SQLException e) {

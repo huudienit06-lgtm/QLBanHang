@@ -159,4 +159,19 @@ public class HoaDonDAO {
         return result;
     }
 
+    public int getSoLuong(){
+        int count = 0 ;
+        try {
+            PreparedStatement ps = con.prepareStatement("select * from HoaDon");
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                count++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+        return  count;
+    }
+
 }

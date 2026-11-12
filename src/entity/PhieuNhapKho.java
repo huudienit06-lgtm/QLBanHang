@@ -18,6 +18,12 @@ public class PhieuNhapKho {
         this.trangThai = trangThai;
     }
 
+    public PhieuNhapKho(String maPNK) {
+        this.maPNK = maPNK;
+    }
+
+    
+
     public String getMaPNK() {
         return maPNK;
     }

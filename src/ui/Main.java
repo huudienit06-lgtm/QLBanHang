@@ -17,7 +17,7 @@ public class Main extends JFrame {
     public Main() throws HeadlessException {
         
         setTitle("Quản Lý Bán Hàng");
-        setSize(800, 600);
+        setSize(1300, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         // pnlMenu.add(new MenuQL(), BorderLayout.NORTH);
@@ -75,6 +75,9 @@ public class Main extends JFrame {
                 break;
             case "Thống kê sản phẩm":
                 setContent(new ThongKeSanPhamPanel());
+                break;
+            case "Lập hóa đơn":
+                setContent(new FrmHoaDon(taiKhoan));
                 break;
             case "Thống kê hóa đơn":
                 JOptionPane.showMessageDialog(this, "Chức năng thống kê hóa đơn chưa được xây dựng.");

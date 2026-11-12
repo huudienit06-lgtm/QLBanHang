@@ -1,12 +1,18 @@
 package ui;
 
+import connectdb.ConnectDB;
+import dao.ChiTietPhieuNhapKho_dao;
+import dao.PhieuNhapKho_dao;
+import dao.SanPhamDAO;
+import entity.ChiTietPhieuNhapKho;
+import entity.PhieuNhapKho;
+import entity.SanPham;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -18,14 +24,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-
-import connectdb.ConnectDB;
-import dao.ChiTietPhieuNhapKho_dao;
-import dao.PhieuNhapKho_dao;
-import dao.SanPham_dao;
-import entity.ChiTietPhieuNhapKho;
-import entity.PhieuNhapKho;
-import entity.SanPham;
 
 public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
 
@@ -48,7 +46,7 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
 
     private ChiTietPhieuNhapKho_dao ctpnk_dao;
     private PhieuNhapKho_dao pnk_dao;
-    private SanPham_dao sp_dao;
+    private SanPhamDAO sp_dao;
 
     public ChiTietPhieuNhapKho_GUI() {
 
@@ -60,7 +58,7 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
 
         ctpnk_dao = new ChiTietPhieuNhapKho_dao();
         pnk_dao = new PhieuNhapKho_dao();
-        sp_dao = new SanPham_dao();
+        sp_dao = new SanPhamDAO();
 
         setTitle("Quản lý chi tiết phiếu nhập kho");
         setSize(950, 550);

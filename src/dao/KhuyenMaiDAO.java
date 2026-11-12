@@ -1,14 +1,13 @@
 package dao;
 
+import connectdb.ConnectDB;
+import entity.KhuyenMai;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import connectdb.ConnectDB;
-import entity.KhuyenMai;
 
 public class KhuyenMaiDAO {
 
@@ -22,7 +21,7 @@ public class KhuyenMaiDAO {
                 rs.getString("maKM"),
                 rs.getString("tenKM"),
                 rs.getDouble("tiLeGiamGia"),
-                rs.getString("loaiKM"),
+                rs.getString("donViTinh"),
                 bd == null ? null : bd.toLocalDate(),
                 kt == null ? null : kt.toLocalDate(),
                 rs.getString("trangThai"));
@@ -68,7 +67,7 @@ public class KhuyenMaiDAO {
             ps.setString(1, km.getMaKM());
             ps.setString(2, km.getTenKM());
             ps.setDouble(3, km.getTiLeGiamGia());
-            ps.setString(4, km.getLoaiKM());
+            ps.setString(4, km.getDonViTinh());
             ps.setDate(5, Date.valueOf(km.getNgayBatDau()));
             ps.setDate(6, Date.valueOf(km.getNgayKetThuc()));
             ps.setString(7, km.getTrangThai());
@@ -86,7 +85,7 @@ public class KhuyenMaiDAO {
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, km.getTenKM());
             ps.setDouble(2, km.getTiLeGiamGia());
-            ps.setString(3, km.getLoaiKM());
+            ps.setString(3, km.getDonViTinh());
             ps.setDate(4, Date.valueOf(km.getNgayBatDau()));
             ps.setDate(5, Date.valueOf(km.getNgayKetThuc()));
             ps.setString(6, km.getTrangThai());

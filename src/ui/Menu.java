@@ -81,7 +81,7 @@ public class Menu extends JPanel implements ActionListener{
         menuDanhMuc.add(itemDanhMuc);
 
         menuBar.add(menuXuLy);
-        itemLapHoaDon = new JMenuItem("Lập Hóa Đơn");
+        itemLapHoaDon = new JMenuItem("Lập hóa đơn");
         if (laQuanLy) {
             itemLapPhieuNhapKho = new JMenuItem("Lập phiếu nhập kho");
             menuXuLy.add(itemLapPhieuNhapKho);

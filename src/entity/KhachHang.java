@@ -71,4 +71,11 @@ public class KhachHang {
     public void setLoaiKH(String loaiKH) {
         this.loaiKH = loaiKH;
     }
+
+    @Override
+    public String toString() {
+        return tenKH+" - "+sdt;
+    }
+
+    
 }

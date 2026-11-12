@@ -42,7 +42,8 @@ create table KhuyenMai(
 
 create table DanhMuc (
 	maDM varchar(10) primary key,
-	tenDM nvarchar(30)
+	tenDM nvarchar(30),
+	loiNhuan float
 )
 
 

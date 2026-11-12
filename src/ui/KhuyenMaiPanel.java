@@ -138,7 +138,7 @@ public class KhuyenMaiPanel extends JPanel {
     private void napBang(ArrayList<KhuyenMai> ds) {
         model.setRowCount(0);
         for (KhuyenMai km : ds) {
-            model.addRow(new Object[] { km.getMaKM(), km.getTenKM(), km.getTiLeGiamGia(), km.getLoaiKM(),
+            model.addRow(new Object[] { km.getMaKM(), km.getTenKM(), km.getTiLeGiamGia(), km.getDonViTinh(),
                     km.getNgayBatDau(), km.getNgayKetThuc(), km.getTrangThai() });
         }
     }

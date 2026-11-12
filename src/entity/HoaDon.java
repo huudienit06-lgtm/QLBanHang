@@ -1,9 +1,11 @@
 package entity;
 
+import dao.ChiTietHoaDonDAO;
+import dao.Thue_dao;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class HoaDon {
-
     private String maHD;
     private LocalDate ngayLap;
     private KhachHang khachHang;
@@ -12,6 +14,7 @@ public class HoaDon {
     private Thue thue;
     private String trangThai;
     private String phuongThucThanhToan;
+
 
     public HoaDon() {
     }
@@ -96,6 +99,33 @@ public class HoaDon {
         this.phuongThucThanhToan = phuongThucThanhToan;
     }
 
+    public boolean kiemTraKhuyenMai(KhuyenMai khuyenMai){
+        if(khuyenMai!=null){
+
+        }
+        return false;
+    }
+
+    public double tinhThanhTien(){
+        double tongTien=0;
+        double tongThue=0;
+        ArrayList<ChiTietHoaDon> list = new ChiTietHoaDonDAO().getDSCTHDByID(this.maHD);
+        for (ChiTietHoaDon chiTietHoaDon : list) {
+            tongTien+=chiTietHoaDon.tinhThanhTien();
+        }
+        ArrayList<Thue> listThue = new Thue_dao().getAllThue();
+        for (Thue t : listThue) {
+            tongThue += t.getTiLeThue();
+        }
+        if(this.getKhuyenMai()!=null && this.getKhuyenMai().getDonViTinh().trim().equalsIgnoreCase("Phần trăm")){
+            tongTien -= tongTien * (this.getKhuyenMai().getTiLeGiamGia() / 100);
+        }
+        else if(this.getKhuyenMai() != null && this.getKhuyenMai().getDonViTinh().trim().equalsIgnoreCase("Ngàn")){
+            tongTien -= (this.getKhuyenMai().getTiLeGiamGia());
+        }
+        return tongTien * (1+tongThue/100);
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -133,12 +163,5 @@ public class HoaDon {
                 + phuongThucThanhToan + "]";
     }
 
-    // public double tinhThanhTien(String maHD){
-    //     double tongTien = 0 ;
-    //     ArrayList<ChiTietHoaDon> chiTietHoaDons = new ChiTietHoaDonDAO().getChiTietHoaDonByMaHD(maHD);
-    //     for (ChiTietHoaDon chiTietHoaDon : chiTietHoaDons) {
-    //         tongTien += chiTietHoaDon.tinhThanhTien();
-    //     }
-    //     return tongTien;
-    // }
+    
 }

@@ -1,11 +1,15 @@
 package ui;
 
+import dao.DanhMucDAO;
+import dao.KhuyenMaiDAO;
+import dao.SanPhamDAO;
+import entity.DanhMuc;
+import entity.KhuyenMai;
+import entity.SanPham;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -17,13 +21,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
-
-import dao.DanhMucDAO;
-import dao.KhuyenMaiDAO;
-import dao.SanPhamDAO;
-import entity.DanhMuc;
-import entity.KhuyenMai;
-import entity.SanPham;
 
 public class SanPhamPanel extends JPanel {
 
@@ -215,20 +212,19 @@ public class SanPhamPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "Mã SP tối đa 10 ký tự, tên SP tối đa 20 ký tự!");
             return null;
         }
-        BigDecimal giaNhap;
+        double giaNhap;
         int ton;
         try {
-            giaNhap = new BigDecimal(txtGiaNhap.getText().trim());
+            giaNhap = Double.parseDouble(txtGiaNhap.getText().trim());
             ton = Integer.parseInt(txtTon.getText().trim());
+            if (giaNhap< 0 || ton < 0) {
+            JOptionPane.showMessageDialog(this, "Giá nhập và số lượng tồn không được âm!");
+            return null;
+        }
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Giá nhập và số lượng tồn phải là số!");
             return null;
         }
-        if (giaNhap.signum() < 0 || ton < 0) {
-            JOptionPane.showMessageDialog(this, "Giá nhập và số lượng tồn không được âm!");
-            return null;
-        }
-
         int iDM = cboDanhMuc.getSelectedIndex();
         int iKM = cboKhuyenMai.getSelectedIndex();
         DanhMuc dm = iDM > 0 ? dsDanhMuc.get(iDM - 1) : null;
