@@ -23,7 +23,6 @@ import javax.swing.table.DefaultTableModel;
 
 import connectdb.ConnectDB;
 import dao.NhanVien_DAO;
-import dao.NhanVien_DAO;
 import dao.PhieuNhapKho_dao;
 import entity.NhanVien;
 import entity.PhieuNhapKho;
