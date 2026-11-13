@@ -6,7 +6,7 @@ public class KhuyenMai {
     private String maKM;
     private String tenKM;
     private Double tiLeGiamGia;
-    private String loaiKM;
+    private String donViTinh;
     private LocalDate ngayBatDau;
     private LocalDate ngayKetThuc;
     private String trangThai;
@@ -14,17 +14,21 @@ public class KhuyenMai {
     public KhuyenMai() {
     }
 
-    public KhuyenMai(String maKM, String tenKM, Double tiLeGiamGia, String loaiKM,
+    public KhuyenMai(String maKM, String tenKM, Double tiLeGiamGia, String donViTinh,
             LocalDate ngayBatDau, LocalDate ngayKetThuc, String trangThai) {
         this.maKM = maKM;
         this.tenKM = tenKM;
         this.tiLeGiamGia = tiLeGiamGia;
-        this.loaiKM = loaiKM;
+        this.donViTinh = donViTinh;
         this.ngayBatDau = ngayBatDau;
         this.ngayKetThuc = ngayKetThuc;
         this.trangThai = trangThai;
     }
 
+    public KhuyenMai(String maKM) {
+        this.maKM = maKM;
+    }
+    
     public String getMaKM() {
         return maKM;
     }
@@ -49,12 +53,12 @@ public class KhuyenMai {
         this.tiLeGiamGia = tiLeGiamGia;
     }
 
-    public String getLoaiKM() {
-        return loaiKM;
+    public String getDonViTinh() {
+        return donViTinh;
     }
 
-    public void setLoaiKM(String loaiKM) {
-        this.loaiKM = loaiKM;
+    public void setDonViTinh(String donViTinh) {
+        this.donViTinh = donViTinh;
     }
 
     public LocalDate getNgayBatDau() {
@@ -80,4 +84,12 @@ public class KhuyenMai {
     public void setTrangThai(String trangThai) {
         this.trangThai = trangThai;
     }
+
+    @Override
+    public String toString() {
+        
+        return tenKM+" - Giảm "+tiLeGiamGia+(donViTinh.equalsIgnoreCase("Phần trăm") ?"%":"VND");
+    }
+
+    
 }

@@ -1,6 +1,9 @@
 package entity;
 
+import dao.ChiTietHoaDonDAO;
+import dao.Thue_dao;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class HoaDon {
     private String maHD;
@@ -11,6 +14,7 @@ public class HoaDon {
     private Thue thue;
     private String trangThai;
     private String phuongThucThanhToan;
+
 
     public HoaDon() {
     }
@@ -25,6 +29,10 @@ public class HoaDon {
         this.thue = thue;
         this.trangThai = trangThai;
         this.phuongThucThanhToan = phuongThucThanhToan;
+    }
+
+    public HoaDon(String maHD) {
+        this.maHD = maHD;
     }
 
     public String getMaHD() {
@@ -91,6 +99,33 @@ public class HoaDon {
         this.phuongThucThanhToan = phuongThucThanhToan;
     }
 
+    public boolean kiemTraKhuyenMai(KhuyenMai khuyenMai){
+        if(khuyenMai!=null){
+
+        }
+        return false;
+    }
+
+    public double tinhThanhTien(){
+        double tongTien=0;
+        double tongThue=0;
+        ArrayList<ChiTietHoaDon> list = new ChiTietHoaDonDAO().getDSCTHDByID(this.maHD);
+        for (ChiTietHoaDon chiTietHoaDon : list) {
+            tongTien+=chiTietHoaDon.tinhThanhTien();
+        }
+        ArrayList<Thue> listThue = new Thue_dao().getAllThue();
+        for (Thue t : listThue) {
+            tongThue += t.getTiLeThue();
+        }
+        if(this.getKhuyenMai()!=null && this.getKhuyenMai().getDonViTinh().trim().equalsIgnoreCase("Phần trăm")){
+            tongTien -= tongTien * (this.getKhuyenMai().getTiLeGiamGia() / 100);
+        }
+        else if(this.getKhuyenMai() != null && this.getKhuyenMai().getDonViTinh().trim().equalsIgnoreCase("Ngàn")){
+            tongTien -= (this.getKhuyenMai().getTiLeGiamGia());
+        }
+        return tongTien * (1+tongThue/100);
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -101,19 +136,32 @@ public class HoaDon {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         HoaDon other = (HoaDon) obj;
         if (maHD == null) {
-            if (other.maHD != null)
+            if (other.maHD != null) {
                 return false;
-        } else if (!maHD.equals(other.maHD))
+            }
+        } else if (!maHD.equals(other.maHD)) {
             return false;
+        }
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "HoaDon [maHD=" + maHD + ", ngayLap=" + ngayLap + ", khachHang=" + khachHang + ", nhanVien=" + nhanVien
+                + ", khuyenMai=" + khuyenMai + ", thue=" + thue + ", trangThai=" + trangThai + ", phuongThucThanhToan="
+                + phuongThucThanhToan + "]";
+    }
+
+    
 }
