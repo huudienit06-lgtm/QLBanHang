@@ -223,6 +223,87 @@ public class TaiKhoan_gui extends JPanel {
             JOptionPane.showMessageDialog(this,
                     "Thêm thất bại (nhân viên chưa tồn tại hoặc đã có tài khoản)!");
         }
+<<<<<<< HEAD
+=======
+    }
+
+    // Sửa tài khoản
+    private void sua() {
+
+        if (table.getSelectedRow() < 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Hãy chọn tài khoản cần sửa!");
+            return;
+        }
+
+        if (!validateForm()) {
+            return;
+        }
+
+        if (dao.suaTaiKhoan(txtMa.getText().trim(), readForm())) {
+            loadData();
+            clearForm();
+        } else {
+            JOptionPane.showMessageDialog(this, "Sửa thất bại!");
+        }
+    }
+
+    // Xóa tài khoản
+    private void xoa() {
+
+        if (table.getSelectedRow() < 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Hãy chọn tài khoản cần xóa!");
+            return;
+        }
+
+        int chon = JOptionPane.showConfirmDialog(
+                this,
+                "Xóa tài khoản này?",
+                "Xác nhận",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (chon != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        if (dao.xoaTaiKhoan(txtMa.getText().trim())) {
+            loadData();
+            clearForm();
+        } else {
+            JOptionPane.showMessageDialog(this, "Xóa thất bại!");
+        }
+    }
+
+    // Đổi mật khẩu
+    private void doiMatKhau() {
+
+        if (table.getSelectedRow() < 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Hãy chọn tài khoản!");
+            return;
+        }
+
+        if (new String(txtMk.getPassword()).length() < 6) {
+            JOptionPane.showMessageDialog(this,
+                    "Nhập mật khẩu mới (>= 6 ký tự) vào ô Mật khẩu rồi bấm lại!");
+            return;
+        }
+
+        if (dao.doiMatKhau(
+                txtMa.getText().trim(),
+                new String(txtMk.getPassword()))) {
+
+            JOptionPane.showMessageDialog(this,
+                    "Đổi mật khẩu thành công!");
+
+            loadData();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Đổi mật khẩu thất bại!");
+        }
+>>>>>>> main
     }
 
     // Sửa tài khoản

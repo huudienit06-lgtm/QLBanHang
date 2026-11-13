@@ -18,6 +18,7 @@ public class NhanVien_DAO {
     public ArrayList<NhanVien> getAllNhanVien(){
         ArrayList<NhanVien> dsnv = new ArrayList<>();
         try {
+            ConnectDB.getInstance();
             Connection con = ConnectDB.getConnection();
             String sql = "SELECT * FROM NhanVien";
             Statement stmt = con.createStatement();
@@ -32,7 +33,7 @@ public class NhanVien_DAO {
                 dsnv.add(nv);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace(); 
         }
         return dsnv;
     }
@@ -41,11 +42,12 @@ public class NhanVien_DAO {
         ArrayList<NhanVien> dsnv = new ArrayList<>();
         ConnectDB.getInstance();
         Connection con = ConnectDB.getConnection();
-        Statement statement = null;
+        PreparedStatement statement = null;
         try{
             String sql = "Select * from NhanVien where maNV = ?";
-            statement = con.createStatement();
-            ResultSet rs = statement.executeQuery(sql);
+            statement = con.prepareStatement(sql);
+            statement.setString(1, maNV);
+            ResultSet rs = statement.executeQuery();
 
             while(rs.next()){
                 String tennv= rs.getString(2);
@@ -75,7 +77,7 @@ public class NhanVien_DAO {
 
         int n =0;
         try{
-            stmt = con.prepareStatement("insert into"+"NhanVien valuess(?, ?, ?, ?, ?)");
+            stmt = con.prepareStatement("insert into NhanVien values (?, ?, ?, ?, ?)");
             stmt.setString(1,nv.getMaNV());
             stmt.setString(2,nv.getTenNV());
             stmt.setString(3,nv.getSdt());
@@ -123,11 +125,11 @@ public class NhanVien_DAO {
         try{
             String sql="UPDATE NhanVien SET tenNV = ?, sdt = ?, gioiTinh = ?, chucVu = ? WHERE maNV = ?";
             stmt= con.prepareStatement(sql);
-            stmt.setString(2, nvMoi.getTenNV());
-            stmt.setString(4, nvMoi.getGioiTinh());
-            stmt.setString(3, nvMoi.getSdt());
-            stmt.setString(5, nvMoi.getChucVu());
-            stmt.setString(1, maNV);
+            stmt.setString(1, nvMoi.getTenNV());
+            stmt.setString(2, nvMoi.getSdt());
+            stmt.setString(3, nvMoi.getGioiTinh());
+            stmt.setString(4, nvMoi.getChucVu());
+            stmt.setString(5, maNV);
             int n = stmt.executeUpdate();
             return n>0;
         }catch(SQLException e){
