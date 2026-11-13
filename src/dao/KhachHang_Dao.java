@@ -47,7 +47,7 @@ public class KhachHang_Dao {
             String sql = "SELECT * from KhachHang where maKH = ?";
             stmt = con.prepareStatement(sql);
             stmt.setString(1, maKH);
-            ResultSet rs = stmt.executeQuery(sql);
+            ResultSet rs = stmt.executeQuery();
             while(rs.next()){
                 String tenKH= rs.getString(2);
                 String sdt = rs.getString(3);
