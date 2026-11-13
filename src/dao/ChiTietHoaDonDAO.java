@@ -26,7 +26,7 @@ public class ChiTietHoaDonDAO {
             ps.setString(1, maHD);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                String maHDon = rs.getString("maHD");
+                // String maHDon = rs.getString("maHD");
                 String maSP = rs.getString("maSP");
                 int soLuong = rs.getInt("soLuong");
                 ChiTietHoaDon ct = new ChiTietHoaDon(new HoaDon(maHD), new SanPham(maSP), soLuong);
