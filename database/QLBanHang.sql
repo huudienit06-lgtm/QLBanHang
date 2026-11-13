@@ -33,7 +33,7 @@ create table KhuyenMai(
 	maKM varchar(10) primary key,
 	tenKM nvarchar(30),
 	tiLeGiamGia float,
-	loaiKM nvarchar(20),
+	donViTinh nvarchar(20),
 	ngayBatDau date,
 	ngayKetThuc date,
 	trangThai nvarchar(20)
@@ -73,14 +73,12 @@ create table HoaDon(
 	maKH varchar(10),
 	maNV varchar(10),
 	maKM varchar(10),
-	maThue varchar(10),
 	trangThai nvarchar(20),
 	phuongThucThanhToan nvarchar(20),
 
 	constraint fk_HoaDon_KhachHang foreign key (maKH) references KhachHang(maKH),
 	constraint fk_HoaDon_NhanVien foreign key (maNV) references NhanVien(maNV),
-	constraint fk_HoaDon_KhuyenMai foreign key (maKM) references KhuyenMai(maKM),
-	constraint fk_HoaDon_Thue foreign key (maThue) references Thue(maThue)
+	constraint fk_HoaDon_KhuyenMai foreign key (maKM) references KhuyenMai(maKM)
 )
 
 create table ChiTietHoaDon (

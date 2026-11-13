@@ -1,32 +1,30 @@
 package entity;
 
 import dao.ChiTietHoaDonDAO;
-import dao.Thue_dao;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class HoaDon {
+
     private String maHD;
     private LocalDate ngayLap;
     private KhachHang khachHang;
     private NhanVien nhanVien;
     private KhuyenMai khuyenMai;
-    private Thue thue;
     private String trangThai;
     private String phuongThucThanhToan;
-
 
     public HoaDon() {
     }
 
     public HoaDon(String maHD, LocalDate ngayLap, KhachHang khachHang, NhanVien nhanVien,
-            KhuyenMai khuyenMai, Thue thue, String trangThai, String phuongThucThanhToan) {
+            KhuyenMai khuyenMai, String trangThai, String phuongThucThanhToan) {
         this.maHD = maHD;
         this.ngayLap = ngayLap;
         this.khachHang = khachHang;
         this.nhanVien = nhanVien;
         this.khuyenMai = khuyenMai;
-        this.thue = thue;
         this.trangThai = trangThai;
         this.phuongThucThanhToan = phuongThucThanhToan;
     }
@@ -49,6 +47,13 @@ public class HoaDon {
 
     public void setNgayLap(LocalDate ngayLap) {
         this.ngayLap = ngayLap;
+    }
+
+    public String getNgayLapFormatted() {
+        DateTimeFormatter dtf
+                = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        return ngayLap.format(dtf);
     }
 
     public KhachHang getKhachHang() {
@@ -75,14 +80,6 @@ public class HoaDon {
         this.khuyenMai = khuyenMai;
     }
 
-    public Thue getThue() {
-        return thue;
-    }
-
-    public void setThue(Thue thue) {
-        this.thue = thue;
-    }
-
     public String getTrangThai() {
         return trangThai;
     }
@@ -99,31 +96,34 @@ public class HoaDon {
         this.phuongThucThanhToan = phuongThucThanhToan;
     }
 
-    public boolean kiemTraKhuyenMai(KhuyenMai khuyenMai){
-        if(khuyenMai!=null){
+    public boolean kiemTraKhuyenMai(KhuyenMai khuyenMai) {
+        if (khuyenMai != null) {
 
         }
         return false;
     }
 
-    public double tinhThanhTien(){
-        double tongTien=0;
-        double tongThue=0;
+    public double tinhTongTien() {
+        double tongTien = 0;
         ArrayList<ChiTietHoaDon> list = new ChiTietHoaDonDAO().getDSCTHDByID(this.maHD);
         for (ChiTietHoaDon chiTietHoaDon : list) {
-            tongTien+=chiTietHoaDon.tinhThanhTien();
+            tongTien += chiTietHoaDon.tinhThanhTien();
         }
-        ArrayList<Thue> listThue = new Thue_dao().getAllThue();
-        for (Thue t : listThue) {
-            tongThue += t.getTiLeThue();
+        return tongTien;
+    }
+
+    public double tinhKhuyenMai() {
+        double tongKhuyenMai = 0;
+        if (this.getKhuyenMai() != null && this.getKhuyenMai().getDonViTinh().trim().equalsIgnoreCase("Phần trăm")) {
+            tongKhuyenMai = tinhTongTien() * (this.getKhuyenMai().getTiLeGiamGia() / 100);
+        } else if (this.getKhuyenMai() != null && this.getKhuyenMai().getDonViTinh().trim().equalsIgnoreCase("Ngàn")) {
+            tongKhuyenMai = (this.getKhuyenMai().getTiLeGiamGia());
         }
-        if(this.getKhuyenMai()!=null && this.getKhuyenMai().getDonViTinh().trim().equalsIgnoreCase("Phần trăm")){
-            tongTien -= tongTien * (this.getKhuyenMai().getTiLeGiamGia() / 100);
-        }
-        else if(this.getKhuyenMai() != null && this.getKhuyenMai().getDonViTinh().trim().equalsIgnoreCase("Ngàn")){
-            tongTien -= (this.getKhuyenMai().getTiLeGiamGia());
-        }
-        return tongTien * (1+tongThue/100);
+        return tongKhuyenMai;
+    }
+
+    public double tinhThanhTien() {
+        return tinhTongTien() - tinhKhuyenMai();
     }
 
     @Override
@@ -159,9 +159,8 @@ public class HoaDon {
     @Override
     public String toString() {
         return "HoaDon [maHD=" + maHD + ", ngayLap=" + ngayLap + ", khachHang=" + khachHang + ", nhanVien=" + nhanVien
-                + ", khuyenMai=" + khuyenMai + ", thue=" + thue + ", trangThai=" + trangThai + ", phuongThucThanhToan="
+                + ", khuyenMai=" + khuyenMai + ", trangThai=" + trangThai + ", phuongThucThanhToan="
                 + phuongThucThanhToan + "]";
     }
 
-    
 }

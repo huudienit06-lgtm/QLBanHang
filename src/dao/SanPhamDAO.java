@@ -15,8 +15,11 @@ import java.util.ArrayList;
 
 public class SanPhamDAO {
 
-    private static final String SQL_CHON = "SELECT sp.maSP, sp.tenSP, sp.giaNhap, sp.soLuongTon, sp.maKM, sp.maDM, "
-            + "dm.tenDM, km.tenKM, km.tiLeGiamGia, km.loaiKM, km.ngayBatDau, km.ngayKetThuc, "
+    private static final String SQL_CHON
+            = "SELECT sp.maSP, sp.tenSP, sp.giaNhap, sp.soLuongTon, sp.maKM, sp.maDM, "
+            + "dm.tenDM, dm.loiNhuan, "
+            + "km.tenKM, km.tiLeGiamGia, km.donViTinh, "
+            + "km.ngayBatDau, km.ngayKetThuc, "
             + "km.trangThai AS trangThaiKM "
             + "FROM SanPham sp "
             + "LEFT JOIN DanhMuc dm ON sp.maDM = dm.maDM "
@@ -45,7 +48,7 @@ public class SanPhamDAO {
                     maKM,
                     rs.getString("tenKM"),
                     rs.getDouble("tiLeGiamGia"),
-                    rs.getString("loaiKM"),
+                    rs.getString("donViTinh"),
                     bd == null ? null : bd.toLocalDate(),
                     kt == null ? null : kt.toLocalDate(),
                     rs.getString("trangThaiKM")));

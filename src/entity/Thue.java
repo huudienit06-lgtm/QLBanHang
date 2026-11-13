@@ -45,7 +45,10 @@ public class Thue {
 
     @Override
     public String toString() {
-        return "Thuế:"+this.tenThue+"Mức thuế:"+this.tiLeThue+"%\n";
+        return this.tenThue+"Mức thuế:"+this.tiLeThue+"%";
     }
-    
+    public double tinhThue(double tongTien) {
+        return tongTien * this.getTiLeThue();
+    }
+
 }

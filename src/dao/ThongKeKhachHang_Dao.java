@@ -11,12 +11,12 @@ import java.util.List;
 import connectdb.ConnectDB;
 
 /**
- * Bảng HoaDon(maHD, ngayLap, maKH, maNV, maKM, maThue, trangThai, phuongThucThanhToan) không có cột tổng tiền,
+ * Bảng HoaDon(maHD, ngayLap, maKH, maNV, maKM, trangThai, phuongThucThanhToan) không có cột tổng tiền,
  * nên tổng tiền mỗi hóa đơn được tính từ bảng chi tiết.
  *
  * GIẢ ĐỊNH: ChiTietHoaDon(maHD, maSP, soLuong, donGia).
  * Nếu bảng chi tiết của bạn khác tên/cột, CHỈ CẦN SỬA hằng số TONG_TIEN_HOA_DON bên dưới.
- * (Chưa trừ khuyến mãi maKM hay cộng thuế maThue; nếu cần thì sửa công thức trong SUM(...).)
+ * (Chưa trừ khuyến mãi; nếu cần thì sửa công thức trong SUM(...).)
  */
 public class ThongKeKhachHang_Dao {
 
