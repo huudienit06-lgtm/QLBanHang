@@ -198,11 +198,11 @@ public class ThongKeNhapKho_GUI extends JPanel {
 
         for (ChiTietPhieuNhapKho ct : ds) {
             int soLuong = ct.getSoLuong();
-            BigDecimal giaNhap = ct.getSanPham().getGiaNhap();
+            double giaNhap = ct.getSanPham().getGiaNhap();
 
             // Tổng tính trên toàn bộ dữ liệu trong khoảng thời gian
             tongSoLuong += soLuong;
-            tongTien = tongTien.add(giaNhap.multiply(BigDecimal.valueOf(soLuong)));
+            tongTien = tongTien.add(BigDecimal.valueOf(giaNhap).multiply(BigDecimal.valueOf(soLuong)));
 
             // Bảng chỉ hiển thị N dòng đầu
             if (daHienThi < gioiHan) {

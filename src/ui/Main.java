@@ -80,7 +80,7 @@ public class Main extends JFrame {
                 setContent(new FrmHoaDon(taiKhoan));
                 break;
             case "Thống kê hóa đơn":
-                JOptionPane.showMessageDialog(this, "Chức năng thống kê hóa đơn chưa được xây dựng.");
+                setContent(new FrmThongKeHoaDon());
                 break;
             case "Đăng Xuất":
                 setMenu(null);

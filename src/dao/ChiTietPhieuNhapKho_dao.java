@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import connectdb.ConnectDB;
@@ -34,6 +36,45 @@ public class ChiTietPhieuNhapKho_dao {
             e.printStackTrace();
         }
         return dsCTPNK;
+    }
+
+    public ArrayList<ChiTietPhieuNhapKho> getThongKeNhapKho(LocalDate tuNgay, LocalDate denNgay) {
+        ArrayList<ChiTietPhieuNhapKho> ds = new ArrayList<>();
+        String sql = "SELECT pnk.maPNK, pnk.ngayLap, ct.maSP, ct.soLuong, sp.tenSP, sp.giaNhap "
+                + "FROM ChiTietPhieuNhapKho ct "
+                + "JOIN PhieuNhapKho pnk ON pnk.maPNK = ct.maPNK "
+                + "JOIN SanPham sp ON sp.maSP = ct.maSP "
+                + "WHERE pnk.ngayLap BETWEEN ? AND ? "
+                + "ORDER BY pnk.ngayLap, pnk.maPNK, ct.maSP";
+
+        try {
+            ConnectDB.getInstance();
+            Connection con = ConnectDB.getConnection();
+            try (PreparedStatement stmt = con.prepareStatement(sql)) {
+                stmt.setDate(1, Date.valueOf(tuNgay));
+                stmt.setDate(2, Date.valueOf(denNgay));
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        LocalDate ngayLap = rs.getDate("ngayLap").toLocalDate();
+                        PhieuNhapKho pnk = new PhieuNhapKho(
+                                rs.getString("maPNK"), ngayLap, null, null);
+                        SanPham sp = new SanPham(
+                                rs.getString("maSP"),
+                                rs.getString("tenSP"),
+                                rs.getDouble("giaNhap"),
+                                null,
+                                null,
+                                null);
+                        ds.add(new ChiTietPhieuNhapKho(
+                                pnk, sp, rs.getInt("soLuong")));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ds;
     }
 
     public ArrayList<ChiTietPhieuNhapKho> timChiTietPhieuNhapKho(String maPNK){

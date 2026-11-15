@@ -23,7 +23,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import connectdb.ConnectDB;
-import dao.NhanVien_dao;
+import dao.NhanVien_DAO;
 import dao.PhieuNhapKho_dao;
 import entity.NhanVien;
 import entity.PhieuNhapKho;
@@ -49,7 +49,7 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
     private JButton btnXoaTrang;
 
     private PhieuNhapKho_dao pnk_dao;
-    private NhanVien_dao nv_dao;
+    private NhanVien_DAO nv_dao;
 
     private DateTimeFormatter formatter =
             DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -63,7 +63,7 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
         }
 
         pnk_dao = new PhieuNhapKho_dao();
-        nv_dao = new NhanVien_dao();
+        nv_dao = new NhanVien_DAO();
 
         setTitle("Quản lý phiếu nhập kho");
         setSize(900, 550);

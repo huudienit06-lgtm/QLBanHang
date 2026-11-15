@@ -183,6 +183,92 @@ public class HoaDonDAO {
         return count;
     }
 
+    public int demHoaDonTheoDieuKien(LocalDate tuNgay, LocalDate denNgay, String maNV)
+            throws java.sql.SQLException {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM HoaDon WHERE 1 = 1");
+        if (tuNgay != null) {
+            sql.append(" AND ngayLap >= ?");
+        }
+        if (denNgay != null) {
+            sql.append(" AND ngayLap <= ?");
+        }
+        if (maNV != null && !maNV.trim().isEmpty()) {
+            sql.append(" AND maNV = ?");
+        }
+
+        try (PreparedStatement ps = con.prepareStatement(sql.toString())) {
+            int parameterIndex = 1;
+            if (tuNgay != null) {
+                ps.setDate(parameterIndex++, java.sql.Date.valueOf(tuNgay));
+            }
+            if (denNgay != null) {
+                ps.setDate(parameterIndex++, java.sql.Date.valueOf(denNgay));
+            }
+            if (maNV != null && !maNV.trim().isEmpty()) {
+                ps.setString(parameterIndex, maNV.trim());
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        return 0;
+    }
+
+    public ArrayList<HoaDon> getHoaDonTheoDieuKien(LocalDate tuNgay, LocalDate denNgay, String maNV)
+            throws java.sql.SQLException {
+        ArrayList<HoaDon> ds = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(
+                "SELECT hd.maHD, hd.ngayLap, hd.maKH, kh.tenKH, "
+                + "hd.maNV, nv.tenNV, hd.trangThai, hd.phuongThucThanhToan "
+                + "FROM HoaDon hd "
+                + "JOIN KhachHang kh ON kh.maKH = hd.maKH "
+                + "JOIN NhanVien nv ON nv.maNV = hd.maNV "
+                + "WHERE 1 = 1");
+        if (tuNgay != null) {
+            sql.append(" AND hd.ngayLap >= ?");
+        }
+        if (denNgay != null) {
+            sql.append(" AND hd.ngayLap <= ?");
+        }
+        if (maNV != null && !maNV.trim().isEmpty()) {
+            sql.append(" AND hd.maNV = ?");
+        }
+        sql.append(" ORDER BY hd.ngayLap DESC, hd.maHD DESC");
+
+        try (PreparedStatement ps = con.prepareStatement(sql.toString())) {
+            int parameterIndex = 1;
+            if (tuNgay != null) {
+                ps.setDate(parameterIndex++, java.sql.Date.valueOf(tuNgay));
+            }
+            if (denNgay != null) {
+                ps.setDate(parameterIndex++, java.sql.Date.valueOf(denNgay));
+            }
+            if (maNV != null && !maNV.trim().isEmpty()) {
+                ps.setString(parameterIndex, maNV.trim());
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    java.sql.Date ngayLap = rs.getDate("ngayLap");
+                    ds.add(new HoaDon(
+                            rs.getString("maHD"),
+                            ngayLap == null ? null : ngayLap.toLocalDate(),
+                            new KhachHang(rs.getString("maKH"), rs.getString("tenKH"),
+                                    null, null, null, null),
+                            new NhanVien(rs.getString("maNV"), rs.getString("tenNV"),
+                                    null, null, null),
+                            null,
+                            rs.getString("trangThai"),
+                            rs.getString("phuongThucThanhToan")));
+                }
+            }
+        }
+        return ds;
+    }
+
     public String getMaHDTiepTheo() {
         String sql = "SELECT COALESCE(MAX(TRY_CONVERT(INT, SUBSTRING(maHD, 3, LEN(maHD)))), 0) + 1 "
                 + "FROM HoaDon WHERE maHD LIKE 'HD%'";
