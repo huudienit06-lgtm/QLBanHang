@@ -22,7 +22,8 @@ import javax.swing.table.DefaultTableModel;
 import connectdb.ConnectDB;
 import dao.ChiTietPhieuNhapKho_dao;
 import dao.PhieuNhapKho_dao;
-import dao.SanPham_dao;
+import dao.SanPhamDAO;
+import dao.SanPhamDAO;
 import entity.ChiTietPhieuNhapKho;
 import entity.PhieuNhapKho;
 import entity.SanPham;
@@ -48,7 +49,7 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
 
     private ChiTietPhieuNhapKho_dao ctpnk_dao;
     private PhieuNhapKho_dao pnk_dao;
-    private SanPham_dao sp_dao;
+    private SanPhamDAO sp_dao;
 
     public ChiTietPhieuNhapKho_GUI() {
 
@@ -60,7 +61,7 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
 
         ctpnk_dao = new ChiTietPhieuNhapKho_dao();
         pnk_dao = new PhieuNhapKho_dao();
-        sp_dao = new SanPham_dao();
+        sp_dao = new SanPhamDAO();
 
         setTitle("Quản lý chi tiết phiếu nhập kho");
         setSize(950, 550);
@@ -172,15 +173,15 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
                 if (row >= 0) {
 
                     cboMaPNK.setSelectedItem(
-                        modelCTPNK.getValueAt(row, 0).toString()
+                            modelCTPNK.getValueAt(row, 0).toString()
                     );
 
                     cboMaSP.setSelectedItem(
-                        modelCTPNK.getValueAt(row, 1).toString()
+                            modelCTPNK.getValueAt(row, 1).toString()
                     );
 
                     txtSoLuong.setText(
-                        modelCTPNK.getValueAt(row, 3).toString()
+                            modelCTPNK.getValueAt(row, 3).toString()
                     );
 
                     // Không cho sửa mã phiếu và mã sản phẩm
@@ -199,8 +200,8 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
 
         modelCTPNK.setRowCount(0);
 
-        ArrayList<ChiTietPhieuNhapKho> list =
-                ctpnk_dao.getAllChiTietPhieuNhapKho_dao();
+        ArrayList<ChiTietPhieuNhapKho> list
+                = ctpnk_dao.getAllChiTietPhieuNhapKho_dao();
         ArrayList<SanPham> listSP = sp_dao.getAllSanPham();
         for (ChiTietPhieuNhapKho ct : list) {
 
@@ -217,7 +218,7 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
                 }
             }
 
-            modelCTPNK.addRow(new Object[] {
+            modelCTPNK.addRow(new Object[]{
                 maPNK,
                 maSP,
                 tenSP,
@@ -325,9 +326,7 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(this,
                         "Dữ liệu không hợp lệ!");
             }
-        }
-
-        // Sửa số lượng chi tiết phiếu nhập kho
+        } // Sửa số lượng chi tiết phiếu nhập kho
         else if (o.equals(btnSua)) {
 
             if (tableCTPNK.getSelectedRow() < 0) {
@@ -367,9 +366,7 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(this,
                         "Dữ liệu không hợp lệ!");
             }
-        }
-
-        // Xóa chi tiết phiếu nhập kho
+        } // Xóa chi tiết phiếu nhập kho
         else if (o.equals(btnXoa)) {
 
             int row = tableCTPNK.getSelectedRow();
@@ -388,7 +385,7 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
             int confirm = JOptionPane.showConfirmDialog(
                     this,
                     "Bạn có chắc muốn xóa sản phẩm " + maSP
-                            + " trong phiếu " + maPNK + "?",
+                    + " trong phiếu " + maPNK + "?",
                     "Xác nhận",
                     JOptionPane.YES_NO_OPTION
             );
@@ -409,9 +406,7 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
                             "Xóa thất bại!");
                 }
             }
-        }
-
-        // Tìm kiếm theo mã phiếu nhập
+        } // Tìm kiếm theo mã phiếu nhập
         else if (o.equals(btnTim)) {
 
             String maPNK = txtTim.getText().trim();
@@ -426,8 +421,8 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
 
             modelCTPNK.setRowCount(0);
 
-            ArrayList<ChiTietPhieuNhapKho> list =
-                    ctpnk_dao.timChiTietPhieuNhapKho(maPNK);
+            ArrayList<ChiTietPhieuNhapKho> list
+                    = ctpnk_dao.timChiTietPhieuNhapKho(maPNK);
 
             for (ChiTietPhieuNhapKho ct : list) {
 
@@ -441,7 +436,7 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
                     }
                 }
 
-                modelCTPNK.addRow(new Object[] {
+                modelCTPNK.addRow(new Object[]{
                     ct.getPhieuNhapKho().getMaPNK(),
                     maSP,
                     tenSP,
@@ -454,9 +449,7 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(this,
                         "Không tìm thấy chi tiết phiếu nhập kho!");
             }
-        }
-
-        // Xóa trắng
+        } // Xóa trắng
         else if (o.equals(btnXoaTrang)) {
 
             xoaTrang();
