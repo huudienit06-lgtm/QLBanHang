@@ -27,7 +27,7 @@ public class NhanVien_gui extends JPanel {
 
         JLabel title = new JLabel("QUẢN LÝ NHÂN VIÊN", SwingConstants.CENTER);
         title.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        add(title, BorderLayout.NORTH);
+        // add(title, BorderLayout.NORTH);
 
         // JPanel form = new JPanel(new GridLayout(3, 4, 10, 10));
         // form.setBorder(BorderFactory.createTitledBorder("Thông tin nhân viên"));
@@ -252,10 +252,10 @@ public class NhanVien_gui extends JPanel {
     }
 
     private void tim() {
-        String ma = txtTim.getText().trim();
-        if (ma.isEmpty()) { loadData(); return; }
+        String ma1 = txtTim.getText().trim();
+        if (ma1.isEmpty()) { loadData(); return; }
         model.setRowCount(0);
-        for (NhanVien nv : dao.timNhanVientheoMa(ma)) 
+        for (NhanVien nv : dao.timNhanVientheoMa(ma1)) 
             addRow(nv);
         if (model.getRowCount() == 0) 
             JOptionPane.showMessageDialog(this, "Không tìm thấy nhân viên!");

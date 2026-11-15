@@ -360,7 +360,10 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
                 return;
             }
             modelPNK.setRowCount(0);
-            ArrayList<PhieuNhapKho> list =pnk_dao.timPhieuNhapKho(ma);
+
+            // chú ý
+            // ArrayList<PhieuNhapKho> list =pnk_dao.timPhieuNhapKho(ma);
+            ArrayList<PhieuNhapKho> list=pnk_dao.getAllPhieuNhapKho();
             for (PhieuNhapKho pnk : list) {
                 modelPNK.addRow(new Object[] {
                     pnk.getMaPNK(),
