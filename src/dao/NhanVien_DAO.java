@@ -1,48 +1,48 @@
 package dao;
 
+import connectdb.ConnectDB;
+import entity.NhanVien;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
-import connectdb.ConnectDB;
-import entity.NhanVien;
+public class NhanVien_DAO {
 
-public class NhanVienDAO {
-
-    public NhanVienDAO(){
+    public NhanVien_DAO(){
 
     }
     public ArrayList<NhanVien> getAllNhanVien(){
         ArrayList<NhanVien> dsnv = new ArrayList<>();
         try {
+            ConnectDB.getInstance();
             Connection con = ConnectDB.getConnection();
             String sql = "SELECT * FROM NhanVien";
-            PreparedStatement ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 NhanVien nv = new NhanVien();
-                nv.setMaNV(rs.getString("MaNV"));
-                nv.setTenNV(rs.getString("TenNV"));
-                nv.setSdt(rs.getString("SoDienThoai"));
-                nv.setGioiTinh(rs.getString("GioiTinh"));
-                nv.setChucVu(rs.getString("ChucVu"));
+                nv.setMaNV(rs.getString("maNV"));
+                nv.setTenNV(rs.getString("tenNV"));
+                nv.setSdt(rs.getString("sdt"));
+                nv.setGioiTinh(rs.getString("gioiTinh"));
+                nv.setChucVu(rs.getString("chucVu"));
                 dsnv.add(nv);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace(); 
         }
         return dsnv;
     }
 
-    public ArrayList<NhanVien> timNhanVientheoMa(String maNV){
-        ArrayList<NhanVien> dsnv = new ArrayList<>();
+    public NhanVien timNhanVientheoMa(String maNV){
         ConnectDB.getInstance();
         Connection con = ConnectDB.getConnection();
         PreparedStatement statement = null;
         try{
-            String sql = "Select * from NhanVien where manv = ?";
+            String sql = "Select * from NhanVien where maNV = ?";
             statement = con.prepareStatement(sql);
             statement.setString(1, maNV);
             ResultSet rs = statement.executeQuery();
@@ -53,8 +53,7 @@ public class NhanVienDAO {
                 String sdt= rs.getString(3);
                 String chucvu= rs.getString(5);
                 NhanVien nv = new NhanVien(maNV, tennv,sdt,gt,chucvu);
-                dsnv.add(nv);
-
+                return nv;
         }
     }catch(SQLException e){
         e.printStackTrace();
@@ -65,7 +64,7 @@ public class NhanVienDAO {
             e.printStackTrace();
         }
     }
-     return dsnv;
+     return null;
     }
 
     public boolean themNhanVien(NhanVien nv){
@@ -75,7 +74,7 @@ public class NhanVienDAO {
 
         int n =0;
         try{
-            stmt = con.prepareStatement("insert into"+"NhanVien valuess(?, ?, ?, ?, ?)");
+            stmt = con.prepareStatement("insert into NhanVien values (?, ?, ?, ?, ?)");
             stmt.setString(1,nv.getMaNV());
             stmt.setString(2,nv.getTenNV());
             stmt.setString(3,nv.getSdt());
@@ -123,11 +122,11 @@ public class NhanVienDAO {
         try{
             String sql="UPDATE NhanVien SET tenNV = ?, sdt = ?, gioiTinh = ?, chucVu = ? WHERE maNV = ?";
             stmt= con.prepareStatement(sql);
-            stmt.setString(2, nvMoi.getTenNV());
-            stmt.setString(4, nvMoi.getGioiTinh());
-            stmt.setString(3, nvMoi.getSdt());
-            stmt.setString(5, nvMoi.getChucVu());
-            stmt.setString(1, maNV);
+            stmt.setString(1, nvMoi.getTenNV());
+            stmt.setString(2, nvMoi.getSdt());
+            stmt.setString(3, nvMoi.getGioiTinh());
+            stmt.setString(4, nvMoi.getChucVu());
+            stmt.setString(5, maNV);
             int n = stmt.executeUpdate();
             return n>0;
         }catch(SQLException e){

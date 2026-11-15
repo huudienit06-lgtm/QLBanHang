@@ -1,11 +1,9 @@
 package entity;
 
-import java.math.BigDecimal;
-
 public class SanPham {
     private String maSP;
     private String tenSP;
-    private BigDecimal giaNhap;
+    private double giaNhap;
     private Integer soLuongTon;
     private KhuyenMai khuyenMai;
     private DanhMuc danhMuc;
@@ -13,7 +11,7 @@ public class SanPham {
     public SanPham() {
     }
 
-    public SanPham(String maSP, String tenSP, BigDecimal giaNhap, Integer soLuongTon,
+    public SanPham(String maSP, String tenSP, double giaNhap, Integer soLuongTon,
             KhuyenMai khuyenMai, DanhMuc danhMuc) {
         this.maSP = maSP;
         this.tenSP = tenSP;
@@ -21,6 +19,10 @@ public class SanPham {
         this.soLuongTon = soLuongTon;
         this.khuyenMai = khuyenMai;
         this.danhMuc = danhMuc;
+    }
+
+    public SanPham(String maSP) {
+        this.maSP = maSP;
     }
 
     public String getMaSP() {
@@ -39,11 +41,11 @@ public class SanPham {
         this.tenSP = tenSP;
     }
 
-    public BigDecimal getGiaNhap() {
+    public double getGiaNhap() {
         return giaNhap;
     }
 
-    public void setGiaNhap(BigDecimal giaNhap) {
+    public void setGiaNhap(double giaNhap) {
         this.giaNhap = giaNhap;
     }
 
@@ -77,5 +79,20 @@ public class SanPham {
                 + ", soLuongTon=" + soLuongTon
                 + ", khuyenMai=" + (khuyenMai == null ? null : khuyenMai.getMaKM())
                 + ", danhMuc=" + (danhMuc == null ? null : danhMuc.getMaDM()) + "]";
+    }
+
+    public double tinhGiaBan(){
+        return this.giaNhap*(1+this.getDanhMuc().getLoiNhuan());
+    }
+
+    public double tinhGiaBanSauKhuyenMai(){
+        double giaBanSauKhuyenMai=tinhGiaBan();
+        if(this.getKhuyenMai() != null && this.getKhuyenMai().getDonViTinh().trim().equalsIgnoreCase("Phần trăm")){
+            return  giaBanSauKhuyenMai - (giaBanSauKhuyenMai*(this.getKhuyenMai().getTiLeGiamGia() / 100));
+        }
+        else if(this.getKhuyenMai() != null && this.getKhuyenMai().getDonViTinh().trim().equalsIgnoreCase("Ngàn")){
+            return giaBanSauKhuyenMai - (this.getKhuyenMai().getTiLeGiamGia());
+        }
+        return giaBanSauKhuyenMai;
     }
 }

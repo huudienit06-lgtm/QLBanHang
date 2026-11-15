@@ -1,14 +1,13 @@
 package dao;
 
+import connectdb.ConnectDB;
+import entity.KhuyenMai;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import connectdb.ConnectDB;
-import entity.KhuyenMai;
 
 public class KhuyenMaiDAO {
 
@@ -74,6 +73,25 @@ public class KhuyenMaiDAO {
             dongTaiNguyen(stmt, rs);
         }
         return dsKM;
+    }
+
+    public KhuyenMai timKhuyenMaiByID(String maKM) {
+        Connection con = ConnectDB.getConnection();
+        String sql = "SELECT * FROM KhuyenMai WHERE maKM = ?";
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, maKM);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return docKhuyenMai(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public boolean themKhuyenMai(KhuyenMai km) {

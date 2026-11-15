@@ -1,5 +1,9 @@
 package dao;
 
+import connectdb.ConnectDB;
+import entity.DanhMuc;
+import entity.KhuyenMai;
+import entity.SanPham;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -8,11 +12,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.util.ArrayList;
-
-import connectdb.ConnectDB;
-import entity.DanhMuc;
-import entity.KhuyenMai;
-import entity.SanPham;
 
 public class SanPhamDAO {
 
@@ -32,7 +31,7 @@ public class SanPhamDAO {
         SanPham sp = new SanPham();
         sp.setMaSP(rs.getString("maSP"));
         sp.setTenSP(rs.getString("tenSP"));
-        sp.setGiaNhap(rs.getBigDecimal("giaNhap"));
+        sp.setGiaNhap(rs.getDouble("giaNhap"));
         sp.setSoLuongTon(rs.getInt("soLuongTon"));
 
         String maDM = rs.getString("maDM");
@@ -270,6 +269,39 @@ public class SanPhamDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public SanPham findByID(String maSP) {
+        String sql = SQL_CHON + "WHERE sp.maSP = ?";
+        try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
+            ps.setString(1, maSP);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return docSanPham(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public boolean capNhatSoLuongTon( String maSP, int soLuongBan){
+
+        String sql = """
+        UPDATE SanPham
+        SET soLuongTon = soLuongTon - ?
+        WHERE maSP = ? AND soLuongTon >= ?
+    """;
+        Connection con = ConnectDB.getConnection();
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, soLuongBan);
+            ps.setString(2, maSP);
+            ps.setInt(3, soLuongBan);
+            return ps.executeUpdate() > 0;
+        }catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

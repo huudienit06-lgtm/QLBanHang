@@ -14,6 +14,11 @@ public class Thue {
         this.tiLeThue = tiLeThue;
     }
 
+    public Thue(String maThue) {
+        this.maThue = maThue;
+    }
+
+    
     public String getMaThue() {
         return maThue;
     }
@@ -37,4 +42,13 @@ public class Thue {
     public void setTiLeThue(Double tiLeThue) {
         this.tiLeThue = tiLeThue;
     }
+
+    @Override
+    public String toString() {
+        return this.tenThue+"Mức thuế:"+this.tiLeThue+"%";
+    }
+    public double tinhThue(double tongTien) {
+        return tongTien * this.getTiLeThue() / 100.0;
+    }
+
 }

@@ -20,6 +20,10 @@ public class KhachHang {
         this.loaiKH = loaiKH;
     }
 
+    public KhachHang(String maKH) {
+        this.maKH = maKH;
+    }
+
     public String getMaKH() {
         return maKH;
     }
@@ -67,4 +71,11 @@ public class KhachHang {
     public void setLoaiKH(String loaiKH) {
         this.loaiKH = loaiKH;
     }
+
+    @Override
+    public String toString() {
+        return tenKH+" - "+sdt;
+    }
+
+    
 }

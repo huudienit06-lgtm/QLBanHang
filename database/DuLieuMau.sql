@@ -47,7 +47,7 @@ VALUES
 -- tiLeGiamGia tinh theo phan tram
 -- =============================================
 INSERT INTO KhuyenMai
-    (maKM, tenKM, tiLeGiamGia, loaiKM, ngayBatDau, ngayKetThuc, trangThai)
+    (maKM, tenKM, tiLeGiamGia, donViTinh, ngayBatDau, ngayKetThuc, trangThai)
 VALUES
 ('KM001', N'Khuyến mãi khai trương', 10, N'Phần trăm', '20261001', '20261231', N'Đang áp dụng'),
 ('KM002', N'Ưu đãi khách hàng VIP', 15, N'Phần trăm', '20261101', '20261130', N'Đang áp dụng'),
@@ -58,13 +58,13 @@ VALUES
 -- =============================================
 -- 5. DANHMUC
 -- =============================================
-INSERT INTO DanhMuc (maDM, tenDM)
+INSERT INTO DanhMuc (maDM, tenDM,loiNhuan)
 VALUES
-('DM001', N'Đồ uống'),
-('DM002', N'Đồ ăn'),
-('DM003', N'Gia dụng'),
-('DM004', N'Điện tử'),
-('DM005', N'Văn phòng phẩm');
+('DM001', N'Đồ uống',0.05),
+('DM002', N'Đồ ăn',0.025),
+('DM003', N'Gia dụng',0.03),
+('DM004', N'Điện tử',0.05),
+('DM005', N'Văn phòng phẩm',0.025);
 
 -- =============================================
 -- 6. SANPHAM
@@ -99,16 +99,16 @@ VALUES
 -- 8. HOADON
 -- =============================================
 INSERT INTO HoaDon
-    (maHD, ngayLap, maKH, maNV, maKM, maThue, trangThai, phuongThucThanhToan)
+    (maHD, ngayLap, maKH, maNV, maKM, trangThai, phuongThucThanhToan)
 VALUES
-('HD001', '20261101', 'KH001', 'NV004', 'KM001', 'TH002', N'Đã thanh toán', N'Tiền mặt'),
-('HD002', '20261102', 'KH002', 'NV004', 'KM002', 'TH003', N'Đã thanh toán', N'Chuyển khoản'),
-('HD003', '20261103', 'KH003', 'NV002', NULL, 'TH002', N'Đã thanh toán', N'Tiền mặt'),
-('HD004', '20261104', 'KH004', 'NV003', 'KM001', 'TH001', N'Chưa thanh toán', N'Tiền mặt'),
-('HD005', '20261105', 'KH005', 'NV004', NULL, 'TH003', N'Đã thanh toán', N'Chuyển khoản'),
-('HD006', '20261106', 'KH006', 'NV002', 'KM004', 'TH002', N'Đã thanh toán', N'Tiền mặt'),
-('HD007', '20261107', 'KH007', 'NV003', NULL, 'TH001', N'Đã hủy', N'Tiền mặt'),
-('HD008', '20261108', 'KH008', 'NV004', 'KM002', 'TH003', N'Chưa thanh toán', N'Chuyển khoản');
+('HD001', '20261101', 'KH001', 'NV004', 'KM001', N'Đã thanh toán', N'Tiền mặt'),
+('HD002', '20261102', 'KH002', 'NV004', 'KM002', N'Đã thanh toán', N'Chuyển khoản'),
+('HD003', '20261103', 'KH003', 'NV002', NULL, N'Đã thanh toán', N'Tiền mặt'),
+('HD004', '20261104', 'KH004', 'NV003', 'KM001', N'Chưa thanh toán', N'Tiền mặt'),
+('HD005', '20261105', 'KH005', 'NV004', NULL, N'Đã thanh toán', N'Chuyển khoản'),
+('HD006', '20261106', 'KH006', 'NV002', 'KM004', N'Đã thanh toán', N'Tiền mặt'),
+('HD007', '20261107', 'KH007', 'NV003', NULL, N'Đã hủy', N'Tiền mặt'),
+('HD008', '20261108', 'KH008', 'NV004', 'KM002', N'Chưa thanh toán', N'Chuyển khoản');
 
 -- =============================================
 -- 9. CHITIETHOADON

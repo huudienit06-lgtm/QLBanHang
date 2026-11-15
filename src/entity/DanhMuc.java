@@ -1,15 +1,19 @@
 package entity;
 
 public class DanhMuc {
+
     private String maDM;
     private String tenDM;
+    private float loiNhuan;
 
-    public DanhMuc() {
-    }
-
-    public DanhMuc(String maDM, String tenDM) {
+    public DanhMuc(String maDM, String tenDM, float loiNhuan) {
         this.maDM = maDM;
         this.tenDM = tenDM;
+        this.loiNhuan = loiNhuan;
+    }
+
+    public DanhMuc(String maDM) {
+        this.maDM = maDM;
     }
 
     public String getMaDM() {
@@ -28,8 +32,12 @@ public class DanhMuc {
         this.tenDM = tenDM;
     }
 
-    @Override
-    public String toString() {
-        return "DanhMuc [maDM=" + maDM + ", tenDM=" + tenDM + "]";
+    public float getLoiNhuan() {
+        return loiNhuan;
     }
+
+    public void setLoiNhuan(float loiNhuan) {
+        this.loiNhuan = loiNhuan;
+    }
+
 }

@@ -1,13 +1,12 @@
 package dao;
 
+import connectdb.ConnectDB;
+import entity.DanhMuc;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import connectdb.ConnectDB;
-import entity.DanhMuc;
 
 public class DanhMucDAO {
 

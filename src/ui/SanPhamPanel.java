@@ -1,5 +1,11 @@
 package ui;
 
+import dao.DanhMucDAO;
+import dao.KhuyenMaiDAO;
+import dao.SanPhamDAO;
+import entity.DanhMuc;
+import entity.KhuyenMai;
+import entity.SanPham;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -9,7 +15,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;

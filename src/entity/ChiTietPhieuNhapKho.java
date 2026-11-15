@@ -14,6 +14,8 @@ public class ChiTietPhieuNhapKho {
         this.soLuong = soLuong;
     }
 
+
+
     public PhieuNhapKho getPhieuNhapKho() {
         return phieuNhapKho;
     }

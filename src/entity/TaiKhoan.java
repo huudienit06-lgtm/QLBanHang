@@ -37,4 +37,10 @@ public class TaiKhoan {
     public void setTrangThai(String trangThai) {
         this.trangThai = trangThai;
     }
+
+    @Override
+    public String toString() {
+        return "TaiKhoan [nhanVien=" + nhanVien + ", matKhau=" + matKhau + ", trangThai=" + trangThai + "]";
+    }
+    
 }
