@@ -16,7 +16,8 @@ import entity.SanPham;
 
 public class SanPhamDAO {
 
-    private static final String SQL_CHON = "SELECT sp.maSP, sp.tenSP, sp.giaNhap, sp.soLuongTon, sp.maKM, sp.maDM, "
+    // Câu SELECT dùng chung: lấy sản phẩm kèm danh mục và khuyến mãi
+    private String sqlChon = "SELECT sp.maSP, sp.tenSP, sp.giaNhap, sp.soLuongTon, sp.maKM, sp.maDM, "
             + "dm.tenDM, km.tenKM, km.tiLeGiamGia, km.loaiKM, km.ngayBatDau, km.ngayKetThuc, "
             + "km.trangThai AS trangThaiKM "
             + "FROM SanPham sp "
@@ -26,6 +27,7 @@ public class SanPhamDAO {
     public SanPhamDAO() {
     }
 
+    // Đọc một dòng của ResultSet thành đối tượng SanPham
     private SanPham docSanPham(ResultSet rs) throws SQLException {
         SanPham sp = new SanPham();
         sp.setMaSP(rs.getString("maSP"));
@@ -35,137 +37,239 @@ public class SanPhamDAO {
 
         String maDM = rs.getString("maDM");
         if (maDM != null) {
-            sp.setDanhMuc(new DanhMuc(maDM, rs.getString("tenDM")));
+            DanhMuc dm = new DanhMuc(maDM, rs.getString("tenDM"));
+            sp.setDanhMuc(dm);
         }
 
         String maKM = rs.getString("maKM");
         if (maKM != null) {
-            Date bd = rs.getDate("ngayBatDau");
-            Date kt = rs.getDate("ngayKetThuc");
-            sp.setKhuyenMai(new KhuyenMai(
-                    maKM,
-                    rs.getString("tenKM"),
-                    rs.getDouble("tiLeGiamGia"),
-                    rs.getString("loaiKM"),
-                    bd == null ? null : bd.toLocalDate(),
-                    kt == null ? null : kt.toLocalDate(),
-                    rs.getString("trangThaiKM")));
+            KhuyenMai km = new KhuyenMai();
+            km.setMaKM(maKM);
+            km.setTenKM(rs.getString("tenKM"));
+            km.setTiLeGiamGia(rs.getDouble("tiLeGiamGia"));
+            km.setLoaiKM(rs.getString("loaiKM"));
+            Date ngayBD = rs.getDate("ngayBatDau");
+            if (ngayBD != null) {
+                km.setNgayBatDau(ngayBD.toLocalDate());
+            }
+            Date ngayKT = rs.getDate("ngayKetThuc");
+            if (ngayKT != null) {
+                km.setNgayKetThuc(ngayKT.toLocalDate());
+            }
+            km.setTrangThai(rs.getString("trangThaiKM"));
+            sp.setKhuyenMai(km);
         }
         return sp;
     }
 
+    // Lấy toàn bộ sản phẩm, sắp xếp theo mã
     public ArrayList<SanPham> getAllSanPham() {
-        ArrayList<SanPham> ds = new ArrayList<>();
+        ArrayList<SanPham> dsSP = new ArrayList<SanPham>();
         Connection con = ConnectDB.getConnection();
-        String sql = SQL_CHON + "ORDER BY sp.maSP";
-        try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            String sql = sqlChon + "ORDER BY sp.maSP";
+            stmt = con.prepareStatement(sql);
+            rs = stmt.executeQuery();
             while (rs.next()) {
-                ds.add(docSanPham(rs));
+                dsSP.add(docSanPham(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            dongTaiNguyen(stmt, rs);
         }
-        return ds;
+        return dsSP;
     }
 
-    public ArrayList<SanPham> timSanPham(String tuKhoa) {
-        ArrayList<SanPham> ds = new ArrayList<>();
+    // Lấy toàn bộ sản phẩm, sản phẩm tồn ít nhất đứng đầu (dùng cho thống kê)
+    public ArrayList<SanPham> getAllSanPhamTheoTonKho() {
+        ArrayList<SanPham> dsSP = new ArrayList<SanPham>();
         Connection con = ConnectDB.getConnection();
-        String sql = SQL_CHON + "WHERE sp.maSP LIKE ? OR sp.tenSP LIKE ? ORDER BY sp.maSP";
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, "%" + tuKhoa + "%");
-            ps.setString(2, "%" + tuKhoa + "%");
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    ds.add(docSanPham(rs));
-                }
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            String sql = sqlChon + "ORDER BY sp.soLuongTon ASC, sp.maSP";
+            stmt = con.prepareStatement(sql);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                dsSP.add(docSanPham(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            dongTaiNguyen(stmt, rs);
         }
-        return ds;
+        return dsSP;
+    }
+
+    // Tìm sản phẩm theo mã hoặc tên
+    public ArrayList<SanPham> timSanPham(String tuKhoa) {
+        ArrayList<SanPham> dsSP = new ArrayList<SanPham>();
+        Connection con = ConnectDB.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            String sql = sqlChon + "WHERE sp.maSP LIKE ? OR sp.tenSP LIKE ? ORDER BY sp.maSP";
+            stmt = con.prepareStatement(sql);
+            stmt.setString(1, "%" + tuKhoa + "%");
+            stmt.setString(2, "%" + tuKhoa + "%");
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                dsSP.add(docSanPham(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            dongTaiNguyen(stmt, rs);
+        }
+        return dsSP;
     }
 
     public boolean themSanPham(SanPham sp) {
         Connection con = ConnectDB.getConnection();
-        String sql = "INSERT INTO SanPham (maSP, tenSP, giaNhap, soLuongTon, maKM, maDM) VALUES (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, sp.getMaSP());
-            ps.setString(2, sp.getTenSP());
-            ps.setBigDecimal(3, sp.getGiaNhap());
-            ps.setInt(4, sp.getSoLuongTon() == null ? 0 : sp.getSoLuongTon());
-            setMaTuyChon(ps, 5, sp.getKhuyenMai() == null ? null : sp.getKhuyenMai().getMaKM());
-            setMaTuyChon(ps, 6, sp.getDanhMuc() == null ? null : sp.getDanhMuc().getMaDM());
-            return ps.executeUpdate() > 0;
+        PreparedStatement stmt = null;
+        int n = 0;
+        try {
+            String sql = "INSERT INTO SanPham (maSP, tenSP, giaNhap, soLuongTon, maKM, maDM) VALUES (?, ?, ?, ?, ?, ?)";
+            stmt = con.prepareStatement(sql);
+            stmt.setString(1, sp.getMaSP());
+            stmt.setString(2, sp.getTenSP());
+            stmt.setBigDecimal(3, sp.getGiaNhap());
+            stmt.setInt(4, sp.getSoLuongTon());
+            if (sp.getKhuyenMai() == null) {
+                stmt.setNull(5, Types.VARCHAR);
+            } else {
+                stmt.setString(5, sp.getKhuyenMai().getMaKM());
+            }
+            if (sp.getDanhMuc() == null) {
+                stmt.setNull(6, Types.VARCHAR);
+            } else {
+                stmt.setString(6, sp.getDanhMuc().getMaDM());
+            }
+            n = stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            dongTaiNguyen(stmt, null);
         }
-        return false;
+        return n > 0;
     }
 
     public boolean suaSanPham(SanPham sp) {
         Connection con = ConnectDB.getConnection();
-        String sql = "UPDATE SanPham SET tenSP = ?, giaNhap = ?, soLuongTon = ?, maKM = ?, maDM = ? WHERE maSP = ?";
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, sp.getTenSP());
-            ps.setBigDecimal(2, sp.getGiaNhap());
-            ps.setInt(3, sp.getSoLuongTon() == null ? 0 : sp.getSoLuongTon());
-            setMaTuyChon(ps, 4, sp.getKhuyenMai() == null ? null : sp.getKhuyenMai().getMaKM());
-            setMaTuyChon(ps, 5, sp.getDanhMuc() == null ? null : sp.getDanhMuc().getMaDM());
-            ps.setString(6, sp.getMaSP());
-            return ps.executeUpdate() > 0;
+        PreparedStatement stmt = null;
+        int n = 0;
+        try {
+            String sql = "UPDATE SanPham SET tenSP = ?, giaNhap = ?, soLuongTon = ?, maKM = ?, maDM = ? WHERE maSP = ?";
+            stmt = con.prepareStatement(sql);
+            stmt.setString(1, sp.getTenSP());
+            stmt.setBigDecimal(2, sp.getGiaNhap());
+            stmt.setInt(3, sp.getSoLuongTon());
+            if (sp.getKhuyenMai() == null) {
+                stmt.setNull(4, Types.VARCHAR);
+            } else {
+                stmt.setString(4, sp.getKhuyenMai().getMaKM());
+            }
+            if (sp.getDanhMuc() == null) {
+                stmt.setNull(5, Types.VARCHAR);
+            } else {
+                stmt.setString(5, sp.getDanhMuc().getMaDM());
+            }
+            stmt.setString(6, sp.getMaSP());
+            n = stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            dongTaiNguyen(stmt, null);
         }
-        return false;
+        return n > 0;
     }
 
     public boolean xoaSanPham(String maSP) {
         Connection con = ConnectDB.getConnection();
-        String sql = "DELETE FROM SanPham WHERE maSP = ?";
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, maSP);
-            return ps.executeUpdate() > 0;
+        PreparedStatement stmt = null;
+        int n = 0;
+        try {
+            String sql = "DELETE FROM SanPham WHERE maSP = ?";
+            stmt = con.prepareStatement(sql);
+            stmt.setString(1, maSP);
+            n = stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            dongTaiNguyen(stmt, null);
         }
-        return false;
+        return n > 0;
     }
 
-    /**
-     * Sản phẩm bán chạy trong khoảng ngày (không tính hóa đơn đã hủy).
-     * Mỗi phần tử gồm {maSP, tenSP, tổng số lượng đã bán}.
-     */
-    public ArrayList<Object[]> getSanPhamBanChay(int top, LocalDate tuNgay, LocalDate denNgay) {
-        ArrayList<Object[]> ds = new ArrayList<>();
+    // Sinh mã tự động: SP + 4 chữ số, ví dụ SP0001 đã có thì trả về SP0002
+    public String phatSinhMa() {
         Connection con = ConnectDB.getConnection();
-        String sql = "SELECT TOP (?) sp.maSP, sp.tenSP, SUM(ct.soLuong) AS daBan "
-                + "FROM ChiTietHoaDon ct "
-                + "JOIN HoaDon hd ON ct.maHD = hd.maHD "
-                + "JOIN SanPham sp ON ct.maSP = sp.maSP "
-                + "WHERE hd.ngayLap BETWEEN ? AND ? AND hd.trangThai NOT LIKE N'%hủy%' "
-                + "GROUP BY sp.maSP, sp.tenSP "
-                + "ORDER BY daBan DESC";
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, top);
-            ps.setDate(2, Date.valueOf(tuNgay));
-            ps.setDate(3, Date.valueOf(denNgay));
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    ds.add(new Object[] { rs.getString("maSP"), rs.getString("tenSP"), rs.getInt("daBan") });
-                }
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        int soLonNhat = 0;
+        try {
+            String sql = "SELECT MAX(TRY_CAST(SUBSTRING(maSP, 3, 10) AS INT)) FROM SanPham WHERE maSP LIKE 'SP%'";
+            stmt = con.prepareStatement(sql);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                soLonNhat = rs.getInt(1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            dongTaiNguyen(stmt, rs);
         }
-        return ds;
+        return "SP" + String.format("%04d", soLonNhat + 1);
     }
 
-    private void setMaTuyChon(PreparedStatement ps, int viTri, String ma) throws SQLException {
-        if (ma == null) {
-            ps.setNull(viTri, Types.VARCHAR);
-        } else {
-            ps.setString(viTri, ma);
+    // Sản phẩm bán chạy trong khoảng ngày (bỏ qua hóa đơn đã hủy).
+    // Mỗi phần tử gồm: maSP, tenSP, tổng số lượng đã bán
+    public ArrayList<Object[]> getSanPhamBanChay(int top, LocalDate tuNgay, LocalDate denNgay) {
+        ArrayList<Object[]> dsBanChay = new ArrayList<Object[]>();
+        Connection con = ConnectDB.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT TOP (?) sp.maSP, sp.tenSP, SUM(ct.soLuong) AS daBan "
+                    + "FROM ChiTietHoaDon ct "
+                    + "JOIN HoaDon hd ON ct.maHD = hd.maHD "
+                    + "JOIN SanPham sp ON ct.maSP = sp.maSP "
+                    + "WHERE hd.ngayLap BETWEEN ? AND ? AND hd.trangThai NOT LIKE N'%hủy%' "
+                    + "GROUP BY sp.maSP, sp.tenSP "
+                    + "ORDER BY daBan DESC";
+            stmt = con.prepareStatement(sql);
+            stmt.setInt(1, top);
+            stmt.setDate(2, Date.valueOf(tuNgay));
+            stmt.setDate(3, Date.valueOf(denNgay));
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                Object[] dong = new Object[3];
+                dong[0] = rs.getString("maSP");
+                dong[1] = rs.getString("tenSP");
+                dong[2] = rs.getInt("daBan");
+                dsBanChay.add(dong);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            dongTaiNguyen(stmt, rs);
+        }
+        return dsBanChay;
+    }
+
+    private void dongTaiNguyen(PreparedStatement stmt, ResultSet rs) {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stmt != null) {
+                stmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
