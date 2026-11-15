@@ -155,12 +155,10 @@ public class TaiKhoan_gui extends JPanel {
     // Đưa dữ liệu lên form
     private void fillForm() {
         int r = table.getSelectedRow();
-
         if (r < 0 || r >= ds.size()) {
             return;
         }
         TaiKhoan tk = ds.get(r);
-
         txtMa.setText(tk.getNhanVien().getMaNV());
         txtMk.setText(tk.getMatKhau());
         cboTrangThai.setSelectedItem(tk.getTrangThai());
@@ -208,14 +206,11 @@ public class TaiKhoan_gui extends JPanel {
                 String.valueOf(cboTrangThai.getSelectedItem())
         );
     }
-
     // Thêm tài khoản
     private void them() {
-
         if (!validateForm()) {
             return;
         }
-
         if (dao.themTaiKhoan(readForm())) {
             loadData();
             clearForm();

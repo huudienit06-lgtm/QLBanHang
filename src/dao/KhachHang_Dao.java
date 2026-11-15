@@ -143,4 +143,23 @@ public class KhachHang_Dao {
         }
         return n > 0;
     }
+
+    public String taoMaKH() {
+        String sql = "SELECT ISNULL(MAX(TRY_CONVERT(INT, SUBSTRING(MaKH, 3, LEN(MaKH)))), 0) + 1 AS SoMoi "
+               + "FROM KhachHang WHERE MaKH LIKE 'KH[0-9]%'";
+
+        try (Connection con = ConnectDB.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return String.format("KH%03d", rs.getInt("SoMoi"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }

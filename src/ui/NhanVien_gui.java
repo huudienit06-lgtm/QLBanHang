@@ -14,30 +14,99 @@ public class NhanVien_gui extends JPanel {
         @Override public boolean isCellEditable(int r, int c) { return false; }
     };
     private final JTable table = new JTable(model);
-    private final JTextField txtMa = new JTextField(), txtTen = new JTextField(),
-            txtSdt = new JTextField(), txtChucVu = new JTextField(), txtTim = new JTextField(15);
-    private final JComboBox<String> cboGT = new JComboBox<>(new String[]{"Nam", "Nữ"});
+    private final JTextField txtMa = new JTextField(), txtTen = new JTextField(), txtSdt = new JTextField(), txtTim = new JTextField(15);
 
+    private final JComboBox<String> cboGT = new JComboBox<>(new String[]{"Nam", "Nữ"});
+    private final JComboBox<String> cboChucVu = new JComboBox<>(new String[]{"Quản lý", "Nhân viên"});
     public NhanVien_gui() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        txtMa.setEditable(false);
+        txtMa.setText(dao.taoMaNhanVien());
 
         JLabel title = new JLabel("QUẢN LÝ NHÂN VIÊN", SwingConstants.CENTER);
         title.setFont(new Font("Segoe UI", Font.BOLD, 22));
         add(title, BorderLayout.NORTH);
 
-        JPanel form = new JPanel(new GridLayout(3, 4, 10, 10));
+        // JPanel form = new JPanel(new GridLayout(3, 4, 10, 10));
+        // form.setBorder(BorderFactory.createTitledBorder("Thông tin nhân viên"));
+        // form.setBorder(BorderFactory.createEmptyBorder(10,100,10,100));
+        // form.add(new JLabel("Mã Nhân Viên:"));      
+        // form.add(txtMa);
+        // form.add(new JLabel("Tên Nhân Viên:"));     
+        // form.add(txtTen);
+        // form.add(new JLabel("Số Điện Thoại:"));        
+        // form.add(txtSdt);
+        // form.add(new JLabel("Giới tính:"));  
+        // form.add(cboGT);
+        // form.add(new JLabel("Chức vụ:"));    
+        // form.add(cboChucVu);
+
+        JPanel form = new JPanel(new GridBagLayout());
         form.setBorder(BorderFactory.createTitledBorder("Thông tin nhân viên"));
-        form.add(new JLabel("Mã NV:"));      
-        form.add(txtMa);
-        form.add(new JLabel("Tên NV:"));     
-        form.add(txtTen);
-        form.add(new JLabel("SĐT:"));        
-        form.add(txtSdt);
-        form.add(new JLabel("Giới tính:"));  
-        form.add(cboGT);
-        form.add(new JLabel("Chức vụ:"));    
-        form.add(txtChucVu);
+        form.setBorder(BorderFactory.createEmptyBorder(10,100,10,100));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+
+        gbc.gridx = 0;
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+
+        gbc.gridy = 0;
+        form.add(taolabel("Mã Nhân Viên:"), gbc);
+
+        gbc.gridy = 1;
+        form.add(taolabel("Số Điện Thoại:"), gbc);
+
+        gbc.gridy = 2;
+        form.add(taolabel("Chức vụ:"), gbc);
+
+        // Cột nhập liệu
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        txtMa.setPreferredSize(new Dimension(200, 28));
+        txtSdt.setPreferredSize(new Dimension(200, 28));
+        cboChucVu.setPreferredSize(new Dimension(200, 28));
+
+        gbc.gridy = 0;
+        form.add(txtMa,gbc);
+
+        gbc.gridy = 1;
+        form.add(txtSdt,gbc);
+
+        gbc.gridy = 2;
+        form.add(cboChucVu,gbc);
+
+        //Cột nhãn
+        gbc.gridx = 2;
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+
+        gbc.gridy=0;
+        form.add(taolabel("Tên Nhân Viên"),gbc);
+
+        gbc.gridy=1;
+        form.add(taolabel("Giới tính"),gbc);
+
+        //Cột nhập liệu
+        gbc.gridx = 3;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        txtTen.setPreferredSize(new Dimension(200, 28));
+        cboGT.setPreferredSize(new Dimension(200, 28));
+
+        gbc.gridy=0;
+        form.add(txtTen,gbc);
+
+        gbc.gridy=1;
+        form.add(cboGT,gbc);
+
 
         JPanel btns = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         JButton btnThem = new JButton("Thêm");
@@ -49,7 +118,7 @@ public class NhanVien_gui extends JPanel {
         btns.add(btnSua); 
         btns.add(btnXoa); 
         btns.add(btnLam);
-        btns.add(new JLabel("   Mã NV:")); 
+        btns.add(new JLabel("   Mã Nhân Viên:")); 
         btns.add(txtTim); 
         btns.add(btnTim);
 
@@ -58,7 +127,7 @@ public class NhanVien_gui extends JPanel {
         top.add(btns, BorderLayout.SOUTH);
 
         add(top, BorderLayout.PAGE_START);
-        title.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+        title.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
         JPanel north = new JPanel(new BorderLayout());
         north.add(title, BorderLayout.NORTH);
         north.add(top, BorderLayout.CENTER);
@@ -87,6 +156,13 @@ public class NhanVien_gui extends JPanel {
         model.addRow(new Object[]{nv.getMaNV(), nv.getTenNV(), nv.getSdt(), nv.getGioiTinh(), nv.getChucVu()});
     }
 
+     // Tạo nhãn
+    private JLabel taolabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setPreferredSize(new Dimension(120, 25));
+        return label;
+    }
+
     private void fillForm() {
         int r = table.getSelectedRow();
         if (r < 0) return;
@@ -94,18 +170,23 @@ public class NhanVien_gui extends JPanel {
         txtTen.setText(String.valueOf(model.getValueAt(r, 1)));
         txtSdt.setText(String.valueOf(model.getValueAt(r, 2)));
         cboGT.setSelectedItem(String.valueOf(model.getValueAt(r, 3)));
-        txtChucVu.setText(String.valueOf(model.getValueAt(r, 4)));
+        cboChucVu.setSelectedItem(String.valueOf(model.getValueAt(r, 4)));
         txtMa.setEditable(false);
     }
 
     private void clearForm() {
-        txtMa.setText(""); txtTen.setText(""); txtSdt.setText(""); txtChucVu.setText("");
-        cboGT.setSelectedIndex(0); txtMa.setEditable(true); table.clearSelection();
+        txtMa.setText(dao.taoMaNhanVien());
+        txtTen.setText(""); 
+        txtSdt.setText(""); 
+        cboChucVu.setSelectedIndex(0);
+        cboGT.setSelectedIndex(0); 
+        txtMa.setEditable(false); 
+        table.clearSelection();
     }
 
     private boolean validateForm() {
-        if (txtMa.getText().trim().isEmpty() || txtTen.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Mã và tên nhân viên không được để trống!");
+        if (txtTen.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Tên nhân viên không được để trống!");
             return false;
         }
         if (!txtSdt.getText().trim().matches("0\\d{9}")) {
@@ -117,13 +198,29 @@ public class NhanVien_gui extends JPanel {
 
     private NhanVien readForm() {
         return new NhanVien(txtMa.getText().trim(), txtTen.getText().trim(), txtSdt.getText().trim(),
-                cboGT.getSelectedItem().toString(), txtChucVu.getText().trim());
+                cboGT.getSelectedItem().toString(), cboChucVu.getSelectedItem().toString());
     }
 
     private void them() {
-        if (!validateForm()) return;
-        if (dao.themNhanVien(readForm())) { loadData(); clearForm(); }
-        else JOptionPane.showMessageDialog(this, "Thêm thất bại (có thể trùng mã)!");
+         if (!validateForm()) 
+            return;
+
+        String maMoi = dao.taoMaNhanVien();
+
+        if (maMoi == null) {
+            JOptionPane.showMessageDialog(this, "Không tạo được mã nhân viên!");
+            return;
+        }
+
+        txtMa.setText(maMoi);
+
+        if (dao.themNhanVien(readForm())) {
+            JOptionPane.showMessageDialog(this, "Thêm nhân viên thành công!");
+            loadData();
+            clearForm();
+        } else {
+            JOptionPane.showMessageDialog(this, "Thêm thất bại!");
+        }
     }
 
     private void sua() {
