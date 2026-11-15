@@ -71,6 +71,8 @@ public class Thue_GUI extends JFrame implements ActionListener, MouseListener {
         pnlThongTin.add(new JLabel("Mã thuế:"));
         txtMaThue = new JTextField(15);
         pnlThongTin.add(txtMaThue);
+        txtMaThue.setText(thue_dao.sinhMaThue());
+        txtMaThue.setEditable(false);
 
         pnlThongTin.add(new JLabel("Tên thuế:"));
         txtTenThue = new JTextField(15);
@@ -321,21 +323,20 @@ public class Thue_GUI extends JFrame implements ActionListener, MouseListener {
 
         // Tìm kiếm
         else if (o.equals(btnTim)) {
-
             String maThue = txtTim.getText().trim();
 
             if (maThue.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập mã thuế cần tìm!");
+                JOptionPane.showMessageDialog(this,
+                        "Vui lòng nhập mã thuế cần tìm!");
                 txtTim.requestFocus();
                 return;
             }
 
-            ArrayList<Thue> dsThue = thue_dao.timThue(maThue);
+            Thue thue = thue_dao.timThue(maThue);
 
             model.setRowCount(0);
 
-            for (Thue thue : dsThue) {
-
+            if (thue != null) {
                 Object[] row = {
                     thue.getMaThue(),
                     thue.getTenThue(),
@@ -343,10 +344,9 @@ public class Thue_GUI extends JFrame implements ActionListener, MouseListener {
                 };
 
                 model.addRow(row);
-            }
-
-            if (dsThue.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Không tìm thấy mã thuế!");
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Không tìm thấy mã thuế!");
             }
         }
     }
