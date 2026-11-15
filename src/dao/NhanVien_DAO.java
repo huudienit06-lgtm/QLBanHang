@@ -142,4 +142,22 @@ public class NhanVien_DAO {
         }
         return false;
     }
+    public String taoMaNhanVien() {
+        String sql = "SELECT ISNULL(MAX(TRY_CONVERT(INT, SUBSTRING(MaNV, 3, LEN(MaNV)))), 0) + 1 AS SoMoi "
+               + "FROM NhanVien WHERE MaNV LIKE 'NV[0-9]%'";
+
+        try (Connection con = ConnectDB.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return String.format("NV%03d", rs.getInt("SoMoi"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }
