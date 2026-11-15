@@ -13,139 +13,73 @@ public class DanhMucDAO {
     public DanhMucDAO() {
     }
 
-    // Lấy toàn bộ danh mục
     public ArrayList<DanhMuc> getAllDanhMuc() {
-        ArrayList<DanhMuc> dsDM = new ArrayList<DanhMuc>();
+        ArrayList<DanhMuc> ds = new ArrayList<>();
         Connection con = ConnectDB.getConnection();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        try {
-            String sql = "SELECT maDM, tenDM, loiNhuan FROM DanhMuc ORDER BY maDM";
-            stmt = con.prepareStatement(sql);
-            rs = stmt.executeQuery();
+        String sql = "SELECT maDM, tenDM FROM DanhMuc ORDER BY maDM";
+        try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                DanhMuc dm = new DanhMuc(rs.getString("maDM"), rs.getString("tenDM"),
-                        rs.getFloat("loiNhuan"));
-                dsDM.add(dm);
+                ds.add(new DanhMuc(rs.getString("maDM"), rs.getString("tenDM"),rs.getFloat("loiNhuan")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            dongTaiNguyen(stmt, rs);
         }
-        return dsDM;
+        return ds;
     }
 
-    // Tìm danh mục theo mã hoặc tên
     public ArrayList<DanhMuc> timDanhMuc(String tuKhoa) {
-        ArrayList<DanhMuc> dsDM = new ArrayList<DanhMuc>();
+        ArrayList<DanhMuc> ds = new ArrayList<>();
         Connection con = ConnectDB.getConnection();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        try {
-            String sql = "SELECT maDM, tenDM, loiNhuan FROM DanhMuc "
-                    + "WHERE maDM LIKE ? OR tenDM LIKE ? ORDER BY maDM";
-            stmt = con.prepareStatement(sql);
-            stmt.setString(1, "%" + tuKhoa + "%");
-            stmt.setString(2, "%" + tuKhoa + "%");
-            rs = stmt.executeQuery();
-            while (rs.next()) {
-                DanhMuc dm = new DanhMuc(rs.getString("maDM"), rs.getString("tenDM"),
-                        rs.getFloat("loiNhuan"));
-                dsDM.add(dm);
+        String sql = "SELECT maDM, tenDM FROM DanhMuc WHERE maDM LIKE ? OR tenDM LIKE ? ORDER BY maDM";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, "%" + tuKhoa + "%");
+            ps.setString(2, "%" + tuKhoa + "%");
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ds.add(new DanhMuc(rs.getString("maDM"), rs.getString("tenDM"),rs.getFloat("loiNhuan")));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            dongTaiNguyen(stmt, rs);
         }
-        return dsDM;
+        return ds;
     }
 
     public boolean themDanhMuc(DanhMuc dm) {
         Connection con = ConnectDB.getConnection();
-        PreparedStatement stmt = null;
-        int n = 0;
-        try {
-            String sql = "INSERT INTO DanhMuc (maDM, tenDM) VALUES (?, ?)";
-            stmt = con.prepareStatement(sql);
-            stmt.setString(1, dm.getMaDM());
-            stmt.setString(2, dm.getTenDM());
-            n = stmt.executeUpdate();
+        String sql = "INSERT INTO DanhMuc (maDM, tenDM) VALUES (?, ?)";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, dm.getMaDM());
+            ps.setString(2, dm.getTenDM());
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            dongTaiNguyen(stmt, null);
         }
-        return n > 0;
+        return false;
     }
 
     public boolean suaDanhMuc(DanhMuc dm) {
         Connection con = ConnectDB.getConnection();
-        PreparedStatement stmt = null;
-        int n = 0;
-        try {
-            String sql = "UPDATE DanhMuc SET tenDM = ? WHERE maDM = ?";
-            stmt = con.prepareStatement(sql);
-            stmt.setString(1, dm.getTenDM());
-            stmt.setString(2, dm.getMaDM());
-            n = stmt.executeUpdate();
+        String sql = "UPDATE DanhMuc SET tenDM = ? WHERE maDM = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, dm.getTenDM());
+            ps.setString(2, dm.getMaDM());
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            dongTaiNguyen(stmt, null);
         }
-        return n > 0;
+        return false;
     }
 
     public boolean xoaDanhMuc(String maDM) {
         Connection con = ConnectDB.getConnection();
-        PreparedStatement stmt = null;
-        int n = 0;
-        try {
-            String sql = "DELETE FROM DanhMuc WHERE maDM = ?";
-            stmt = con.prepareStatement(sql);
-            stmt.setString(1, maDM);
-            n = stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            dongTaiNguyen(stmt, null);
-        }
-        return n > 0;
-    }
-
-    // Sinh mã tự động: DM + 4 chữ số, ví dụ DM0001 đã có thì trả về DM0002
-    public String phatSinhMa() {
-        Connection con = ConnectDB.getConnection();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        int soLonNhat = 0;
-        try {
-            String sql = "SELECT MAX(TRY_CAST(SUBSTRING(maDM, 3, 10) AS INT)) FROM DanhMuc WHERE maDM LIKE 'DM%'";
-            stmt = con.prepareStatement(sql);
-            rs = stmt.executeQuery();
-            if (rs.next()) {
-                soLonNhat = rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            dongTaiNguyen(stmt, rs);
-        }
-        return "DM" + String.format("%04d", soLonNhat + 1);
-    }
-
-    private void dongTaiNguyen(PreparedStatement stmt, ResultSet rs) {
-        try {
-            if (rs != null) {
-                rs.close();
-            }
-            if (stmt != null) {
-                stmt.close();
-            }
+        String sql = "DELETE FROM DanhMuc WHERE maDM = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, maDM);
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 }

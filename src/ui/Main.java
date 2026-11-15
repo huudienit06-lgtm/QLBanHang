@@ -48,22 +48,13 @@ public class Main extends JFrame {
         this.taiKhoan = tk;
         NhanVien nv = taiKhoan.getNhanVien();
         setMenu(new Menu(nv, this));
-        setContent(taoTrangChuTheoVaiTro());
-    }
+        setContent(new SanPhamPanel());
 
-    private JPanel taoTrangChuTheoVaiTro() {
-        NhanVien nv = taiKhoan.getNhanVien();
-        if (nv != null && "Quản lý".equalsIgnoreCase(nv.getChucVu())) {
-            return new FrmQuanLi(nv);
-        }
-        return new FrmNhanVien(nv);
     }
 
     public void xuLyChucNang(String chucNang) {
         switch (chucNang) {
             case "Trang Chủ":
-                setContent(taoTrangChuTheoVaiTro());
-                break;
             case "Sản Phẩm":
                 setContent(new SanPhamPanel());
                 break;
@@ -89,15 +80,11 @@ public class Main extends JFrame {
                 setContent(new FrmHoaDon(taiKhoan));
                 break;
             case "Thống kê hóa đơn":
-                setContent(new FrmThongKeHoaDon());
+                JOptionPane.showMessageDialog(this, "Chức năng thống kê hóa đơn chưa được xây dựng.");
                 break;
             case "Đăng Xuất":
                 setMenu(null);
                 setContent(new FrmDangNhap(this));
-                break;
-            case "Thống kê nhập kho":
-                setMenu(null);
-                setContent(new ThongKeNhapKho_GUI());
                 break;
             default:
                 JOptionPane.showMessageDialog(this, "Chức năng \"" + chucNang + "\" chưa được xây dựng.");

@@ -40,6 +40,6 @@ public class ChiTietHoaDon {
     }
 
     public double tinhThanhTien(){
-        return this.getSanPham().tinhGiaBanSauKhuyenMai() * this.getSoLuong();
+        return this.getSanPham().tinhGiaBan()*this.getSoLuong();
     }
 }

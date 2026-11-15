@@ -1,26 +1,17 @@
 package dao;
 
 import java.sql.Statement;
-<<<<<<< HEAD
 // import java.time.LocalDate;
 import java.sql.Connection;
 // import java.sql.Date;
-=======
-import java.time.LocalDate;
-import java.sql.Connection;
-import java.sql.Date;
->>>>>>> origin/main
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import connectdb.ConnectDB;
-<<<<<<< HEAD
 // import entity.NhanVien;
-=======
-import entity.NhanVien;
->>>>>>> origin/main
 import entity.Thue;
 
 public class Thue_dao {
@@ -48,43 +39,35 @@ public class Thue_dao {
         return dsThue;
     }
 
-    public Thue timThue(String maThue) {
-        Thue thue = null;
-
+    public ArrayList<Thue> timThue(String maThue){
+        ArrayList<Thue> dsThue = new ArrayList<>();
         ConnectDB.getInstance();
         Connection con = ConnectDB.getConnection();
-
         PreparedStatement stmt = null;
-
-        try {
-            String sql = "SELECT * FROM Thue WHERE maThue = ?";
+        try{
+            String sql = "SELECT * from Thue where maThue = ?";
             stmt = con.prepareStatement(sql);
             stmt.setString(1, maThue);
-
             ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                String tenThue = rs.getString(2);
+            while(rs.next()){
+            	String tenThue = rs.getString(2);
                 Double tiLeThue = rs.getDouble(3);
-
-                thue = new Thue(maThue, tenThue, tiLeThue);
+                Thue thue = new Thue(maThue,tenThue,tiLeThue);
+                dsThue.add(thue);
             }
-
-            rs.close();
-
-        } catch (SQLException e) {
+        } catch(SQLException e){
             e.printStackTrace();
-        } finally {
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
+        } finally{
+            try{
+            	if(stmt != null) {
+            		 stmt.close();
+            	}
+               
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-
-        return thue;
+        return dsThue;
     }
 
     public boolean themThue(Thue thue){
@@ -154,23 +137,5 @@ public class Thue_dao {
             }
         }
         return n > 0;
-    }
-    public String sinhMaThue() {
-        String sql = "SELECT MAX(CAST(SUBSTRING(maThue, 3, LEN(maThue)) AS INT)) FROM Thue";
-
-        try (Connection con = ConnectDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            if (rs.next()) {
-                int so = rs.getInt(1) + 1;
-                return String.format("TH%03d", so);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return "TH001";
     }
 }

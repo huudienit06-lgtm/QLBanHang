@@ -39,41 +39,33 @@ public class PhieuNhapKho_dao {
         return dsPNK;
     }
 
-    public PhieuNhapKho timPhieuNhapKho(String maPNK) {
-        PhieuNhapKho pnk = null;
-
+    public ArrayList<PhieuNhapKho> timPhieuNhapKho(String maPNK){
+        ArrayList<PhieuNhapKho> dsPNK = new ArrayList<>();
         ConnectDB.getInstance();
         Connection con = ConnectDB.getConnection();
-
         PreparedStatement stmt = null;
-
-        try {
-            String sql = "SELECT * FROM PhieuNhapKho WHERE maPNK = ?";
+        try{
+            String sql = "SELECT * from PhieuNhapKho where maPNK = ?";
             stmt = con.prepareStatement(sql);
             stmt.setString(1, maPNK);
-
             ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
+            while(rs.next()){
                 LocalDate ngayLap = rs.getDate(2).toLocalDate();
-                NhanVien nv = new NhanVien(rs.getString(3));
+                NhanVien nv  = new NhanVien(rs.getString(3));
                 String trangThai = rs.getString(4);
-
-                pnk = new PhieuNhapKho(maPNK, ngayLap, nv, trangThai);
+                PhieuNhapKho  pnk = new PhieuNhapKho(maPNK,ngayLap,nv,trangThai);
+                dsPNK.add(pnk);
             }
-
-        } catch (SQLException e) {
+        } catch(SQLException e){
             e.printStackTrace();
-        } finally {
-            try {
-                if (stmt != null)
-                    stmt.close();
+        } finally{
+            try{
+                stmt.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-
-        return pnk;
+        return dsPNK;
     }
 
     public boolean themPhieuNhapKho(PhieuNhapKho pnk){
@@ -145,23 +137,5 @@ public class PhieuNhapKho_dao {
             }
         }
         return n > 0;
-    }
-    public String sinhMaPNK() {
-        String sql = "SELECT MAX(CAST(SUBSTRING(maPNK, 4, LEN(maPNK)) AS INT)) FROM PhieuNhapKho";
-
-        try (Connection con = ConnectDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            if (rs.next()) {
-                int so = rs.getInt(1) + 1;
-                return String.format("PNK%03d", so);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return "PNK001";
     }
 }

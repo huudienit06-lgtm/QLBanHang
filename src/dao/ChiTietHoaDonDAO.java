@@ -10,7 +10,6 @@ import entity.SanPham;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class ChiTietHoaDonDAO {
 
@@ -23,17 +22,14 @@ public class ChiTietHoaDonDAO {
     public ArrayList<ChiTietHoaDon> getDSCTHDByID(String maHD) {
         ArrayList<ChiTietHoaDon> list = new ArrayList<ChiTietHoaDon>();
         try {
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM ChiTietHoaDon WHERE maHD = ?");
+            PreparedStatement ps = con.prepareStatement("sellect * from ChiTietHoaDon where maHD =?");
             ps.setString(1, maHD);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
+                // String maHDon = rs.getString("maHD");
                 String maSP = rs.getString("maSP");
                 int soLuong = rs.getInt("soLuong");
-                SanPham sanPham = new SanPhamDAO().findByID(maSP);
-                if (sanPham == null) {
-                    throw new java.sql.SQLException("Không tìm thấy sản phẩm " + maSP);
-                }
-                ChiTietHoaDon ct = new ChiTietHoaDon(new HoaDon(maHD), sanPham, soLuong);
+                ChiTietHoaDon ct = new ChiTietHoaDon(new HoaDon(maHD), new SanPham(maSP), soLuong);
                 list.add(ct);
             }
 
@@ -44,21 +40,13 @@ public class ChiTietHoaDonDAO {
     }
 
     public boolean insertCTHH(ChiTietHoaDon ct){
-        // if (ct == null || ct.getHoaDon() == null || ct.getHoaDon().getMaHD() == null
-        //         || ct.getHoaDon().getMaHD().trim().isEmpty()
-        //         || ct.getSanPham() == null || ct.getSanPham().getMaSP() == null
-        //         || ct.getSanPham().getMaSP().trim().isEmpty()) {
-        //     return false;
-        // }
         try {
-            PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO ChiTietHoaDon (maHD, maSP, soLuong) VALUES (?, ?, ?)");
+            PreparedStatement ps = con.prepareStatement("insert into ChiTietHoaDon maHD = ?, maSP = ? ,soLuong = ? ) ");
             ps.setString(1, ct.getHoaDon().getMaHD());
             ps.setString(2, ct.getSanPham().getMaSP());
             ps.setInt(3, ct.getSoLuong());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return false;
     }
@@ -87,19 +75,5 @@ public class ChiTietHoaDonDAO {
             e.printStackTrace();
         }
         return false;
-    } 
-    public boolean deleteAllByMaHD(String maHD) {
-    String sql = "DELETE FROM ChiTietHoaDon WHERE maHD = ?";
-
-    try (PreparedStatement ps = con.prepareStatement(sql)) {
-        ps.setString(1, maHD);
-
-        return ps.executeUpdate() > 0;
-
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-
-    return false;
-} 
+    }  
 }

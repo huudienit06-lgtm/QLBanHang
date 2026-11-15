@@ -3,14 +3,12 @@ package dao;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import connectdb.ConnectDB;
-import entity.NhanVien;
 import entity.PhieuNhapKho;
 import entity.SanPham;
 import entity.ChiTietPhieuNhapKho;
@@ -39,38 +37,35 @@ public class ChiTietPhieuNhapKho_dao {
         return dsCTPNK;
     }
 
-    public ArrayList<ChiTietPhieuNhapKho> timChiTietPhieuNhapKho(String maPNK) {
-
+    public ArrayList<ChiTietPhieuNhapKho> timChiTietPhieuNhapKho(String maPNK){
         ArrayList<ChiTietPhieuNhapKho> dsCTPNK = new ArrayList<>();
-
         ConnectDB.getInstance();
         Connection con = ConnectDB.getConnection();
-
-        String sql = "SELECT * FROM ChiTietPhieuNhapKho WHERE maPNK = ?";
-
-        try (PreparedStatement stmt = con.prepareStatement(sql)) {
-
+        PreparedStatement stmt = null;
+        try{
+            String sql = "SELECT * from ChiTietPhieuNhapKho where maPNK = ?";
+            stmt = con.prepareStatement(sql);
             stmt.setString(1, maPNK);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-
-                    PhieuNhapKho pnk = new PhieuNhapKho(rs.getString(1));
-                    SanPham sp = new SanPham(rs.getString(2));
-                    int soLuong = rs.getInt(3);
-
-                    ChiTietPhieuNhapKho ctPNK =
-                            new ChiTietPhieuNhapKho(pnk, sp, soLuong);
-
-                    dsCTPNK.add(ctPNK);
-                }
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+            	 PhieuNhapKho pnk = new PhieuNhapKho(maPNK);
+                 SanPham sp = new SanPham(rs.getString(2));
+                 Integer soLuong = rs.getInt(3);
+                 ChiTietPhieuNhapKho ctPNK = new ChiTietPhieuNhapKho(pnk ,sp,soLuong);
+                 dsCTPNK.add(ctPNK);
             }
-
-        } catch (SQLException e) {
+        } catch(SQLException e){
             e.printStackTrace();
+        } finally{
+            try{
+            	if(stmt != null) {
+            		stmt.close();
+            	}
+                
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
         return dsCTPNK;
     }
 
@@ -298,43 +293,10 @@ public class ChiTietPhieuNhapKho_dao {
             }
         }
     }
-<<<<<<< HEAD
     public ArrayList<ChiTietPhieuNhapKho> getThongKeNhapKho(LocalDate localDate, LocalDate localDate2) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getThongKeNhapKho'");
     }
 
 
-=======
-    public ArrayList<ChiTietPhieuNhapKho> getThongKeNhapKho(LocalDate tuNgay, LocalDate denNgay) {
-        ArrayList<ChiTietPhieuNhapKho> dsCTPNK = new ArrayList<>();
-        ConnectDB.getInstance();
-        Connection con = ConnectDB.getConnection();
-        String sql = "SELECT ct.maPNK, ct.maSP, sp.tenSP, ct.soLuong, sp.giaNhap, pnk.ngayLap "
-                + "FROM ChiTietPhieuNhapKho ct "
-                + "JOIN PhieuNhapKho pnk ON ct.maPNK = pnk.maPNK "
-                + "JOIN SanPham sp ON ct.maSP = sp.maSP "
-                + "WHERE pnk.ngayLap BETWEEN ? AND ? "
-                + "ORDER BY pnk.ngayLap DESC, ct.maPNK";
-        try (PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setDate(1, Date.valueOf(tuNgay));
-            stmt.setDate(2, Date.valueOf(denNgay));
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    PhieuNhapKho pnk = new PhieuNhapKho(rs.getString("maPNK"),
-                            rs.getDate("ngayLap").toLocalDate(), null, null);
-                    SanPham sp = new SanPham();
-                    sp.setMaSP(rs.getString("maSP"));
-                    sp.setTenSP(rs.getString("tenSP"));
-                    sp.setGiaNhap(rs.getDouble("giaNhap"));
-                    Integer soLuong = rs.getInt("soLuong");
-                    dsCTPNK.add(new ChiTietPhieuNhapKho(pnk, sp, soLuong));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return dsCTPNK;
-}
->>>>>>> origin/main
 }

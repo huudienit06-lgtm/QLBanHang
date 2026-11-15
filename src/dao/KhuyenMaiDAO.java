@@ -14,182 +14,98 @@ public class KhuyenMaiDAO {
     public KhuyenMaiDAO() {
     }
 
-    // Đọc một dòng của ResultSet thành đối tượng KhuyenMai
     private KhuyenMai docKhuyenMai(ResultSet rs) throws SQLException {
-        KhuyenMai km = new KhuyenMai();
-        km.setMaKM(rs.getString("maKM"));
-        km.setTenKM(rs.getString("tenKM"));
-        km.setTiLeGiamGia(rs.getDouble("tiLeGiamGia"));
-        km.setDonViTinh(rs.getString("donViTinh"));
-        Date ngayBD = rs.getDate("ngayBatDau");
-        if (ngayBD != null) {
-            km.setNgayBatDau(ngayBD.toLocalDate());
-        }
-        Date ngayKT = rs.getDate("ngayKetThuc");
-        if (ngayKT != null) {
-            km.setNgayKetThuc(ngayKT.toLocalDate());
-        }
-        km.setTrangThai(rs.getString("trangThai"));
-        return km;
+        Date bd = rs.getDate("ngayBatDau");
+        Date kt = rs.getDate("ngayKetThuc");
+        return new KhuyenMai(
+                rs.getString("maKM"),
+                rs.getString("tenKM"),
+                rs.getDouble("tiLeGiamGia"),
+                rs.getString("donViTinh"),
+                bd == null ? null : bd.toLocalDate(),
+                kt == null ? null : kt.toLocalDate(),
+                rs.getString("trangThai"));
     }
 
     public ArrayList<KhuyenMai> getAllKhuyenMai() {
-        ArrayList<KhuyenMai> dsKM = new ArrayList<KhuyenMai>();
+        ArrayList<KhuyenMai> ds = new ArrayList<>();
         Connection con = ConnectDB.getConnection();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        try {
-            String sql = "SELECT * FROM KhuyenMai ORDER BY maKM";
-            stmt = con.prepareStatement(sql);
-            rs = stmt.executeQuery();
+        String sql = "SELECT * FROM KhuyenMai ORDER BY maKM";
+        try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                dsKM.add(docKhuyenMai(rs));
+                ds.add(docKhuyenMai(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            dongTaiNguyen(stmt, rs);
         }
-        return dsKM;
+        return ds;
     }
 
     public ArrayList<KhuyenMai> timKhuyenMai(String tuKhoa) {
-        ArrayList<KhuyenMai> dsKM = new ArrayList<KhuyenMai>();
+        ArrayList<KhuyenMai> ds = new ArrayList<>();
         Connection con = ConnectDB.getConnection();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        try {
-            String sql = "SELECT * FROM KhuyenMai WHERE maKM LIKE ? OR tenKM LIKE ? ORDER BY maKM";
-            stmt = con.prepareStatement(sql);
-            stmt.setString(1, "%" + tuKhoa + "%");
-            stmt.setString(2, "%" + tuKhoa + "%");
-            rs = stmt.executeQuery();
-            while (rs.next()) {
-                dsKM.add(docKhuyenMai(rs));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            dongTaiNguyen(stmt, rs);
-        }
-        return dsKM;
-    }
-
-    public KhuyenMai timKhuyenMaiByID(String maKM) {
-        Connection con = ConnectDB.getConnection();
-        String sql = "SELECT * FROM KhuyenMai WHERE maKM = ?";
-
+        String sql = "SELECT * FROM KhuyenMai WHERE maKM LIKE ? OR tenKM LIKE ? ORDER BY maKM";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, maKM);
-
+            ps.setString(1, "%" + tuKhoa + "%");
+            ps.setString(2, "%" + tuKhoa + "%");
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return docKhuyenMai(rs);
+                while (rs.next()) {
+                    ds.add(docKhuyenMai(rs));
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return null;
+        return ds;
     }
 
     public boolean themKhuyenMai(KhuyenMai km) {
         Connection con = ConnectDB.getConnection();
-        PreparedStatement stmt = null;
-        int n = 0;
-        try {
-            String sql = "INSERT INTO KhuyenMai (maKM, tenKM, tiLeGiamGia, loaiKM, ngayBatDau, ngayKetThuc, trangThai) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?)";
-            stmt = con.prepareStatement(sql);
-            stmt.setString(1, km.getMaKM());
-            stmt.setString(2, km.getTenKM());
-            stmt.setDouble(3, km.getTiLeGiamGia());
-            stmt.setString(4, km.getDonViTinh());
-            stmt.setDate(5, Date.valueOf(km.getNgayBatDau()));
-            stmt.setDate(6, Date.valueOf(km.getNgayKetThuc()));
-            stmt.setString(7, km.getTrangThai());
-            n = stmt.executeUpdate();
+        String sql = "INSERT INTO KhuyenMai (maKM, tenKM, tiLeGiamGia, donViTinh, ngayBatDau, ngayKetThuc, trangThai) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, km.getMaKM());
+            ps.setString(2, km.getTenKM());
+            ps.setDouble(3, km.getTiLeGiamGia());
+            ps.setString(4, km.getDonViTinh());
+            ps.setDate(5, Date.valueOf(km.getNgayBatDau()));
+            ps.setDate(6, Date.valueOf(km.getNgayKetThuc()));
+            ps.setString(7, km.getTrangThai());
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            dongTaiNguyen(stmt, null);
         }
-        return n > 0;
+        return false;
     }
 
     public boolean suaKhuyenMai(KhuyenMai km) {
         Connection con = ConnectDB.getConnection();
-        PreparedStatement stmt = null;
-        int n = 0;
-        try {
-            String sql = "UPDATE KhuyenMai SET tenKM = ?, tiLeGiamGia = ?, loaiKM = ?, ngayBatDau = ?, "
-                    + "ngayKetThuc = ?, trangThai = ? WHERE maKM = ?";
-            stmt = con.prepareStatement(sql);
-            stmt.setString(1, km.getTenKM());
-            stmt.setDouble(2, km.getTiLeGiamGia());
-            stmt.setString(3, km.getDonViTinh());
-            stmt.setDate(4, Date.valueOf(km.getNgayBatDau()));
-            stmt.setDate(5, Date.valueOf(km.getNgayKetThuc()));
-            stmt.setString(6, km.getTrangThai());
-            stmt.setString(7, km.getMaKM());
-            n = stmt.executeUpdate();
+        String sql = "UPDATE KhuyenMai SET tenKM = ?, tiLeGiamGia = ?, donViTinh = ?, ngayBatDau = ?, "
+                + "ngayKetThuc = ?, trangThai = ? WHERE maKM = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, km.getTenKM());
+            ps.setDouble(2, km.getTiLeGiamGia());
+            ps.setString(3, km.getDonViTinh());
+            ps.setDate(4, Date.valueOf(km.getNgayBatDau()));
+            ps.setDate(5, Date.valueOf(km.getNgayKetThuc()));
+            ps.setString(6, km.getTrangThai());
+            ps.setString(7, km.getMaKM());
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            dongTaiNguyen(stmt, null);
         }
-        return n > 0;
+        return false;
     }
 
     public boolean xoaKhuyenMai(String maKM) {
         Connection con = ConnectDB.getConnection();
-        PreparedStatement stmt = null;
-        int n = 0;
-        try {
-            String sql = "DELETE FROM KhuyenMai WHERE maKM = ?";
-            stmt = con.prepareStatement(sql);
-            stmt.setString(1, maKM);
-            n = stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            dongTaiNguyen(stmt, null);
-        }
-        return n > 0;
-    }
-
-    // Sinh mã tự động: KM + 4 chữ số, ví dụ KM0001 đã có thì trả về KM0002
-    public String phatSinhMa() {
-        Connection con = ConnectDB.getConnection();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        int soLonNhat = 0;
-        try {
-            String sql = "SELECT MAX(TRY_CAST(SUBSTRING(maKM, 3, 10) AS INT)) FROM KhuyenMai WHERE maKM LIKE 'KM%'";
-            stmt = con.prepareStatement(sql);
-            rs = stmt.executeQuery();
-            if (rs.next()) {
-                soLonNhat = rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            dongTaiNguyen(stmt, rs);
-        }
-        return "KM" + String.format("%04d", soLonNhat + 1);
-    }
-
-    private void dongTaiNguyen(PreparedStatement stmt, ResultSet rs) {
-        try {
-            if (rs != null) {
-                rs.close();
-            }
-            if (stmt != null) {
-                stmt.close();
-            }
+        String sql = "DELETE FROM KhuyenMai WHERE maKM = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, maKM);
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 }

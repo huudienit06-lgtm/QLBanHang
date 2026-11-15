@@ -64,6 +64,9 @@ public class TaiKhoan_Dao {
                         String mk = rs.getString("MatKhau");
                         String tt = rs.getString("TrangThai");
                         tk = new TaiKhoan(nv, mk, tt);
+                        if (tt != null && tt.trim().equalsIgnoreCase("bị khóa")) {
+                            return null;
+                        }
                     }
                 }
             }
@@ -73,23 +76,6 @@ public class TaiKhoan_Dao {
         }
 
         return tk;
-    }
-
-    public boolean tonTaiMaDangNhap(String maNV) {
-        String sql = "SELECT 1 FROM TaiKhoan WHERE MaNV = ?";
-        try {
-            ConnectDB.getInstance();
-            Connection con = ConnectDB.getConnection();
-            try (PreparedStatement ps = con.prepareStatement(sql)) {
-                ps.setString(1, maNV);
-                try (ResultSet rs = ps.executeQuery()) {
-                    return rs.next();
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
     public boolean doiMatKhau(String maNV, String matKhauMoi) {

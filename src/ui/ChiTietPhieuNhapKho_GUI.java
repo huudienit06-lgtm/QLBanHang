@@ -417,24 +417,24 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
             String maPNK = txtTim.getText().trim();
 
             if (maPNK.isEmpty()) {
+
                 JOptionPane.showMessageDialog(this,
                         "Vui lòng nhập mã phiếu cần tìm!");
+
                 return;
             }
 
             modelCTPNK.setRowCount(0);
 
-            ArrayList<ChiTietPhieuNhapKho> ds =
+            ArrayList<ChiTietPhieuNhapKho> list =
                     ctpnk_dao.timChiTietPhieuNhapKho(maPNK);
 
-            ArrayList<SanPham> listSP = sp_dao.getAllSanPham();
-
-            for (ChiTietPhieuNhapKho ct : ds) {
+            for (ChiTietPhieuNhapKho ct : list) {
 
                 String maSP = ct.getSanPham().getMaSP();
                 String tenSP = "";
 
-                for (SanPham sp : listSP) {
+                for (SanPham sp : sp_dao.getAllSanPham()) {
                     if (sp.getMaSP().equals(maSP)) {
                         tenSP = sp.getTenSP();
                         break;
@@ -449,7 +449,8 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
                 });
             }
 
-            if (ds.isEmpty()) {
+            if (list.isEmpty()) {
+
                 JOptionPane.showMessageDialog(this,
                         "Không tìm thấy chi tiết phiếu nhập kho!");
             }

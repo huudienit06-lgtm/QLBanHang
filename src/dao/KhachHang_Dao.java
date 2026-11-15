@@ -1,13 +1,14 @@
 package dao;
 
-import connectdb.ConnectDB;
-import entity.KhachHang;
+import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
+
+import connectdb.ConnectDB;
+import entity.KhachHang;
 
 public class KhachHang_Dao {
     public KhachHang_Dao(){
@@ -37,7 +38,8 @@ public class KhachHang_Dao {
         return dskh;
     }
 
-    public KhachHang timkhachHang(String maKH){
+    public ArrayList<KhachHang> timkhachHang(String maKH){
+        ArrayList<KhachHang> dskh = new ArrayList<>();
         ConnectDB.getInstance();
         Connection con = ConnectDB.getConnection();
         PreparedStatement stmt = null;
@@ -53,7 +55,7 @@ public class KhachHang_Dao {
                 String diachi = rs.getString(5);
                 String loaiKH = rs.getString(6);
                 KhachHang  kh= new KhachHang(maKH, tenKH, sdt, gmail, diachi, loaiKH);
-                return kh;
+                dskh.add(kh);
             }
         } catch(SQLException e){
             e.printStackTrace();
@@ -63,39 +65,6 @@ public class KhachHang_Dao {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
-        return null;
-    }
-
-    public ArrayList<KhachHang> timKhachHangTheoTuKhoa(String tuKhoa) {
-        ArrayList<KhachHang> dskh = new ArrayList<>();
-        String tuKhoaTimKiem = "%" + (tuKhoa == null ? "" : tuKhoa.trim()) + "%";
-        String sql = "SELECT maKH, tenKH, sdt, gmail, diaChi, loaiKH "
-                + "FROM KhachHang "
-                + "WHERE maKH LIKE ? OR tenKH LIKE ?";
-
-        try {
-            ConnectDB.getInstance();
-            Connection con = ConnectDB.getConnection();
-            try (PreparedStatement stmt = con.prepareStatement(sql)) {
-                stmt.setString(1, tuKhoaTimKiem);
-                stmt.setString(2, tuKhoaTimKiem);
-
-                try (ResultSet rs = stmt.executeQuery()) {
-                    while (rs.next()) {
-                        dskh.add(new KhachHang(
-                                rs.getString("maKH"),
-                                rs.getString("tenKH"),
-                                rs.getString("sdt"),
-                                rs.getString("gmail"),
-                                rs.getString("diaChi"),
-                                rs.getString("loaiKH")
-                        ));
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return dskh;
     }

@@ -1,7 +1,6 @@
 package entity;
 
 import dao.ChiTietHoaDonDAO;
-import dao.Thue_dao;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ public class HoaDon {
     private KhuyenMai khuyenMai;
     private String trangThai;
     private String phuongThucThanhToan;
-    private double tongTien;
 
     public HoaDon() {
     }
@@ -52,9 +50,6 @@ public class HoaDon {
     }
 
     public String getNgayLapFormatted() {
-        if (ngayLap == null) {
-            return "";
-        }
         DateTimeFormatter dtf
                 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -108,16 +103,8 @@ public class HoaDon {
         return false;
     }
 
-    public double tinhTongTienLocal(ArrayList<ChiTietHoaDon> list) {
-        tongTien = 0;
-        // ArrayList<ChiTietHoaDon> list = new ChiTietHoaDonDAO().getDSCTHDByID(this.maHD);
-        for (ChiTietHoaDon chiTietHoaDon : list) {
-            tongTien += chiTietHoaDon.tinhThanhTien();
-        }
-        return tongTien;
-    }
     public double tinhTongTien() {
-        tongTien = 0;
+        double tongTien = 0;
         ArrayList<ChiTietHoaDon> list = new ChiTietHoaDonDAO().getDSCTHDByID(this.maHD);
         for (ChiTietHoaDon chiTietHoaDon : list) {
             tongTien += chiTietHoaDon.tinhThanhTien();
@@ -127,30 +114,16 @@ public class HoaDon {
 
     public double tinhKhuyenMai() {
         double tongKhuyenMai = 0;
-        if (this.getKhuyenMai() == null) {
-            tongKhuyenMai=0;
-        } else {
-            if ("Phần trăm".equals(this.getKhuyenMai().getDonViTinh())) {
-                tongKhuyenMai = tongTien * (this.getKhuyenMai().getTiLeGiamGia() / 100);
-            } else if ("Ngàn".equals(this.getKhuyenMai().getDonViTinh())) {
-                tongKhuyenMai = (this.getKhuyenMai().getTiLeGiamGia());
-            }
+        if (this.getKhuyenMai() != null && this.getKhuyenMai().getDonViTinh().trim().equalsIgnoreCase("Phần trăm")) {
+            tongKhuyenMai = tinhTongTien() * (this.getKhuyenMai().getTiLeGiamGia() / 100);
+        } else if (this.getKhuyenMai() != null && this.getKhuyenMai().getDonViTinh().trim().equalsIgnoreCase("Ngàn")) {
+            tongKhuyenMai = (this.getKhuyenMai().getTiLeGiamGia());
         }
         return tongKhuyenMai;
     }
 
-    public double tinhTongThue() {
-        double tongThue = 0;
-        ArrayList<Thue> list = new Thue_dao().getAllThue();
-        for (Thue t : list) {
-            tongThue += tongTien * t.getTiLeThue() / 100;
-        }
-        return tongThue;
-    }
-
     public double tinhThanhTien() {
-        tinhTongTien();
-        return (tongTien - tinhKhuyenMai() + tinhTongThue());
+        return tinhTongTien() - tinhKhuyenMai();
     }
 
     @Override
@@ -185,6 +158,9 @@ public class HoaDon {
 
     @Override
     public String toString() {
-        return this.maHD + getKhachHang().getTenKH() + getNhanVien().getTenNV() + String.valueOf(getNgayLapFormatted() + String.valueOf(tinhThanhTien())) + String.valueOf(getPhuongThucThanhToan()) + String.valueOf(getTrangThai());
+        return "HoaDon [maHD=" + maHD + ", ngayLap=" + ngayLap + ", khachHang=" + khachHang + ", nhanVien=" + nhanVien
+                + ", khuyenMai=" + khuyenMai + ", trangThai=" + trangThai + ", phuongThucThanhToan="
+                + phuongThucThanhToan + "]";
     }
+
 }
