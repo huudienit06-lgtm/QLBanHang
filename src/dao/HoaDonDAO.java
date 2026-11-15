@@ -7,7 +7,6 @@ import entity.HoaDon;
 import entity.KhachHang;
 import entity.KhuyenMai;
 import entity.NhanVien;
-import entity.Thue;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,7 +25,8 @@ public class HoaDonDAO {
     public ArrayList<HoaDon> getDSHoaDon() {
         ArrayList<HoaDon> listHD = new ArrayList<HoaDon>();
         try {
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM HoaDon");
+            PreparedStatement ps = con.prepareStatement(
+                    "SELECT maHD, ngayLap, maKH, maNV, maKM, trangThai, phuongThucThanhToan FROM HoaDon");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 String maHD = rs.getString("maHD");
@@ -34,15 +34,13 @@ public class HoaDonDAO {
                 String maKH = rs.getString("maKH");
                 String maNV = rs.getString("maNV");
                 String maKM = rs.getString("maKM");
-                String maThue = rs.getString("maThue");
                 String trangThai = rs.getString("trangThai");
                 String phuongThucThanhToan = rs.getString("phuongThucThanhToan");
 
                 KhachHang kH = new KhachHang(maKH);
                 NhanVien nV = new NhanVien(maNV);
                 KhuyenMai kM = new KhuyenMai(maKM);
-                Thue thue = new Thue(maThue);
-                HoaDon hd = new HoaDon(maHD, ngayLap, kH, nV, kM, thue, trangThai, phuongThucThanhToan);
+                HoaDon hd = new HoaDon(maHD, ngayLap, kH, nV, kM, trangThai, phuongThucThanhToan);
                 listHD.add(hd);
             }
         } catch (Exception e) {
@@ -53,15 +51,16 @@ public class HoaDonDAO {
 
     public boolean addHoaDon(HoaDon hd) {
         try {
-            PreparedStatement ps = con.prepareStatement("INSERT INTO HoaDon (maHD, ngayLap, maKH, maNV, maKM, maThue, trangThai, phuongThucThanhToan) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement ps = con.prepareStatement(
+                    "INSERT INTO HoaDon (maHD, ngayLap, maKH, maNV, maKM, trangThai, phuongThucThanhToan) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?)");
             ps.setString(1, hd.getMaHD());
             ps.setString(2, hd.getNgayLap().toString());
             ps.setString(3, hd.getKhachHang().getMaKH());
             ps.setString(4, hd.getNhanVien().getMaNV());
-            ps.setString(5, hd.getKhuyenMai().getMaKM());
-            ps.setString(6, hd.getThue().getMaThue());
-            ps.setString(7, hd.getTrangThai());
-            ps.setString(8, hd.getPhuongThucThanhToan());
+            ps.setString(5, hd.getKhuyenMai() == null ? null : hd.getKhuyenMai().getMaKM());
+            ps.setString(6, hd.getTrangThai());
+            ps.setString(7, hd.getPhuongThucThanhToan());
 
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
@@ -74,15 +73,16 @@ public class HoaDonDAO {
     public boolean updateHoaDon(HoaDon hd) {
         try {
 
-            PreparedStatement ps = con.prepareStatement("UPDATE HoaDon SET ngayLap = ?, maKH = ?, maNV = ?, maKM = ?, maThue = ?, trangThai = ?, phuongThucThanhToan = ? WHERE maHD = ?");
+            PreparedStatement ps = con.prepareStatement(
+                    "UPDATE HoaDon SET ngayLap = ?, maKH = ?, maNV = ?, maKM = ?, trangThai = ?, "
+                    + "phuongThucThanhToan = ? WHERE maHD = ?");
             ps.setString(1, hd.getNgayLap().toString());
             ps.setString(2, hd.getKhachHang().getMaKH());
             ps.setString(3, hd.getNhanVien().getMaNV());
-            ps.setString(4, hd.getKhuyenMai().getMaKM());
-            ps.setString(5, hd.getThue().getMaThue());
-            ps.setString(6, hd.getTrangThai());
-            ps.setString(7, hd.getPhuongThucThanhToan());
-            ps.setString(8, hd.getMaHD());
+            ps.setString(4, hd.getKhuyenMai() == null ? null : hd.getKhuyenMai().getMaKM());
+            ps.setString(5, hd.getTrangThai());
+            ps.setString(6, hd.getPhuongThucThanhToan());
+            ps.setString(7, hd.getMaHD());
 
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
@@ -109,7 +109,9 @@ public class HoaDonDAO {
     public HoaDon getHoaDonById(String maHD) {
         try {
 
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM HoaDon WHERE maHD = ?");
+            PreparedStatement ps = con.prepareStatement(
+                    "SELECT maHD, ngayLap, maKH, maNV, maKM, trangThai, phuongThucThanhToan "
+                    + "FROM HoaDon WHERE maHD = ?");
             ps.setString(1, maHD);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -117,15 +119,13 @@ public class HoaDonDAO {
                 String maKH = rs.getString("maKH");
                 String maNV = rs.getString("maNV");
                 String maKM = rs.getString("maKM");
-                String maThue = rs.getString("maThue");
                 String trangThai = rs.getString("trangThai");
                 String phuongThucThanhToan = rs.getString("phuongThucThanhToan");
 
                 KhachHang kH = new KhachHang(maKH);
                 NhanVien nV = new NhanVien(maNV);
                 KhuyenMai kM = new KhuyenMai(maKM);
-                Thue thue = new Thue(maThue);
-                HoaDon hd = new HoaDon(maHD, ngayLap, kH, nV, kM, thue, trangThai, phuongThucThanhToan);
+                HoaDon hd = new HoaDon(maHD, ngayLap, kH, nV, kM, trangThai, phuongThucThanhToan);
                 return hd;
             }
         } catch (Exception e) {
@@ -138,7 +138,9 @@ public class HoaDonDAO {
         ArrayList<HoaDon> result = new ArrayList<>();
         try {
 
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM HoaDon WHERE maHD LIKE ?");
+            PreparedStatement ps = con.prepareStatement(
+                    "SELECT maHD, ngayLap, maKH, maNV, maKM, trangThai, phuongThucThanhToan "
+                    + "FROM HoaDon WHERE maHD LIKE ?");
             ps.setString(1, "%" + maHD + "%");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -146,11 +148,11 @@ public class HoaDonDAO {
                 String maKH = rs.getString("maKH");
                 String maNV = rs.getString("maNV");
                 String maKM = rs.getString("maKM");
-                String maThue = rs.getString("maThue");
                 String trangThai = rs.getString("trangThai");
                 String phuongThucThanhToan = rs.getString("phuongThucThanhToan");
 
-                HoaDon hd = new HoaDon(maHD, ngayLap, new KhachHang(maKH), new NhanVien(maNV), new KhuyenMai(maKM), new Thue(maThue), trangThai, phuongThucThanhToan);
+                HoaDon hd = new HoaDon(rs.getString("maHD"), ngayLap, new KhachHang(maKH),
+                        new NhanVien(maNV), new KhuyenMai(maKM), trangThai, phuongThucThanhToan);
                 result.add(hd);
             }
         } catch (Exception e) {

@@ -61,7 +61,7 @@ public class KhuyenMaiDAO {
 
     public boolean themKhuyenMai(KhuyenMai km) {
         Connection con = ConnectDB.getConnection();
-        String sql = "INSERT INTO KhuyenMai (maKM, tenKM, tiLeGiamGia, loaiKM, ngayBatDau, ngayKetThuc, trangThai) "
+        String sql = "INSERT INTO KhuyenMai (maKM, tenKM, tiLeGiamGia, donViTinh, ngayBatDau, ngayKetThuc, trangThai) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, km.getMaKM());
@@ -80,7 +80,7 @@ public class KhuyenMaiDAO {
 
     public boolean suaKhuyenMai(KhuyenMai km) {
         Connection con = ConnectDB.getConnection();
-        String sql = "UPDATE KhuyenMai SET tenKM = ?, tiLeGiamGia = ?, loaiKM = ?, ngayBatDau = ?, "
+        String sql = "UPDATE KhuyenMai SET tenKM = ?, tiLeGiamGia = ?, donViTinh = ?, ngayBatDau = ?, "
                 + "ngayKetThuc = ?, trangThai = ? WHERE maKM = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, km.getTenKM());

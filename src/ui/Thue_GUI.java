@@ -61,7 +61,6 @@ public class Thue_GUI extends JFrame implements ActionListener, MouseListener {
         // Tiêu đề
         JLabel lblTieuDe = new JLabel("QUẢN LÝ THUẾ");
         lblTieuDe.setFont(new Font("Arial", Font.BOLD, 25));
-        lblTieuDe.setForeground(Color.BLUE);
 
         JPanel pnlTieuDe = new JPanel();
         pnlTieuDe.add(lblTieuDe);

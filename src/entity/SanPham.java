@@ -82,13 +82,17 @@ public class SanPham {
     }
 
     public double tinhGiaBan(){
-        double giaBan=this.giaNhap * (1 + this.getDanhMuc().getLoiNhuan());
+        return this.giaNhap*(1+this.getDanhMuc().getLoiNhuan());
+    }
+
+    public double tinhGiaBanSauKhuyenMai(){
+        double giaBanSauKhuyenMai=tinhGiaBan();
         if(this.getKhuyenMai() != null && this.getKhuyenMai().getDonViTinh().trim().equalsIgnoreCase("Phần trăm")){
-            return  giaBan - (giaBan*(this.getKhuyenMai().getTiLeGiamGia() / 100));
+            return  giaBanSauKhuyenMai - (giaBanSauKhuyenMai*(this.getKhuyenMai().getTiLeGiamGia() / 100));
         }
         else if(this.getKhuyenMai() != null && this.getKhuyenMai().getDonViTinh().trim().equalsIgnoreCase("Ngàn")){
-            return giaBan - (this.getKhuyenMai().getTiLeGiamGia());
+            return giaBanSauKhuyenMai - (this.getKhuyenMai().getTiLeGiamGia());
         }
-        return giaBan;
+        return giaBanSauKhuyenMai;
     }
 }
