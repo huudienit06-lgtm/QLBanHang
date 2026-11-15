@@ -48,13 +48,22 @@ public class Main extends JFrame {
         this.taiKhoan = tk;
         NhanVien nv = taiKhoan.getNhanVien();
         setMenu(new Menu(nv, this));
-        setContent(new SanPhamPanel());
+        setContent(taoTrangChuTheoVaiTro());
+    }
 
+    private JPanel taoTrangChuTheoVaiTro() {
+        NhanVien nv = taiKhoan.getNhanVien();
+        if (nv != null && "Quản lý".equalsIgnoreCase(nv.getChucVu())) {
+            return new FrmQuanLi(nv);
+        }
+        return new FrmNhanVien(nv);
     }
 
     public void xuLyChucNang(String chucNang) {
         switch (chucNang) {
             case "Trang Chủ":
+                setContent(taoTrangChuTheoVaiTro());
+                break;
             case "Sản Phẩm":
                 setContent(new SanPhamPanel());
                 break;

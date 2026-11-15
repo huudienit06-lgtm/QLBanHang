@@ -5,11 +5,19 @@ import entity.TaiKhoan;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -32,13 +40,16 @@ public class FrmDangNhap extends JPanel implements ActionListener {
 
     public FrmDangNhap(Main main) {
         this.main = main;
-        setLayout(new GridBagLayout());
+        setLayout(new BorderLayout());
+        JPanel pnlNen = new NenDangNhap();
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
         // setSize(200, 100);
         // setPreferredSize(new Dimension(400, 300));
         JPanel pnlDangNhap = new JPanel(new BorderLayout());
+        pnlDangNhap.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(190, 205, 225)),
+                BorderFactory.createEmptyBorder(16, 20, 16, 20)));
         Box b, b1, b2;
         b = Box.createVerticalBox();
         b1 = Box.createVerticalBox();
@@ -73,12 +84,52 @@ public class FrmDangNhap extends JPanel implements ActionListener {
         b.add(b1);
         b.add(pnlButton);
         pnlDangNhap.add(b, BorderLayout.CENTER);
-        add(pnlDangNhap, gbc);
+        pnlNen.add(pnlDangNhap, gbc);
+        add(pnlNen, BorderLayout.CENTER);
 
         btnDangNhap.addActionListener(this);
         btnQuenMK.addActionListener(this);
         chkHienMK.addActionListener(this);
 
+    }
+
+    private static class NenDangNhap extends JPanel {
+        private final BufferedImage anhNen;
+
+        NenDangNhap() {
+            setLayout(new GridBagLayout());
+            try {
+                anhNen = ImageIO.read(new File("img", "trangdangnhap.jpg"));
+                if (anhNen == null) {
+                    throw new IOException("Tệp không phải ảnh hợp lệ.");
+                }
+            } catch (IOException e) {
+                throw new IllegalStateException(
+                        "Không thể tải hình nền img/trangdangnhap.jpg", e);
+            }
+        }
+
+        @Override
+        protected void paintComponent(Graphics graphics) {
+            super.paintComponent(graphics);
+            if (getWidth() <= 0 || getHeight() <= 0) {
+                return;
+            }
+
+            double tiLe = Math.max(
+                    (double) getWidth() / anhNen.getWidth(),
+                    (double) getHeight() / anhNen.getHeight());
+            int rong = (int) (anhNen.getWidth() * tiLe);
+            int cao = (int) (anhNen.getHeight() * tiLe);
+            int x = (getWidth() - rong) / 2;
+            int y = (getHeight() - cao) / 2;
+
+            Graphics2D g2d = (Graphics2D) graphics.create();
+            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                    RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2d.drawImage(anhNen, x, y, rong, cao, this);
+            g2d.dispose();
+        }
     }
 
     @Override
