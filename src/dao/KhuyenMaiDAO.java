@@ -59,6 +59,25 @@ public class KhuyenMaiDAO {
         return ds;
     }
 
+    public KhuyenMai timKhuyenMaiByID(String maKM) {
+        Connection con = ConnectDB.getConnection();
+        String sql = "SELECT * FROM KhuyenMai WHERE maKM = ?";
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, maKM);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return docKhuyenMai(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public boolean themKhuyenMai(KhuyenMai km) {
         Connection con = ConnectDB.getConnection();
         String sql = "INSERT INTO KhuyenMai (maKM, tenKM, tiLeGiamGia, donViTinh, ngayBatDau, ngayKetThuc, trangThai) "

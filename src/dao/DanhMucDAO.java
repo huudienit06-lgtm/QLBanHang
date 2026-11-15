@@ -16,7 +16,7 @@ public class DanhMucDAO {
     public ArrayList<DanhMuc> getAllDanhMuc() {
         ArrayList<DanhMuc> ds = new ArrayList<>();
         Connection con = ConnectDB.getConnection();
-        String sql = "SELECT maDM, tenDM FROM DanhMuc ORDER BY maDM";
+        String sql = "SELECT maDM, tenDM ,loiNhuan FROM DanhMuc ORDER BY maDM";
         try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 ds.add(new DanhMuc(rs.getString("maDM"), rs.getString("tenDM"),rs.getFloat("loiNhuan")));
@@ -47,10 +47,11 @@ public class DanhMucDAO {
 
     public boolean themDanhMuc(DanhMuc dm) {
         Connection con = ConnectDB.getConnection();
-        String sql = "INSERT INTO DanhMuc (maDM, tenDM) VALUES (?, ?)";
+        String sql = "INSERT INTO DanhMuc (maDM, tenDM, loiNhuan) VALUES (?, ?, ?)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, dm.getMaDM());
             ps.setString(2, dm.getTenDM());
+            ps.setFloat(3,dm.getLoiNhuan());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -64,6 +65,7 @@ public class DanhMucDAO {
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, dm.getTenDM());
             ps.setString(2, dm.getMaDM());
+            ps.setFloat(3, dm.getLoiNhuan());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();

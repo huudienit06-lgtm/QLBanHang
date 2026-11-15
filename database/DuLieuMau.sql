@@ -58,7 +58,7 @@ VALUES
 -- =============================================
 -- 5. DANHMUC
 -- =============================================
-INSERT INTO DanhMuc (maDM, tenDM, loiNhuan)
+INSERT INTO DanhMuc (maDM, tenDM,loiNhuan)
 VALUES
 ('DM001', N'Đồ uống',0.05),
 ('DM002', N'Đồ ăn',0.025),

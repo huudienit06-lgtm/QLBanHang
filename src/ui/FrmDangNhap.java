@@ -14,6 +14,7 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -27,6 +28,7 @@ public class FrmDangNhap extends JPanel implements ActionListener {
     private final JCheckBox chkHienMK;
     private final JButton btnDangNhap;
     private final JButton btnQuenMK;
+    private final char kyTuMatKhauMacDinh;
 
     public FrmDangNhap(Main main) {
         this.main = main;
@@ -54,6 +56,7 @@ public class FrmDangNhap extends JPanel implements ActionListener {
         txtTenDN = new JTextField();
         JLabel lblPass = new JLabel("Mật Khẩu: ");
         txtMatKhau = new JPasswordField();
+        kyTuMatKhauMacDinh = txtMatKhau.getEchoChar();
         chkHienMK = new JCheckBox("Hiển thị mật khẩu");
         // txtTenDN.setMaximumSize(new Dimension(500, 35));
         // txtMatKhau.setMaximumSize(new Dimension(500, 35));
@@ -74,18 +77,36 @@ public class FrmDangNhap extends JPanel implements ActionListener {
 
         btnDangNhap.addActionListener(this);
         btnQuenMK.addActionListener(this);
+        chkHienMK.addActionListener(this);
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         Object o = e.getSource();
-        if (o.equals(btnDangNhap)) {
-            TaiKhoan tk = kiemTraTaiKhoan();
-            if (tk != null) {
-                main.dangNhapThanhCong(tk);
+        if (o.equals(chkHienMK)) {
+            txtMatKhau.setEchoChar(chkHienMK.isSelected() ? (char) 0 : kyTuMatKhauMacDinh);
+        } else if (o.equals(btnDangNhap)) {
+            String tenDN = txtTenDN.getText().trim();
+            String matKhau = new String(txtMatKhau.getPassword()).trim();
+            if (tenDN.isEmpty() || matKhau.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập mã đăng nhập và mật khẩu.");
+                return;
+            }
+            if (!taiKhoanDao.tonTaiMaDangNhap(tenDN)) {
+                JOptionPane.showMessageDialog(this, "Mã đăng nhập không tồn tại.");
+                return;
             }
 
+            TaiKhoan tk = taiKhoanDao.dangNhap(tenDN, matKhau);
+            if (tk == null) {
+                JOptionPane.showMessageDialog(this, "Mật khẩu không chính xác.");
+            } else if (tk.getTrangThai() == null
+                    || !"Hoạt động".equalsIgnoreCase(tk.getTrangThai().trim())) {
+                JOptionPane.showMessageDialog(this, "Tài khoản hiện không hoạt động.");
+            } else {
+                main.dangNhapThanhCong(tk);
+            }
         } else if (o.equals(btnQuenMK)) {
             // TODO: xử lý quên mật khẩu
         }
@@ -94,19 +115,17 @@ public class FrmDangNhap extends JPanel implements ActionListener {
     public TaiKhoan kiemTraTaiKhoan() {
         String tenDN = txtTenDN.getText().trim();
         String matKhau = new String(txtMatKhau.getPassword()).trim();
-        if (tenDN.isEmpty() || matKhau.isEmpty()) {
+        if (tenDN.isEmpty() || matKhau.isEmpty()
+                || !taiKhoanDao.tonTaiMaDangNhap(tenDN)) {
             return null;
-        } else {
-            TaiKhoan tk = taiKhoanDao.dangNhap(tenDN, matKhau);
-            if (tk == null) {
-                return null;
-            }
-            if (!"Hoạt động".equalsIgnoreCase(tk.getTrangThai().trim())) {
-                // Hiển thị thông báo tài khoản bị khóa
-                return null;
-            }
-            return tk;
         }
+
+        TaiKhoan tk = taiKhoanDao.dangNhap(tenDN, matKhau);
+        if (tk == null || tk.getTrangThai() == null
+                || !"Hoạt động".equalsIgnoreCase(tk.getTrangThai().trim())) {
+            return null;
+        }
+        return tk;
     }
 
 }

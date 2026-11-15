@@ -1,14 +1,13 @@
 package dao;
 
-import java.sql.Statement;
+import connectdb.ConnectDB;
+import entity.NhanVien;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-
-import connectdb.ConnectDB;
-import entity.NhanVien;
 
 public class NhanVien_DAO {
 
@@ -38,8 +37,7 @@ public class NhanVien_DAO {
         return dsnv;
     }
 
-    public ArrayList<NhanVien> timNhanVientheoMa(String maNV){
-        ArrayList<NhanVien> dsnv = new ArrayList<>();
+    public NhanVien timNhanVientheoMa(String maNV){
         ConnectDB.getInstance();
         Connection con = ConnectDB.getConnection();
         PreparedStatement statement = null;
@@ -55,8 +53,7 @@ public class NhanVien_DAO {
                 String sdt= rs.getString(3);
                 String chucvu= rs.getString(5);
                 NhanVien nv = new NhanVien(maNV, tennv,sdt,gt,chucvu);
-                dsnv.add(nv);
-
+                return nv;
         }
     }catch(SQLException e){
         e.printStackTrace();
@@ -67,7 +64,7 @@ public class NhanVien_DAO {
             e.printStackTrace();
         }
     }
-     return dsnv;
+     return null;
     }
 
     public boolean themNhanVien(NhanVien nv){

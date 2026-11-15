@@ -37,7 +37,7 @@ public class SanPhamDAO {
 
         String maDM = rs.getString("maDM");
         if (maDM != null) {
-            sp.setDanhMuc(new DanhMuc(maDM, rs.getString("tenDM"),rs.getFloat("loiNhuan")));
+            sp.setDanhMuc(new DanhMuc(maDM, rs.getString("tenDM"), rs.getFloat("loiNhuan")));
         }
 
         String maKM = rs.getString("maKM");
@@ -73,7 +73,8 @@ public class SanPhamDAO {
     public ArrayList<SanPham> timSanPham(String tuKhoa) {
         ArrayList<SanPham> ds = new ArrayList<>();
         Connection con = ConnectDB.getConnection();
-        String sql = SQL_CHON + "WHERE sp.maSP LIKE ? OR sp.tenSP LIKE ? ORDER BY sp.maSP";
+        String sql = SQL_CHON
+                + "WHERE sp.maSP LIKE ? OR sp.tenSP COLLATE Vietnamese_100_CI_AI LIKE ? ORDER BY sp.maSP";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, "%" + tuKhoa + "%");
             ps.setString(2, "%" + tuKhoa + "%");
@@ -135,8 +136,8 @@ public class SanPhamDAO {
     }
 
     /**
-     * Sản phẩm bán chạy trong khoảng ngày (không tính hóa đơn đã hủy).
-     * Mỗi phần tử gồm {maSP, tenSP, tổng số lượng đã bán}.
+     * Sản phẩm bán chạy trong khoảng ngày (không tính hóa đơn đã hủy). Mỗi phần
+     * tử gồm {maSP, tenSP, tổng số lượng đã bán}.
      */
     public ArrayList<Object[]> getSanPhamBanChay(int top, LocalDate tuNgay, LocalDate denNgay) {
         ArrayList<Object[]> ds = new ArrayList<>();
@@ -154,7 +155,7 @@ public class SanPhamDAO {
             ps.setDate(3, Date.valueOf(denNgay));
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    ds.add(new Object[] { rs.getString("maSP"), rs.getString("tenSP"), rs.getInt("daBan") });
+                    ds.add(new Object[]{rs.getString("maSP"), rs.getString("tenSP"), rs.getInt("daBan")});
                 }
             }
         } catch (SQLException e) {
@@ -168,6 +169,39 @@ public class SanPhamDAO {
             ps.setNull(viTri, Types.VARCHAR);
         } else {
             ps.setString(viTri, ma);
+        }
+    }
+
+    public SanPham findByID(String maSP) {
+        String sql = SQL_CHON + "WHERE sp.maSP = ?";
+        try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
+            ps.setString(1, maSP);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return docSanPham(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public boolean capNhatSoLuongTon( String maSP, int soLuongBan){
+
+        String sql = """
+        UPDATE SanPham
+        SET soLuongTon = soLuongTon - ?
+        WHERE maSP = ? AND soLuongTon >= ?
+    """;
+        Connection con = ConnectDB.getConnection();
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, soLuongBan);
+            ps.setString(2, maSP);
+            ps.setInt(3, soLuongBan);
+            return ps.executeUpdate() > 0;
+        }catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

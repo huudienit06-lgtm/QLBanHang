@@ -48,7 +48,7 @@ public class Thue {
         return this.tenThue+"Mức thuế:"+this.tiLeThue+"%";
     }
     public double tinhThue(double tongTien) {
-        return tongTien * this.getTiLeThue();
+        return tongTien * this.getTiLeThue() / 100.0;
     }
 
 }
