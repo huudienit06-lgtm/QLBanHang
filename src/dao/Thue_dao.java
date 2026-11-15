@@ -1,28 +1,19 @@
 package dao;
 
-<<<<<<< HEAD
 import java.sql.Statement;
 // import java.time.LocalDate;
 import java.sql.Connection;
 // import java.sql.Date;
-=======
-import connectdb.ConnectDB;
-import entity.Thue;
-import java.sql.Connection;
->>>>>>> origin/main
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-<<<<<<< HEAD
 import connectdb.ConnectDB;
 // import entity.NhanVien;
 import entity.Thue;
 
-=======
->>>>>>> origin/main
 public class Thue_dao {
     public Thue_dao() {
 

@@ -183,6 +183,7 @@ public class ThongKeNhapKho_GUI extends JPanel {
             return;
         }
 
+        // ArrayList<ChiTietPhieuNhapKho> ds = ctPNK_dao.getThongKeNhapKho(khoang[0], khoang[1]);
         ArrayList<ChiTietPhieuNhapKho> ds = ctPNK_dao.getThongKeNhapKho(khoang[0], khoang[1]);
 
         int gioiHan = Integer.MAX_VALUE;
@@ -198,11 +199,11 @@ public class ThongKeNhapKho_GUI extends JPanel {
 
         for (ChiTietPhieuNhapKho ct : ds) {
             int soLuong = ct.getSoLuong();
-            BigDecimal giaNhap = ct.getSanPham().getGiaNhap();
+            double giaNhap = ct.getSanPham().getGiaNhap();
 
             // Tổng tính trên toàn bộ dữ liệu trong khoảng thời gian
             tongSoLuong += soLuong;
-            tongTien = tongTien.add(giaNhap.multiply(BigDecimal.valueOf(soLuong)));
+            tongTien = tongTien.add(BigDecimal.valueOf(giaNhap * soLuong));
 
             // Bảng chỉ hiển thị N dòng đầu
             if (daHienThi < gioiHan) {

@@ -5,7 +5,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import dao.KhachHang_Dao;
-import entity.KhachHang;
+import entity.KhachHang; 
 
 public class KhachHang_gui extends JPanel {
     private final KhachHang_Dao dao = new KhachHang_Dao();
@@ -16,7 +16,7 @@ public class KhachHang_gui extends JPanel {
     private final JTable table = new JTable(model);
     private final JTextField txtMa = new JTextField(), txtTen = new JTextField(), txtSdt = new JTextField(),
             txtGmail = new JTextField(), txtDiaChi = new JTextField(), txtTim = new JTextField(15);
-    private final JComboBox<String> cboLoai = new JComboBox<>(new String[]{"Thường", "VIP"});
+    private final JComboBox<String> cboLoai = new JComboBox<>(new String[]{"Thường", "VIP", "Thân Thiết"});
 
     public KhachHang_gui() {
         setLayout(new BorderLayout(10, 10));

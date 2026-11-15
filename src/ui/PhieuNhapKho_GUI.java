@@ -280,39 +280,23 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
             if (!validData()) {
                 return;
             }
-
             try {
-
                 String ma = txtMaPNK.getText().trim();
-
-                LocalDate ngayLap = LocalDate.parse(
-                        txtNgayLap.getText().trim(), formatter);
-
+                LocalDate ngayLap = LocalDate.parse(txtNgayLap.getText().trim(), formatter);
                 String maNV = cboNhanVien.getSelectedItem().toString();
-
                 String trangThai = txtTrangThai.getText().trim();
-
                 NhanVien nv = new NhanVien(maNV);
-
-                PhieuNhapKho pnk = new PhieuNhapKho(
-                        ma, ngayLap, nv, trangThai);
-
+                PhieuNhapKho pnk = new PhieuNhapKho(ma, ngayLap, nv, trangThai);
                 if (pnk_dao.themPhieuNhapKho(pnk)) {
-
                     JOptionPane.showMessageDialog(this,
                             "Thêm phiếu nhập kho thành công!");
-
                     ReadDataFromDB();
                     xoaTrang();
-
                 } else {
-
                     JOptionPane.showMessageDialog(this,
                             "Thêm phiếu nhập kho thất bại!");
                 }
-
             } catch (Exception ex) {
-
                 JOptionPane.showMessageDialog(this,
                         "Dữ liệu không hợp lệ!");
             }
@@ -320,116 +304,64 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
 
         // Sửa phiếu nhập kho
         else if (o.equals(btnSua)) {
-
             if (tablePNK.getSelectedRow() < 0) {
-
                 JOptionPane.showMessageDialog(this,
                         "Vui lòng chọn phiếu cần sửa!");
-
                 return;
             }
-
             if (!validData()) {
                 return;
             }
-
             try {
-
                 String ma = txtMaPNK.getText().trim();
-
-                LocalDate ngayLap = LocalDate.parse(
-                        txtNgayLap.getText().trim(), formatter);
-
+                LocalDate ngayLap = LocalDate.parse(txtNgayLap.getText().trim(), formatter);
                 String maNV = cboNhanVien.getSelectedItem().toString();
-
                 String trangThai = txtTrangThai.getText().trim();
-
                 NhanVien nv = new NhanVien(maNV);
-
-                PhieuNhapKho pnk = new PhieuNhapKho(
-                        ma, ngayLap, nv, trangThai);
-
+                PhieuNhapKho pnk = new PhieuNhapKho(ma, ngayLap, nv, trangThai);
                 if (pnk_dao.suaPhieuNhapKho(pnk)) {
-
-                    JOptionPane.showMessageDialog(this,
-                            "Cập nhật thành công!");
-
+                    JOptionPane.showMessageDialog(this,"Cập nhật thành công!");
                     ReadDataFromDB();
                     xoaTrang();
-
                 } else {
-
                     JOptionPane.showMessageDialog(this,
                             "Cập nhật thất bại!");
                 }
-
             } catch (Exception ex) {
-
                 JOptionPane.showMessageDialog(this,
                         "Dữ liệu không hợp lệ!");
             }
         }
-
         // Xóa phiếu nhập kho
         else if (o.equals(btnXoa)) {
-
             int row = tablePNK.getSelectedRow();
-
             if (row < 0) {
-
                 JOptionPane.showMessageDialog(this,
                         "Vui lòng chọn phiếu cần xóa!");
-
                 return;
             }
-
             String ma = txtMaPNK.getText();
-
-            int confirm = JOptionPane.showConfirmDialog(
-                    this,
-                    "Bạn có chắc muốn xóa phiếu " + ma + "?",
-                    "Xác nhận",
-                    JOptionPane.YES_NO_OPTION
-            );
-
+            int confirm = JOptionPane.showConfirmDialog(this,"Bạn có chắc muốn xóa phiếu " + ma + "?","Xác nhận",JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-
                 if (pnk_dao.xoaPhieuNhapKho(ma)) {
-
-                    JOptionPane.showMessageDialog(this,
-                            "Xóa thành công!");
-
+                    JOptionPane.showMessageDialog(this,"Xóa thành công!");
                     ReadDataFromDB();
                     xoaTrang();
-
                 } else {
-
-                    JOptionPane.showMessageDialog(this,
-                            "Xóa thất bại!");
+                    JOptionPane.showMessageDialog(this,"Xóa thất bại!");
                 }
             }
         }
-
         // Tìm kiếm
         else if (o.equals(btnTim)) {
-
             String ma = txtTim.getText().trim();
-
             if (ma.isEmpty()) {
-
-                JOptionPane.showMessageDialog(this,
-                        "Vui lòng nhập mã phiếu cần tìm!");
-
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập mã phiếu cần tìm!");
                 return;
             }
-
             modelPNK.setRowCount(0);
-
-            ArrayList<PhieuNhapKho> list =
-                    pnk_dao.timPhieuNhapKho(ma);
-
+            ArrayList<PhieuNhapKho> list =pnk_dao.timPhieuNhapKho(ma);
             for (PhieuNhapKho pnk : list) {
-
                 modelPNK.addRow(new Object[] {
                     pnk.getMaPNK(),
                     pnk.getNgayLap().format(formatter),
@@ -437,23 +369,17 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
                     pnk.getTrangThai()
                 });
             }
-
             if (list.isEmpty()) {
-
-                JOptionPane.showMessageDialog(this,
-                        "Không tìm thấy phiếu nhập kho!");
+                JOptionPane.showMessageDialog(this,"Không tìm thấy phiếu nhập kho!");
             }
         }
-
         // Xóa trắng
         else if (o.equals(btnXoaTrang)) {
-
             xoaTrang();
         }
     }
 
     public static void main(String[] args) {
-
         new PhieuNhapKho_GUI().setVisible(true);
     }
 }

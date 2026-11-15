@@ -265,7 +265,7 @@ public class TaiKhoan_gui extends JPanel {
         if (chon != JOptionPane.YES_OPTION) {
             return;
         }
-
+ 
         if (dao.xoaTaiKhoan(txtMa.getText().trim())) {
             loadData();
             clearForm();

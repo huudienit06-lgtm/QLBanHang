@@ -3,7 +3,7 @@ package ui;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
+ 
 import dao.NhanVien_DAO;
 import entity.NhanVien;
 
@@ -127,24 +127,40 @@ public class NhanVien_gui extends JPanel {
     }
 
     private void sua() {
-        if (table.getSelectedRow() < 0) { JOptionPane.showMessageDialog(this, "Hãy chọn nhân viên cần sửa!"); return; }
+        if (table.getSelectedRow() < 0) { 
+            JOptionPane.showMessageDialog(this, "Hãy chọn nhân viên cần sửa!"); 
+            return; 
+        }
         if (!validateForm()) return;
-        if (dao.suaNhanVien(txtMa.getText().trim(), readForm())) { loadData(); clearForm(); }
-        else JOptionPane.showMessageDialog(this, "Sửa thất bại!");
+        if (dao.suaNhanVien(txtMa.getText().trim(), readForm())) { 
+            loadData(); 
+            clearForm(); }
+        else 
+            JOptionPane.showMessageDialog(this, "Sửa thất bại!");
     }
 
     private void xoa() {
-        if (table.getSelectedRow() < 0) { JOptionPane.showMessageDialog(this, "Hãy chọn nhân viên cần xóa!"); return; }
-        if (JOptionPane.showConfirmDialog(this, "Xóa nhân viên này?", "Xác nhận", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) return;
-        if (dao.xoaNhanVien(txtMa.getText().trim())) { loadData(); clearForm(); }
-        else JOptionPane.showMessageDialog(this, "Xóa thất bại (có thể đang được tham chiếu bởi dữ liệu khác)!");
+        if (table.getSelectedRow() < 0) { 
+            JOptionPane.showMessageDialog(this, "Hãy chọn nhân viên cần xóa!"); 
+            return; 
+        }
+        if (
+            JOptionPane.showConfirmDialog(this, "Xóa nhân viên này?", "Xác nhận", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) 
+            return;
+        if (dao.xoaNhanVien(txtMa.getText().trim())) { 
+            loadData(); 
+            clearForm(); }
+        else 
+            JOptionPane.showMessageDialog(this, "Xóa thất bại (có thể đang được tham chiếu bởi dữ liệu khác)!");
     }
 
     private void tim() {
         String ma = txtTim.getText().trim();
         if (ma.isEmpty()) { loadData(); return; }
         model.setRowCount(0);
-        for (NhanVien nv : dao.timNhanVientheoMa(ma)) addRow(nv);
-        if (model.getRowCount() == 0) JOptionPane.showMessageDialog(this, "Không tìm thấy nhân viên!");
+        for (NhanVien nv : dao.timNhanVientheoMa(ma)) 
+            addRow(nv);
+        if (model.getRowCount() == 0) 
+            JOptionPane.showMessageDialog(this, "Không tìm thấy nhân viên!");
     }
 }

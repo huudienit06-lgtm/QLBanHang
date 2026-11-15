@@ -1,6 +1,7 @@
 package dao;
 
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -291,6 +292,10 @@ public class ChiTietPhieuNhapKho_dao {
                 e.printStackTrace();
             }
         }
+    }
+    public ArrayList<ChiTietPhieuNhapKho> getThongKeNhapKho(LocalDate localDate, LocalDate localDate2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getThongKeNhapKho'");
     }
 
 
