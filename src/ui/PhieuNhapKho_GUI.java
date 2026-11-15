@@ -1,3 +1,4 @@
+
 package ui;
 
 import java.awt.BorderLayout;
@@ -22,8 +23,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import connectdb.ConnectDB;
-import dao.NhanVien_DAO;
-import dao.NhanVien_DAO;
+import dao.NhanVien_dao;
 import dao.PhieuNhapKho_dao;
 import entity.NhanVien;
 import entity.PhieuNhapKho;
@@ -49,10 +49,10 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
     private JButton btnXoaTrang;
 
     private PhieuNhapKho_dao pnk_dao;
-    private NhanVien_DAO nv_dao;
+    private NhanVien_dao nv_dao;
 
-    private DateTimeFormatter formatter
-            = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private DateTimeFormatter formatter =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public PhieuNhapKho_GUI() {
 
@@ -63,7 +63,7 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
         }
 
         pnk_dao = new PhieuNhapKho_dao();
-        nv_dao = new NhanVien_DAO();
+        nv_dao = new NhanVien_dao();
 
         setTitle("Quản lý phiếu nhập kho");
         setSize(900, 550);
@@ -73,7 +73,6 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
         // Tiêu đề
         JLabel lblTieuDe = new JLabel("QUẢN LÝ PHIẾU NHẬP KHO");
         lblTieuDe.setFont(new Font("Arial", Font.BOLD, 22));
-        lblTieuDe.setForeground(Color.BLUE);
 
         Box b = Box.createVerticalBox();
 
@@ -181,19 +180,19 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
                 if (row >= 0) {
 
                     txtMaPNK.setText(
-                            modelPNK.getValueAt(row, 0).toString()
+                        modelPNK.getValueAt(row, 0).toString()
                     );
 
                     txtNgayLap.setText(
-                            modelPNK.getValueAt(row, 1).toString()
+                        modelPNK.getValueAt(row, 1).toString()
                     );
 
                     cboNhanVien.setSelectedItem(
-                            modelPNK.getValueAt(row, 2).toString()
+                        modelPNK.getValueAt(row, 2).toString()
                     );
 
                     txtTrangThai.setText(
-                            modelPNK.getValueAt(row, 3).toString()
+                        modelPNK.getValueAt(row, 3).toString()
                     );
 
                     // Không cho sửa mã phiếu
@@ -211,12 +210,12 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
 
         modelPNK.setRowCount(0);
 
-        ArrayList<PhieuNhapKho> list
-                = pnk_dao.getAllPhieuNhapKho();
+        ArrayList<PhieuNhapKho> list =
+                pnk_dao.getAllPhieuNhapKho();
 
         for (PhieuNhapKho pnk : list) {
 
-            modelPNK.addRow(new Object[]{
+            modelPNK.addRow(new Object[] {
                 pnk.getMaPNK(),
                 pnk.getNgayLap().format(formatter),
                 pnk.getNhanVien().getMaNV(),
@@ -317,7 +316,9 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(this,
                         "Dữ liệu không hợp lệ!");
             }
-        } // Sửa phiếu nhập kho
+        }
+
+        // Sửa phiếu nhập kho
         else if (o.equals(btnSua)) {
 
             if (tablePNK.getSelectedRow() < 0) {
@@ -367,7 +368,9 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(this,
                         "Dữ liệu không hợp lệ!");
             }
-        } // Xóa phiếu nhập kho
+        }
+
+        // Xóa phiếu nhập kho
         else if (o.equals(btnXoa)) {
 
             int row = tablePNK.getSelectedRow();
@@ -405,7 +408,9 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
                             "Xóa thất bại!");
                 }
             }
-        } // Tìm kiếm
+        }
+
+        // Tìm kiếm
         else if (o.equals(btnTim)) {
 
             String ma = txtTim.getText().trim();
@@ -420,12 +425,12 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
 
             modelPNK.setRowCount(0);
 
-            ArrayList<PhieuNhapKho> list
-                    = pnk_dao.timPhieuNhapKho(ma);
+            ArrayList<PhieuNhapKho> list =
+                    pnk_dao.timPhieuNhapKho(ma);
 
             for (PhieuNhapKho pnk : list) {
 
-                modelPNK.addRow(new Object[]{
+                modelPNK.addRow(new Object[] {
                     pnk.getMaPNK(),
                     pnk.getNgayLap().format(formatter),
                     pnk.getNhanVien().getMaNV(),
@@ -438,7 +443,9 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(this,
                         "Không tìm thấy phiếu nhập kho!");
             }
-        } // Xóa trắng
+        }
+
+        // Xóa trắng
         else if (o.equals(btnXoaTrang)) {
 
             xoaTrang();
