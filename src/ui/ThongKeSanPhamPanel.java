@@ -8,11 +8,12 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Comparator;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -26,190 +27,242 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import dao.SanPhamDAO;
 import entity.SanPham;
 
-public class ThongKeSanPhamPanel extends JPanel {
+public class ThongKeSanPhamPanel extends JPanel implements ActionListener, ChangeListener {
 
     private static final String HET_HANG = "HẾT HÀNG";
     private static final String SAP_HET = "SẮP HẾT";
     private static final String CON_HANG = "Còn hàng";
 
-    private static final String THEO_NGAY = "Theo ngày";
-    private static final String THEO_THANG = "Theo tháng";
-    private static final String THEO_NAM = "Theo năm";
+    private SanPhamDAO sanPhamDAO;
 
-    private final SanPhamDAO dao = new SanPhamDAO();
+    // Phần tồn kho
+    private DefaultTableModel modelTonKho;
+    private JTable tblTonKho;
+    private JSpinner spnNguongSapHet;
+    private JLabel lblTongKet;
+    private JButton btnCapNhatTon;
 
-    private final DefaultTableModel modelTon = new DefaultTableModel(
-            new String[] { "Mã SP", "Tên sản phẩm", "Danh mục", "Số lượng tồn", "Cảnh báo" }, 0) {
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return false;
-        }
-    };
-    private final DefaultTableModel modelBanChay = new DefaultTableModel(
-            new String[] { "Hạng", "Mã SP", "Tên sản phẩm", "Số lượng đã bán" }, 0) {
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return false;
-        }
-    };
-    private final JTable tblTon = new JTable(modelTon);
-    private final JTable tblBanChay = new JTable(modelBanChay);
-
-    private final JSpinner spNguong = new JSpinner(new SpinnerNumberModel(10, 0, 100000, 1));
-    private final JSpinner spTop = new JSpinner(new SpinnerNumberModel(5, 1, 1000, 1));
-    private final JComboBox<String> cboKy = new JComboBox<>(new String[] { THEO_NGAY, THEO_THANG, THEO_NAM });
-    private final JTextField txtKy = new JTextField(10);
-    private final JLabel lblGoiY = new JLabel();
-    private final JLabel lblTongKet = new JLabel(" ");
-    private final BieuDoCot bieuDo = new BieuDoCot();
+    // Phần sản phẩm bán chạy
+    private DefaultTableModel modelBanChay;
+    private JTable tblBanChay;
+    private JComboBox<String> cboKyThongKe;
+    private JTextField txtGiaTriKy;
+    private JLabel lblDinhDang;
+    private JSpinner spnTop;
+    private JButton btnXemThongKe;
+    private BieuDoCot bieuDo;
 
     public ThongKeSanPhamPanel() {
-        setLayout(new BorderLayout(10, 10));
-        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        sanPhamDAO = new SanPhamDAO();
 
-        tblTon.setRowHeight(24);
-        tblBanChay.setRowHeight(24);
-        tblTon.setDefaultRenderer(Object.class, new CanhBaoRenderer());
+        setLayout(new BorderLayout(0, 12));
+        setBackground(GiaoDien.MAU_NEN);
+        setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
-        // ----- Tồn kho và cảnh báo -----
-        JButton btnLamMoi = new JButton("Cập nhật tồn kho");
-        btnLamMoi.addActionListener(e -> napTonKho());
+        add(GiaoDien.taoTieuDe("THỐNG KÊ SẢN PHẨM"), BorderLayout.NORTH);
 
-        JPanel pnlTon = new JPanel(new BorderLayout(5, 5));
-        JPanel pnlTonBac = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
-        pnlTonBac.add(new JLabel("Tồn kho hiện tại. Cảnh báo sắp hết khi tồn kho ≤"));
-        pnlTonBac.add(spNguong);
-        pnlTonBac.add(btnLamMoi);
-        pnlTonBac.add(lblTongKet);
-        pnlTon.add(pnlTonBac, BorderLayout.NORTH);
-        pnlTon.add(new JScrollPane(tblTon), BorderLayout.CENTER);
+        // ----- Khung 1: tồn kho và cảnh báo -----
+        JPanel pnlTonKho = new JPanel(new BorderLayout(0, 8));
+        pnlTonKho.setOpaque(false);
 
-        // ----- Sản phẩm bán chạy theo ngày / tháng / năm -----
-        JButton btnXem = new JButton("Xem thống kê");
-        btnXem.addActionListener(e -> napBanChay());
-        cboKy.addActionListener(e -> datGoiYKy());
+        JPanel pnlDieuKhienTon = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        pnlDieuKhienTon.setOpaque(false);
+        spnNguongSapHet = new JSpinner(new SpinnerNumberModel(10, 0, 100000, 1));
+        btnCapNhatTon = GiaoDien.taoNut("Cập nhật", GiaoDien.MAU_CHINH);
+        lblTongKet = GiaoDien.taoNhan(" ");
+        lblTongKet.setFont(GiaoDien.FONT_DAM);
+        lblTongKet.setForeground(GiaoDien.MAU_XOA);
+        pnlDieuKhienTon.add(GiaoDien.taoNhan("Tồn kho hiện tại - cảnh báo sắp hết khi số lượng ≤"));
+        pnlDieuKhienTon.add(spnNguongSapHet);
+        pnlDieuKhienTon.add(btnCapNhatTon);
+        pnlDieuKhienTon.add(lblTongKet);
+        pnlTonKho.add(pnlDieuKhienTon, BorderLayout.NORTH);
 
-        JPanel pnlBanChayBac = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
-        pnlBanChayBac.add(new JLabel("Sản phẩm bán chạy:"));
-        pnlBanChayBac.add(cboKy);
-        pnlBanChayBac.add(txtKy);
-        pnlBanChayBac.add(lblGoiY);
-        pnlBanChayBac.add(new JLabel("Top:"));
-        pnlBanChayBac.add(spTop);
-        pnlBanChayBac.add(btnXem);
+        String[] cotTonKho = { "Mã SP", "Tên sản phẩm", "Danh mục", "Số lượng tồn", "Cảnh báo" };
+        modelTonKho = new DefaultTableModel(cotTonKho, 0);
+        tblTonKho = new JTable(modelTonKho);
+        tblTonKho.setDefaultEditor(Object.class, null);
+        GiaoDien.dinhDangBang(tblTonKho);
+        tblTonKho.setDefaultRenderer(Object.class, new CanhBaoRenderer());
+        JScrollPane scrollTon = new JScrollPane(tblTonKho);
+        scrollTon.getViewport().setBackground(Color.WHITE);
+        pnlTonKho.add(scrollTon, BorderLayout.CENTER);
 
-        JSplitPane splitBan = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                new JScrollPane(tblBanChay), bieuDo);
-        splitBan.setResizeWeight(0.45);
+        // ----- Khung 2: sản phẩm bán chạy -----
+        JPanel pnlBanChay = new JPanel(new BorderLayout(0, 8));
+        pnlBanChay.setOpaque(false);
 
-        JPanel pnlBanChay = new JPanel(new BorderLayout(5, 5));
-        pnlBanChay.add(pnlBanChayBac, BorderLayout.NORTH);
-        pnlBanChay.add(splitBan, BorderLayout.CENTER);
+        JPanel pnlDieuKhienBan = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        pnlDieuKhienBan.setOpaque(false);
+        cboKyThongKe = GiaoDien.taoComboBox();
+        cboKyThongKe.addItem("Theo ngày");
+        cboKyThongKe.addItem("Theo tháng");
+        cboKyThongKe.addItem("Theo năm");
+        txtGiaTriKy = GiaoDien.taoOText(10);
+        lblDinhDang = GiaoDien.taoNhan(" ");
+        spnTop = new JSpinner(new SpinnerNumberModel(5, 1, 1000, 1));
+        btnXemThongKe = GiaoDien.taoNut("Xem thống kê", GiaoDien.MAU_THEM);
+        pnlDieuKhienBan.add(GiaoDien.taoNhan("Sản phẩm bán chạy:"));
+        pnlDieuKhienBan.add(cboKyThongKe);
+        pnlDieuKhienBan.add(txtGiaTriKy);
+        pnlDieuKhienBan.add(lblDinhDang);
+        pnlDieuKhienBan.add(GiaoDien.taoNhan("Top:"));
+        pnlDieuKhienBan.add(spnTop);
+        pnlDieuKhienBan.add(btnXemThongKe);
+        pnlBanChay.add(pnlDieuKhienBan, BorderLayout.NORTH);
 
-        JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, pnlTon, pnlBanChay);
-        split.setResizeWeight(0.45);
-        add(split, BorderLayout.CENTER);
+        String[] cotBanChay = { "Hạng", "Mã SP", "Tên sản phẩm", "Số lượng đã bán" };
+        modelBanChay = new DefaultTableModel(cotBanChay, 0);
+        tblBanChay = new JTable(modelBanChay);
+        tblBanChay.setDefaultEditor(Object.class, null);
+        GiaoDien.dinhDangBang(tblBanChay);
+        JScrollPane scrollBan = new JScrollPane(tblBanChay);
+        scrollBan.getViewport().setBackground(Color.WHITE);
 
-        spNguong.addChangeListener(e -> napTonKho());
+        bieuDo = new BieuDoCot();
+        JSplitPane splitBanChay = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollBan, bieuDo);
+        splitBanChay.setResizeWeight(0.45);
+        pnlBanChay.add(splitBanChay, BorderLayout.CENTER);
+
+        // Ghép hai khung lại
+        JSplitPane splitChinh = new JSplitPane(JSplitPane.VERTICAL_SPLIT, pnlTonKho, pnlBanChay);
+        splitChinh.setResizeWeight(0.45);
+        splitChinh.setBorder(null);
+        splitChinh.setOpaque(false);
+        add(splitChinh, BorderLayout.CENTER);
+
+        // ----- Gắn sự kiện -----
+        btnCapNhatTon.addActionListener(this);
+        btnXemThongKe.addActionListener(this);
+        cboKyThongKe.addActionListener(this);
+        spnNguongSapHet.addChangeListener(this);
 
         datGoiYKy();
         lamMoi();
     }
 
     public void lamMoi() {
-        napTonKho();
-        napBanChay();
+        hienThiTonKho();
+        hienThiBanChay();
     }
 
+    // Điền sẵn giá trị mặc định (hôm nay) và gợi ý định dạng theo kỳ đang chọn
     private void datGoiYKy() {
         LocalDate homNay = LocalDate.now();
-        String ky = (String) cboKy.getSelectedItem();
-        if (THEO_NGAY.equals(ky)) {
-            txtKy.setText(homNay.toString());
-            lblGoiY.setText("(yyyy-MM-dd)");
-        } else if (THEO_THANG.equals(ky)) {
-            txtKy.setText(YearMonth.from(homNay).toString());
-            lblGoiY.setText("(yyyy-MM)");
+        int viTri = cboKyThongKe.getSelectedIndex();
+        if (viTri == 0) {
+            txtGiaTriKy.setText(homNay.toString());
+            lblDinhDang.setText("(yyyy-MM-dd)");
+        } else if (viTri == 1) {
+            txtGiaTriKy.setText(YearMonth.from(homNay).toString());
+            lblDinhDang.setText("(yyyy-MM)");
         } else {
-            txtKy.setText(String.valueOf(homNay.getYear()));
-            lblGoiY.setText("(yyyy)");
+            txtGiaTriKy.setText(String.valueOf(homNay.getYear()));
+            lblDinhDang.setText("(yyyy)");
         }
     }
 
-    private void napTonKho() {
-        int nguong = (Integer) spNguong.getValue();
-        ArrayList<SanPham> ds = dao.getAllSanPham();
-        ds.sort(Comparator.comparingInt(sp -> sp.getSoLuongTon() == null ? 0 : sp.getSoLuongTon()));
+    private void hienThiTonKho() {
+        int nguong = Integer.parseInt(spnNguongSapHet.getValue().toString());
+        ArrayList<SanPham> dsSP = sanPhamDAO.getAllSanPhamTheoTonKho();
 
-        modelTon.setRowCount(0);
+        modelTonKho.setRowCount(0);
         int soHetHang = 0;
         int soSapHet = 0;
-        for (SanPham sp : ds) {
-            int ton = sp.getSoLuongTon() == null ? 0 : sp.getSoLuongTon();
-            String canhBao;
+        for (int i = 0; i < dsSP.size(); i++) {
+            SanPham sp = dsSP.get(i);
+            int ton = sp.getSoLuongTon();
+
+            String canhBao = CON_HANG;
             if (ton == 0) {
                 canhBao = HET_HANG;
                 soHetHang++;
             } else if (ton <= nguong) {
                 canhBao = SAP_HET;
                 soSapHet++;
-            } else {
-                canhBao = CON_HANG;
             }
-            modelTon.addRow(new Object[] {
-                    sp.getMaSP(),
-                    sp.getTenSP(),
-                    sp.getDanhMuc() == null ? "" : sp.getDanhMuc().getTenDM(),
-                    ton,
-                    canhBao });
+
+            String tenDM = "";
+            if (sp.getDanhMuc() != null) {
+                tenDM = sp.getDanhMuc().getTenDM();
+            }
+            Object[] dong = { sp.getMaSP(), sp.getTenSP(), tenDM, ton, canhBao };
+            modelTonKho.addRow(dong);
         }
-        lblTongKet.setText("Hết hàng: " + soHetHang + "  |  Sắp hết: " + soSapHet + "  |  Tổng: " + ds.size());
+        lblTongKet.setText("Hết hàng: " + soHetHang + "   |   Sắp hết: " + soSapHet + "   |   Tổng: " + dsSP.size());
     }
 
-    private void napBanChay() {
-        LocalDate tuNgay;
-        LocalDate denNgay;
-        String ky = (String) cboKy.getSelectedItem();
-        String giaTri = txtKy.getText().trim();
+    private void hienThiBanChay() {
+        // Đổi giá trị người dùng nhập thành khoảng ngày cần thống kê
+        LocalDate tuNgay = null;
+        LocalDate denNgay = null;
+        int viTri = cboKyThongKe.getSelectedIndex();
+        String giaTri = txtGiaTriKy.getText().trim();
         try {
-            if (THEO_NGAY.equals(ky)) {
+            if (viTri == 0) {
                 tuNgay = LocalDate.parse(giaTri);
                 denNgay = tuNgay;
-            } else if (THEO_THANG.equals(ky)) {
-                YearMonth ym = YearMonth.parse(giaTri);
-                tuNgay = ym.atDay(1);
-                denNgay = ym.atEndOfMonth();
+            } else if (viTri == 1) {
+                YearMonth thang = YearMonth.parse(giaTri);
+                tuNgay = thang.atDay(1);
+                denNgay = thang.atEndOfMonth();
             } else {
                 int nam = Integer.parseInt(giaTri);
                 tuNgay = LocalDate.of(nam, 1, 1);
                 denNgay = LocalDate.of(nam, 12, 31);
             }
-        } catch (DateTimeParseException | NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Giá trị kỳ thống kê không đúng định dạng " + lblGoiY.getText() + "!");
+        } catch (DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(this, "Giá trị không đúng định dạng " + lblDinhDang.getText() + "!");
+            return;
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Giá trị không đúng định dạng " + lblDinhDang.getText() + "!");
             return;
         }
 
-        int top = (Integer) spTop.getValue();
+        int top = Integer.parseInt(spnTop.getValue().toString());
+        ArrayList<Object[]> dsBanChay = sanPhamDAO.getSanPhamBanChay(top, tuNgay, denNgay);
+
         modelBanChay.setRowCount(0);
-        ArrayList<String> nhan = new ArrayList<>();
-        ArrayList<Integer> giaTriCot = new ArrayList<>();
-        int hang = 1;
-        for (Object[] dong : dao.getSanPhamBanChay(top, tuNgay, denNgay)) {
-            modelBanChay.addRow(new Object[] { hang++, dong[0], dong[1], dong[2] });
-            nhan.add(String.valueOf(dong[1]));
-            giaTriCot.add((Integer) dong[2]);
+        ArrayList<String> dsTen = new ArrayList<String>();
+        ArrayList<Integer> dsSoLuong = new ArrayList<Integer>();
+        for (int i = 0; i < dsBanChay.size(); i++) {
+            Object[] dong = dsBanChay.get(i);
+            Object[] dongBang = { i + 1, dong[0], dong[1], dong[2] };
+            modelBanChay.addRow(dongBang);
+            dsTen.add(dong[1].toString());
+            dsSoLuong.add(Integer.parseInt(dong[2].toString()));
         }
-        bieuDo.setDuLieu(nhan, giaTriCot);
+        bieuDo.setDuLieu(dsTen, dsSoLuong);
     }
 
-    /** Tô màu dòng theo mức cảnh báo tồn kho. */
-    private static class CanhBaoRenderer extends DefaultTableCellRenderer {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object nguon = e.getSource();
+        if (nguon.equals(btnCapNhatTon)) {
+            hienThiTonKho();
+        } else if (nguon.equals(btnXemThongKe)) {
+            hienThiBanChay();
+        } else if (nguon.equals(cboKyThongKe)) {
+            datGoiYKy();
+        }
+    }
+
+    // Đổi ngưỡng cảnh báo thì tính lại ngay
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        hienThiTonKho();
+    }
+
+    // Tô màu dòng trong bảng tồn kho theo mức cảnh báo
+    private class CanhBaoRenderer extends DefaultTableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                 boolean hasFocus, int row, int column) {
@@ -229,72 +282,87 @@ public class ThongKeSanPhamPanel extends JPanel {
         }
     }
 
-    /** Biểu đồ cột số lượng bán của các sản phẩm đứng đầu. */
-    private static class BieuDoCot extends JPanel {
-        private ArrayList<String> nhan = new ArrayList<>();
-        private ArrayList<Integer> giaTri = new ArrayList<>();
+    // Biểu đồ cột: mỗi cột là một sản phẩm, chiều cao theo số lượng bán
+    private class BieuDoCot extends JPanel {
+        private ArrayList<String> dsTen = new ArrayList<String>();
+        private ArrayList<Integer> dsSoLuong = new ArrayList<Integer>();
 
-        BieuDoCot() {
+        public BieuDoCot() {
             setBackground(Color.WHITE);
+            setBorder(BorderFactory.createLineBorder(GiaoDien.MAU_VIEN));
         }
 
-        void setDuLieu(ArrayList<String> nhan, ArrayList<Integer> giaTri) {
-            this.nhan = nhan;
-            this.giaTri = giaTri;
+        public void setDuLieu(ArrayList<String> dsTen, ArrayList<Integer> dsSoLuong) {
+            this.dsTen = dsTen;
+            this.dsSoLuong = dsSoLuong;
             repaint();
         }
 
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            Graphics2D g2 = (Graphics2D) g.create();
+            Graphics2D g2 = (Graphics2D) g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g2.setFont(GiaoDien.FONT_THUONG);
             FontMetrics fm = g2.getFontMetrics();
 
-            int w = getWidth();
-            int h = getHeight();
-            if (giaTri.isEmpty()) {
-                String tb = "Không có dữ liệu bán hàng trong kỳ này";
+            int rong = getWidth();
+            int cao = getHeight();
+
+            if (dsSoLuong.size() == 0) {
+                String thongBao = "Không có dữ liệu bán hàng trong kỳ này";
                 g2.setColor(Color.GRAY);
-                g2.drawString(tb, (w - fm.stringWidth(tb)) / 2, h / 2);
-                g2.dispose();
+                g2.drawString(thongBao, (rong - fm.stringWidth(thongBao)) / 2, cao / 2);
                 return;
             }
 
-            int le = 40;
-            int day = h - 45;
-            int dinh = 30;
-            int max = 1;
-            for (int v : giaTri) {
-                max = Math.max(max, v);
+            int leTrai = 45;
+            int leDuoi = cao - 45;
+            int leTren = 35;
+
+            // Tìm số lượng lớn nhất để quy đổi chiều cao cột
+            int lonNhat = 1;
+            for (int i = 0; i < dsSoLuong.size(); i++) {
+                if (dsSoLuong.get(i) > lonNhat) {
+                    lonNhat = dsSoLuong.get(i);
+                }
             }
 
+            // Vẽ hai trục
             g2.setColor(Color.DARK_GRAY);
-            g2.drawLine(le, dinh, le, day);
-            g2.drawLine(le, day, w - 15, day);
-            g2.drawString("Số lượng bán", le, dinh - 10);
+            g2.drawLine(leTrai, leTren, leTrai, leDuoi);
+            g2.drawLine(leTrai, leDuoi, rong - 15, leDuoi);
+            g2.drawString("Số lượng bán", leTrai, leTren - 12);
 
-            int n = giaTri.size();
-            int vung = (w - 15 - le) / n;
-            int rongCot = Math.max(10, vung * 2 / 3);
-            for (int i = 0; i < n; i++) {
-                int cao = (int) ((double) giaTri.get(i) / max * (day - dinh - 15));
-                int x = le + i * vung + (vung - rongCot) / 2;
-                int y = day - cao;
-                g2.setColor(new Color(66, 133, 244));
-                g2.fillRect(x, y, rongCot, cao);
+            int soCot = dsSoLuong.size();
+            int beRongMoiCot = (rong - 15 - leTrai) / soCot;
+            int beRongCot = beRongMoiCot * 2 / 3;
+            if (beRongCot < 10) {
+                beRongCot = 10;
+            }
+
+            for (int i = 0; i < soCot; i++) {
+                int chieuCaoCot = dsSoLuong.get(i) * (leDuoi - leTren - 20) / lonNhat;
+                int x = leTrai + i * beRongMoiCot + (beRongMoiCot - beRongCot) / 2;
+                int y = leDuoi - chieuCaoCot;
+
+                g2.setColor(GiaoDien.MAU_CHINH);
+                g2.fillRect(x, y, beRongCot, chieuCaoCot);
+
+                // Số lượng ghi phía trên cột
                 g2.setColor(Color.BLACK);
-                String sl = String.valueOf(giaTri.get(i));
-                g2.drawString(sl, x + (rongCot - fm.stringWidth(sl)) / 2, y - 4);
+                String soLuong = dsSoLuong.get(i).toString();
+                g2.drawString(soLuong, x + (beRongCot - fm.stringWidth(soLuong)) / 2, y - 5);
 
-                String ten = nhan.get(i);
-                while (ten.length() > 1 && fm.stringWidth(ten) > vung - 4) {
+                // Tên sản phẩm ghi phía dưới, cắt bớt nếu dài quá bề rộng
+                String ten = dsTen.get(i);
+                while (ten.length() > 1 && fm.stringWidth(ten) > beRongMoiCot - 4) {
                     ten = ten.substring(0, ten.length() - 1);
                 }
-                g2.drawString(ten, le + i * vung + (vung - fm.stringWidth(ten)) / 2, day + 18);
+                int xTen = leTrai + i * beRongMoiCot + (beRongMoiCot - fm.stringWidth(ten)) / 2;
+                g2.drawString(ten, xTen, leDuoi + 20);
             }
-            g2.dispose();
         }
     }
 }
