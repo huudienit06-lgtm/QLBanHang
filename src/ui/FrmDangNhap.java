@@ -37,7 +37,7 @@ public class FrmDangNhap extends JPanel implements ActionListener {
         // setSize(200, 100);
         // setPreferredSize(new Dimension(400, 300));
         JPanel pnlDangNhap = new JPanel(new BorderLayout());
-        Box b, b1, b2;
+        Box b, b1;
         b = Box.createVerticalBox();
         b1 = Box.createVerticalBox();
         JPanel pnlButton = new JPanel(new GridLayout(1, 2));
