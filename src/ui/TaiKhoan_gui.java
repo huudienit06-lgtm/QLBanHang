@@ -1,14 +1,13 @@
 
 package ui;
 
+import dao.TaiKhoan_Dao;
+import entity.NhanVien;
+import entity.TaiKhoan;
 import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
-import dao.TaiKhoan_Dao;
-import entity.NhanVien;
-import entity.TaiKhoan;
 
 public class TaiKhoan_gui extends JPanel {
 
@@ -260,7 +259,11 @@ public class TaiKhoan_gui extends JPanel {
         if (chon != JOptionPane.YES_OPTION) {
             return;
         }
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> origin/main
         if (dao.xoaTaiKhoan(txtMa.getText().trim())) {
             loadData();
             clearForm();

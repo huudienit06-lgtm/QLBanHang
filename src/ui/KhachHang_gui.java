@@ -1,12 +1,10 @@
 package ui;
 
+import dao.KhachHang_Dao;
+import entity.KhachHang;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
-import dao.KhachHang_Dao;
-import entity.KhachHang; 
-
 public class KhachHang_gui extends JPanel {
     private final KhachHang_Dao dao = new KhachHang_Dao();
     private final DefaultTableModel model = new DefaultTableModel(
@@ -256,7 +254,10 @@ public class KhachHang_gui extends JPanel {
         String ma = txtTim.getText().trim();
         if (ma.isEmpty()) { loadData(); return; }
         model.setRowCount(0);
-        for (KhachHang kh : dao.timkhachHang(ma)) addRow(kh);
-        if (model.getRowCount() == 0) JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng!");
+        KhachHang kh = dao.timkhachHang(ma);
+        if(kh!=null)addRow(kh);
+        else{
+            JOptionPane.showMessageDialog(this, "Không tìm thấy nhân viên!");
+        }
     }
 }

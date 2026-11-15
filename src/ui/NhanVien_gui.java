@@ -1,11 +1,11 @@
 package ui;
 
+
+import dao.NhanVien_DAO;
+import entity.NhanVien;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
- 
-import dao.NhanVien_DAO;
-import entity.NhanVien;
 
 public class NhanVien_gui extends JPanel {
     private final NhanVien_DAO dao = new NhanVien_DAO();
@@ -255,9 +255,14 @@ public class NhanVien_gui extends JPanel {
         String ma = txtTim.getText().trim();
         if (ma.isEmpty()) { loadData(); return; }
         model.setRowCount(0);
-        for (NhanVien nv : dao.timNhanVientheoMa(ma)) 
-            addRow(nv);
-        if (model.getRowCount() == 0) 
+        // for (NhanVien nv : dao.timNhanVientheoMa(ma)) 
+        //     addRow(nv);
+        // if (model.getRowCount() == 0) 
+        //     JOptionPane.showMessageDialog(this, "Không tìm thấy nhân viên!");
+        NhanVien nv = dao.timNhanVientheoMa(ma);
+        if(nv!=null)addRow(nv);
+        else{
             JOptionPane.showMessageDialog(this, "Không tìm thấy nhân viên!");
+        }
     }
 }

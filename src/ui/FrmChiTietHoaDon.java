@@ -1,33 +1,42 @@
 package ui;
 
+import dao.ChiTietHoaDonDAO;
+import dao.SanPhamDAO;
+import entity.ChiTietHoaDon;
+import entity.HoaDon;
+import entity.SanPham;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
-import dao.SanPhamDAO;
-import entity.HoaDon;
-import entity.SanPham;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
+public class FrmChiTietHoaDon extends JDialog implements ActionListener, DocumentListener, MouseListener, ChangeListener {
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-
-public class FrmChiTietHoaDon extends JFrame implements ActionListener {
-
+    private final ChiTietHoaDonDAO dao = new ChiTietHoaDonDAO();
+    private final SanPhamDAO spDao = new SanPhamDAO();
     private final JTextField txtMaSP;
     private final JTextField txtTenSP;
     // private final JTextField txtSoLuong;
@@ -43,13 +52,18 @@ public class FrmChiTietHoaDon extends JFrame implements ActionListener {
     private final JButton btnHoanTat;
     private final JTextField txtTimTheoTen;
     private final JTextField txtTimTheoMa;
-    private final JButton btnTimSanPham;
+
     private DefaultTableModel modelSP;
     private final JTable tblSP;
+    private JSpinner spnSoLuong;
+    private final HoaDon hoaDon;
 
-    public FrmChiTietHoaDon(HoaDon hd) throws HeadlessException {
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(1200, 900);
+    public FrmChiTietHoaDon(JFrame parent, HoaDon hd , DefaultTableModel modelCT) {
+        super(parent, "Chi tiết hóa đơn", true);
+        hoaDon = hd;
+        modelCTHD=modelCT;
+        // setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(1200, 700);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
 
@@ -89,47 +103,45 @@ public class FrmChiTietHoaDon extends JFrame implements ActionListener {
                 1 // Bước tăng giảm
         );
 
-        JSpinner spnSoLuong = new JSpinner(model);
+        spnSoLuong = new JSpinner(model);
         txtTongTien = new JTextField();
         txtTongTien.setEditable(false);
         pnlThongTinSanPham.add(spnSoLuong);
         pnlThongTinSanPham.add(txtTongTien);
 
         JPanel pnlTimSanPham = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        pnlTimSanPham.add(new JLabel("Mã:"));
+        pnlTimSanPham.add(new JLabel("Tìm Theo Mã:"));
         txtTimTheoMa = new JTextField(10);
         pnlTimSanPham.add(txtTimTheoMa);
 
-        pnlTimSanPham.add(new JLabel("Tên:"));
+        pnlTimSanPham.add(new JLabel("Tìm Theo Tên:"));
         txtTimTheoTen = new JTextField(10);
         pnlTimSanPham.add(txtTimTheoTen);
 
-        btnTimSanPham = new JButton("Tìm sản phẩm theo thuộc tính");
-        pnlTimSanPham.add(btnTimSanPham);
-
-        String[] headerSP = {"Mã Sản Phẩm", "Tên Sản Phẩm", "Danh Mục", "Giá Bán", "Giá Sau Khuyến Mãi"};
+        String[] headerSP = {"Mã Sản Phẩm", "Tên Sản Phẩm", "Số Lượng Tồn", "Giá Bán", "Giá Sau Khuyến Mãi"};
         modelSP = new DefaultTableModel(headerSP, 0);
+
         tblSP = new JTable(modelSP);
         tblSP.setPreferredScrollableViewportSize(
                 new Dimension(300, 200)
         );
-        tblSP.setRowHeight(10);
+        tblSP.setRowHeight(20);
 
         JPanel pnlSanPham = new JPanel(new BorderLayout(5, 10));
         pnlSanPham.setBorder(BorderFactory.createTitledBorder("Tìm Sản Phẩm"));
         pnlSanPham.add(pnlTimSanPham, BorderLayout.NORTH);
         pnlSanPham.add(new JScrollPane(tblSP), BorderLayout.CENTER);
 
-        String[] header = {
-            "Mã sản phẩm",
-            "Tên sản phẩm",
-            "Giá bán",
-            "Giá sau khuyến mãi",
-            "Số lượng",
-            "Tổng tiền"
-        };
+        // String[] header = {
+        //     "Mã sản phẩm",
+        //     "Tên sản phẩm",
+        //     "Giá bán",
+        //     "Giá sau khuyến mãi",
+        //     "Số lượng",
+        //     "Tổng tiền"
+        // };
 
-        modelCTHD = new DefaultTableModel(header, 0);
+        // modelCTHD = new DefaultTableModel(header, 0);
         tblCTHD = new JTable(modelCTHD);
         tblCTHD.setRowHeight(25);
 
@@ -162,26 +174,206 @@ public class FrmChiTietHoaDon extends JFrame implements ActionListener {
         add(pnlCTHD, BorderLayout.CENTER);
         // add(pnlButton,BorderLayout.SOUTH);
 
-        btnTimSanPham.addActionListener(this);
+        tblSP.addMouseListener(this);
+        tblCTHD.addMouseListener(this);
+        txtTimTheoMa.getDocument().addDocumentListener(this);
+        txtTimTheoTen.getDocument().addDocumentListener(this);
+        spnSoLuong.addChangeListener(this);
+        btnThem.addActionListener(this);
+        btnXoa.addActionListener(this);
+        btnSua.addActionListener(this);
+        btnXoaTrang.addActionListener(this);
+        btnHoanTat.addActionListener(this);
+    }
+
+    public ChiTietHoaDon getCTHoaDon() {
+        SanPham sp = new SanPhamDAO().findByID(txtMaSP.getText());
+        if (sp == null) {
+            return null;
+        }
+        int soLuong = (int) spnSoLuong.getValue();
+        ChiTietHoaDon ct = new ChiTietHoaDon(hoaDon, sp, soLuong);
+        return ct;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         Object o = e.getSource();
-        if (o.equals(btnTimSanPham)) {
+        if (o.equals(btnThem)) {
+
+            if (hoaDon == null || hoaDon.getMaHD() == null || hoaDon.getMaHD().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Không có mã hóa đơn hợp lệ. Hãy mở chi tiết từ màn hình lập hóa đơn.");
+                return;
+            }
+            if (txtMaSP.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần thêm.");
+                return;
+            }
+            ChiTietHoaDon ct = getCTHoaDon();
+            if (ct == null) {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy sản phẩm đã chọn.");
+                return;
+            }
+            if (ct.getSoLuong() < (int) spnSoLuong.getValue()) {
+                JOptionPane.showMessageDialog(null, "Không đủ số lượng tồn");
+            }
+            spnSoLuong.setValue(1);
+            modelCTHD.addRow(new Object[]{ct.getSanPham().getMaSP(), ct.getSanPham().getTenSP(), ct.getSanPham().tinhGiaBan(), ct.getSanPham().tinhGiaBanSauKhuyenMai(), ct.getSoLuong(), ct.tinhThanhTien()});
+            JOptionPane.showMessageDialog(null, "Thêm thành công");
+        }
+        if (o.equals(btnXoa)) {
+            if (tblCTHD.getSelectedRow() < 0) {
+                JOptionPane.showMessageDialog(null, "Vui lòng chọn hàng cần xóa");
+            } else {
+                int row = tblCTHD.getSelectedRow();
+                if (JOptionPane.showConfirmDialog(this, "Bạn có xác nhận xóa", "Xác nhận", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    // if (dao.deleteCTHD(hoaDon.getMaHD(), modelCTHD.getValueAt(row, 0).toString())) {
+                    JOptionPane.showMessageDialog(null, "Xóa thành công");
+                    modelCTHD.removeRow(row);
+                    // capNhatModelCTHH();
+                    // }
+                }
+
+            }
+        }
+        if (o.equals(btnSua)) {
+            int row = tblCTHD.getSelectedRow();
+            if ( row >= 0) {
+                modelCTHD.setValueAt(txtMaSP.getText(),row, 0);
+                modelCTHD.setValueAt(txtTenSP.getText(), row, 1);
+                modelCTHD.setValueAt(txtGiaBan.getText(),row, 2);
+                modelCTHD.setValueAt(txtGiaSauKhuyenMai.getText(),row, 3);
+                modelCTHD.setValueAt(spnSoLuong.getValue(), row, 4);
+                modelCTHD.setValueAt(txtTongTien.getText(), row, 5);
+            } else {
+                JOptionPane.showMessageDialog(null, "Vui lòng chọn dòng cần sửa");
+            }
+        }
+        if (o.equals(btnXoaTrang)) {
+            txtMaSP.setText("");
+            txtTenSP.setText("");
+            txtGiaBan.setText("");
+            txtGiaSauKhuyenMai.setText("");
+            txtTongTien.setText("");
+            spnSoLuong.setValue(0);
+            txtTimTheoMa.setText("");
+            txtTimTheoTen.setText("");
             modelSP.setRowCount(0);
-            String maSP = txtTimTheoMa.getText().trim();
-            String tenSP = txtTimTheoTen.getText().trim();
-            String thuocTinhTim = tenSP.isEmpty() ? maSP : tenSP;
-            ArrayList<SanPham> rs = new SanPhamDAO().timSanPham(thuocTinhTim);
-            for (SanPham sp : rs) {
-                modelSP.addRow(new Object[]{sp.getMaSP(), sp.getTenSP(), sp.getDanhMuc().getTenDM(), sp.tinhGiaBan(), sp.tinhGiaBanSauKhuyenMai()});
+        }
+        if (o.equals(btnHoanTat)) {
+            if (JOptionPane.showConfirmDialog(this, "Bạn muốn hoàn tất thêm sản phẩm", "Xác nhận", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                dispose();
             }
         }
     }
 
-    public static void main(String[] args) {
-        new FrmChiTietHoaDon(new HoaDon()).setVisible(true);
+    // public void capNhatModelCTHH() {
+    //     modelCTHD.setRowCount(0);
+    //     for (int i = 0; i<modelCTHD.getRowCount();i++) {
+    //         modelCTHD.addRow(new Object[]{modelCTHD.getValueAt(i, 0), modelCTHD.getValueAt(i, 1),modelCTHD.getValueAt(i, 2), modelCTHD.getValueAt(i, 3), modelCTHD.getValueAt(i, 4),modelCTHD.getValueAt(i, 5)});
+    //     }
+    // }
+    public DefaultTableModel getModelCTHD() {
+        return modelCTHD;
+    }
+
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        capNhatBangSanPham();
+
+    }
+
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+        capNhatBangSanPham();
+
+    }
+
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+        capNhatBangSanPham();
+    }
+
+    public void capNhatBangSanPham() {
+        modelSP.setRowCount(0);
+        String maSP = txtTimTheoMa.getText().trim();
+        String tenSP = txtTimTheoTen.getText().trim();
+        String thuocTinhTim = tenSP.isEmpty() ? maSP : tenSP;
+        ArrayList<SanPham> rs = new SanPhamDAO().timSanPham(thuocTinhTim);
+        for (SanPham sp : rs) {
+            modelSP.addRow(new Object[]{sp.getMaSP(), sp.getTenSP(), sp.getSoLuongTon(), sp.tinhGiaBan(), sp.tinhGiaBanSauKhuyenMai()});
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (e.getSource() == tblSP) {
+            int row = tblSP.getSelectedRow();
+            if (row != -1) {
+                txtMaSP.setText(modelSP.getValueAt(row, 0).toString());
+                txtTenSP.setText(modelSP.getValueAt(row, 1).toString());
+                txtGiaBan.setText(modelSP.getValueAt(row, 3).toString());
+                txtGiaSauKhuyenMai.setText(modelSP.getValueAt(row, 4).toString());
+            }
+            tinhTongTien();
+        } else if (e.getSource() == tblCTHD) {
+            setCTHD();
+        }
+    }
+
+    public void setCTHD() {
+        int row = tblCTHD.getSelectedRow();
+        if (row < 0) {
+            return;
+        }
+
+        txtMaSP.setText(String.valueOf(modelCTHD.getValueAt(row, 0)));
+        txtTenSP.setText(String.valueOf(modelCTHD.getValueAt(row, 1)));
+        txtGiaBan.setText(String.valueOf(modelCTHD.getValueAt(row, 2)));
+        txtGiaSauKhuyenMai.setText(String.valueOf(modelCTHD.getValueAt(row, 3)));
+        spnSoLuong.setValue(Integer.parseInt(String.valueOf(modelCTHD.getValueAt(row, 4))));
+        txtTongTien.setText(String.valueOf(modelCTHD.getValueAt(row, 5)));
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        tinhTongTien();
+    }
+
+    private void tinhTongTien() {
+        if (txtGiaSauKhuyenMai.getText().isEmpty()) {
+            return;
+        }
+
+        double gia = Double.parseDouble(
+                txtGiaSauKhuyenMai.getText()
+        );
+
+        int soLuong = (int) spnSoLuong.getValue();
+
+        double tongTien = gia * soLuong;
+
+        txtTongTien.setText(String.valueOf(tongTien));
     }
 
 }

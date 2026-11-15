@@ -5,15 +5,24 @@ import entity.TaiKhoan;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -27,17 +36,25 @@ public class FrmDangNhap extends JPanel implements ActionListener {
     private final JCheckBox chkHienMK;
     private final JButton btnDangNhap;
     private final JButton btnQuenMK;
+    private final char kyTuMatKhauMacDinh;
 
     public FrmDangNhap(Main main) {
         this.main = main;
-        setLayout(new GridBagLayout());
+        setLayout(new BorderLayout());
+        JPanel pnlNen = new NenDangNhap();
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
         // setSize(200, 100);
         // setPreferredSize(new Dimension(400, 300));
         JPanel pnlDangNhap = new JPanel(new BorderLayout());
+<<<<<<< HEAD
         Box b, b1;
+=======
+        pnlDangNhap.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(190, 205, 225)),
+                BorderFactory.createEmptyBorder(16, 20, 16, 20)));
+        Box b, b1, b2;
+>>>>>>> origin/main
         b = Box.createVerticalBox();
         b1 = Box.createVerticalBox();
         JPanel pnlButton = new JPanel(new GridLayout(1, 2));
@@ -54,6 +71,7 @@ public class FrmDangNhap extends JPanel implements ActionListener {
         txtTenDN = new JTextField();
         JLabel lblPass = new JLabel("Mật Khẩu: ");
         txtMatKhau = new JPasswordField();
+        kyTuMatKhauMacDinh = txtMatKhau.getEchoChar();
         chkHienMK = new JCheckBox("Hiển thị mật khẩu");
         // txtTenDN.setMaximumSize(new Dimension(500, 35));
         // txtMatKhau.setMaximumSize(new Dimension(500, 35));
@@ -70,22 +88,80 @@ public class FrmDangNhap extends JPanel implements ActionListener {
         b.add(b1);
         b.add(pnlButton);
         pnlDangNhap.add(b, BorderLayout.CENTER);
-        add(pnlDangNhap, gbc);
+        pnlNen.add(pnlDangNhap, gbc);
+        add(pnlNen, BorderLayout.CENTER);
 
         btnDangNhap.addActionListener(this);
         btnQuenMK.addActionListener(this);
+        chkHienMK.addActionListener(this);
 
+    }
+
+    private static class NenDangNhap extends JPanel {
+        private final BufferedImage anhNen;
+
+        NenDangNhap() {
+            setLayout(new GridBagLayout());
+            try {
+                anhNen = ImageIO.read(new File("img", "trangdangnhap.jpg"));
+                if (anhNen == null) {
+                    throw new IOException("Tệp không phải ảnh hợp lệ.");
+                }
+            } catch (IOException e) {
+                throw new IllegalStateException(
+                        "Không thể tải hình nền img/trangdangnhap.jpg", e);
+            }
+        }
+
+        @Override
+        protected void paintComponent(Graphics graphics) {
+            super.paintComponent(graphics);
+            if (getWidth() <= 0 || getHeight() <= 0) {
+                return;
+            }
+
+            double tiLe = Math.max(
+                    (double) getWidth() / anhNen.getWidth(),
+                    (double) getHeight() / anhNen.getHeight());
+            int rong = (int) (anhNen.getWidth() * tiLe);
+            int cao = (int) (anhNen.getHeight() * tiLe);
+            int x = (getWidth() - rong) / 2;
+            int y = (getHeight() - cao) / 2;
+
+            Graphics2D g2d = (Graphics2D) graphics.create();
+            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                    RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2d.drawImage(anhNen, x, y, rong, cao, this);
+            g2d.dispose();
+        }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         Object o = e.getSource();
-        if (o.equals(btnDangNhap)) {
-            TaiKhoan tk = kiemTraTaiKhoan();
-            if (tk != null) {
-                main.dangNhapThanhCong(tk);
+        if (o.equals(chkHienMK)) {
+            txtMatKhau.setEchoChar(chkHienMK.isSelected() ? (char) 0 : kyTuMatKhauMacDinh);
+        } else if (o.equals(btnDangNhap)) {
+            String tenDN = txtTenDN.getText().trim();
+            String matKhau = new String(txtMatKhau.getPassword()).trim();
+            if (tenDN.isEmpty() || matKhau.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập mã đăng nhập và mật khẩu.");
+                return;
+            }
+            if (!taiKhoanDao.tonTaiMaDangNhap(tenDN)) {
+                JOptionPane.showMessageDialog(this, "Mã đăng nhập không tồn tại.");
+                return;
             }
 
+            TaiKhoan tk = taiKhoanDao.dangNhap(tenDN, matKhau);
+            if (tk == null) {
+                JOptionPane.showMessageDialog(this, "Mật khẩu không chính xác.");
+            } else if (tk.getTrangThai() == null
+                    || !"Hoạt động".equalsIgnoreCase(tk.getTrangThai().trim())) {
+                JOptionPane.showMessageDialog(this, "Tài khoản hiện không hoạt động.");
+            } else {
+                main.dangNhapThanhCong(tk);
+            }
         } else if (o.equals(btnQuenMK)) {
             // TODO: xử lý quên mật khẩu
         }
@@ -94,19 +170,17 @@ public class FrmDangNhap extends JPanel implements ActionListener {
     public TaiKhoan kiemTraTaiKhoan() {
         String tenDN = txtTenDN.getText().trim();
         String matKhau = new String(txtMatKhau.getPassword()).trim();
-        if (tenDN.isEmpty() || matKhau.isEmpty()) {
+        if (tenDN.isEmpty() || matKhau.isEmpty()
+                || !taiKhoanDao.tonTaiMaDangNhap(tenDN)) {
             return null;
-        } else {
-            TaiKhoan tk = taiKhoanDao.dangNhap(tenDN, matKhau);
-            if (tk == null) {
-                return null;
-            }
-            if (!"Hoạt động".equalsIgnoreCase(tk.getTrangThai().trim())) {
-                // Hiển thị thông báo tài khoản bị khóa
-                return null;
-            }
-            return tk;
         }
+
+        TaiKhoan tk = taiKhoanDao.dangNhap(tenDN, matKhau);
+        if (tk == null || tk.getTrangThai() == null
+                || !"Hoạt động".equalsIgnoreCase(tk.getTrangThai().trim())) {
+            return null;
+        }
+        return tk;
     }
 
 }

@@ -91,7 +91,8 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
 
         b2.add(lblMaPNK = new JLabel("Mã phiếu nhập: "));
         b2.add(txtMaPNK = new JTextField());
-
+        txtMaPNK.setText(pnk_dao.sinhMaPNK());
+        txtMaPNK.setEditable(false);
         b.add(Box.createVerticalStrut(10));
 
         // Dòng ngày lập và nhân viên
@@ -356,21 +357,42 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
         else if (o.equals(btnTim)) {
             String ma = txtTim.getText().trim();
             if (ma.isEmpty()) {
+<<<<<<< HEAD
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập mã phiếu cần tìm!");
+=======
+                JOptionPane.showMessageDialog(this,
+                        "Vui lòng nhập mã phiếu cần tìm!");
+>>>>>>> origin/main
                 return;
             }
             modelPNK.setRowCount(0);
+<<<<<<< HEAD
             ArrayList<PhieuNhapKho> list =pnk_dao.timPhieuNhapKho(ma);
             for (PhieuNhapKho pnk : list) {
+=======
+
+            PhieuNhapKho pnk = pnk_dao.timPhieuNhapKho(ma);
+
+            if (pnk != null) {
+
+>>>>>>> origin/main
                 modelPNK.addRow(new Object[] {
                     pnk.getMaPNK(),
                     pnk.getNgayLap().format(formatter),
                     pnk.getNhanVien().getMaNV(),
                     pnk.getTrangThai()
                 });
+<<<<<<< HEAD
             }
             if (list.isEmpty()) {
                 JOptionPane.showMessageDialog(this,"Không tìm thấy phiếu nhập kho!");
+=======
+
+            } else {
+
+                JOptionPane.showMessageDialog(this,
+                        "Không tìm thấy phiếu nhập kho!");
+>>>>>>> origin/main
             }
         }
         // Xóa trắng

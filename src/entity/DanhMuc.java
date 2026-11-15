@@ -6,6 +6,13 @@ public class DanhMuc {
     private String tenDM;
     private float loiNhuan;
 
+    public DanhMuc() {
+    }
+
+    public DanhMuc(String maDM, String tenDM) {
+        this(maDM, tenDM, 0);
+    }
+
     public DanhMuc(String maDM, String tenDM, float loiNhuan) {
         this.maDM = maDM;
         this.tenDM = tenDM;
