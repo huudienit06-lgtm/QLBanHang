@@ -20,7 +20,7 @@ public class KhuyenMaiDAO {
         km.setMaKM(rs.getString("maKM"));
         km.setTenKM(rs.getString("tenKM"));
         km.setTiLeGiamGia(rs.getDouble("tiLeGiamGia"));
-        km.setLoaiKM(rs.getString("loaiKM"));
+        km.setDonViTinh(rs.getString("donViTinh"));
         Date ngayBD = rs.getDate("ngayBatDau");
         if (ngayBD != null) {
             km.setNgayBatDau(ngayBD.toLocalDate());
@@ -105,7 +105,7 @@ public class KhuyenMaiDAO {
             stmt.setString(1, km.getMaKM());
             stmt.setString(2, km.getTenKM());
             stmt.setDouble(3, km.getTiLeGiamGia());
-            stmt.setString(4, km.getLoaiKM());
+            stmt.setString(4, km.getDonViTinh());
             stmt.setDate(5, Date.valueOf(km.getNgayBatDau()));
             stmt.setDate(6, Date.valueOf(km.getNgayKetThuc()));
             stmt.setString(7, km.getTrangThai());
@@ -128,7 +128,7 @@ public class KhuyenMaiDAO {
             stmt = con.prepareStatement(sql);
             stmt.setString(1, km.getTenKM());
             stmt.setDouble(2, km.getTiLeGiamGia());
-            stmt.setString(3, km.getLoaiKM());
+            stmt.setString(3, km.getDonViTinh());
             stmt.setDate(4, Date.valueOf(km.getNgayBatDau()));
             stmt.setDate(5, Date.valueOf(km.getNgayKetThuc()));
             stmt.setString(6, km.getTrangThai());

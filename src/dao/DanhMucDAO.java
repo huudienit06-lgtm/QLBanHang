@@ -20,13 +20,12 @@ public class DanhMucDAO {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            String sql = "SELECT maDM, tenDM FROM DanhMuc ORDER BY maDM";
+            String sql = "SELECT maDM, tenDM, loiNhuan FROM DanhMuc ORDER BY maDM";
             stmt = con.prepareStatement(sql);
             rs = stmt.executeQuery();
             while (rs.next()) {
-                DanhMuc dm = new DanhMuc();
-                dm.setMaDM(rs.getString("maDM"));
-                dm.setTenDM(rs.getString("tenDM"));
+                DanhMuc dm = new DanhMuc(rs.getString("maDM"), rs.getString("tenDM"),
+                        rs.getFloat("loiNhuan"));
                 dsDM.add(dm);
             }
         } catch (SQLException e) {
@@ -44,15 +43,15 @@ public class DanhMucDAO {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            String sql = "SELECT maDM, tenDM FROM DanhMuc WHERE maDM LIKE ? OR tenDM LIKE ? ORDER BY maDM";
+            String sql = "SELECT maDM, tenDM, loiNhuan FROM DanhMuc "
+                    + "WHERE maDM LIKE ? OR tenDM LIKE ? ORDER BY maDM";
             stmt = con.prepareStatement(sql);
             stmt.setString(1, "%" + tuKhoa + "%");
             stmt.setString(2, "%" + tuKhoa + "%");
             rs = stmt.executeQuery();
             while (rs.next()) {
-                DanhMuc dm = new DanhMuc();
-                dm.setMaDM(rs.getString("maDM"));
-                dm.setTenDM(rs.getString("tenDM"));
+                DanhMuc dm = new DanhMuc(rs.getString("maDM"), rs.getString("tenDM"),
+                        rs.getFloat("loiNhuan"));
                 dsDM.add(dm);
             }
         } catch (SQLException e) {

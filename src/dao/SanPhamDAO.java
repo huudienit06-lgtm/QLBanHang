@@ -10,14 +10,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class SanPhamDAO {
 
     // Câu SELECT dùng chung: lấy sản phẩm kèm danh mục và khuyến mãi
-    private String sqlChon = "SELECT sp.maSP, sp.tenSP, sp.giaNhap, sp.soLuongTon, sp.maKM, sp.maDM, "
-            + "dm.tenDM, km.tenKM, km.tiLeGiamGia, km.loaiKM, km.ngayBatDau, km.ngayKetThuc, "
+    private static final String SQL_CHON = "SELECT sp.maSP, sp.tenSP, sp.giaNhap, sp.soLuongTon, sp.maKM, sp.maDM, "
+            + "dm.tenDM, dm.loiNhuan, km.tenKM, km.tiLeGiamGia, km.donViTinh, km.ngayBatDau, km.ngayKetThuc, "
             + "km.trangThai AS trangThaiKM "
             + "FROM SanPham sp "
             + "LEFT JOIN DanhMuc dm ON sp.maDM = dm.maDM "
@@ -36,7 +37,7 @@ public class SanPhamDAO {
 
         String maDM = rs.getString("maDM");
         if (maDM != null) {
-            DanhMuc dm = new DanhMuc(maDM, rs.getString("tenDM"));
+            DanhMuc dm = new DanhMuc(maDM, rs.getString("tenDM"), rs.getFloat("loiNhuan"));
             sp.setDanhMuc(dm);
         }
 
@@ -46,7 +47,7 @@ public class SanPhamDAO {
             km.setMaKM(maKM);
             km.setTenKM(rs.getString("tenKM"));
             km.setTiLeGiamGia(rs.getDouble("tiLeGiamGia"));
-            km.setLoaiKM(rs.getString("loaiKM"));
+            km.setDonViTinh(rs.getString("donViTinh"));
             Date ngayBD = rs.getDate("ngayBatDau");
             if (ngayBD != null) {
                 km.setNgayBatDau(ngayBD.toLocalDate());
@@ -68,7 +69,7 @@ public class SanPhamDAO {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            String sql = sqlChon + "ORDER BY sp.maSP";
+            String sql = SQL_CHON + "ORDER BY sp.maSP";
             stmt = con.prepareStatement(sql);
             rs = stmt.executeQuery();
             while (rs.next()) {
@@ -89,7 +90,7 @@ public class SanPhamDAO {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            String sql = sqlChon + "ORDER BY sp.soLuongTon ASC, sp.maSP";
+            String sql = SQL_CHON + "ORDER BY sp.soLuongTon ASC, sp.maSP";
             stmt = con.prepareStatement(sql);
             rs = stmt.executeQuery();
             while (rs.next()) {
@@ -110,7 +111,7 @@ public class SanPhamDAO {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            String sql = sqlChon + "WHERE sp.maSP LIKE ? OR sp.tenSP LIKE ? ORDER BY sp.maSP";
+            String sql = SQL_CHON + "WHERE sp.maSP LIKE ? OR sp.tenSP LIKE ? ORDER BY sp.maSP";
             stmt = con.prepareStatement(sql);
             stmt.setString(1, "%" + tuKhoa + "%");
             stmt.setString(2, "%" + tuKhoa + "%");
@@ -135,7 +136,7 @@ public class SanPhamDAO {
             stmt = con.prepareStatement(sql);
             stmt.setString(1, sp.getMaSP());
             stmt.setString(2, sp.getTenSP());
-            stmt.setBigDecimal(3, sp.getGiaNhap());
+            stmt.setBigDecimal(3, BigDecimal.valueOf(sp.getGiaNhap()));
             stmt.setInt(4, sp.getSoLuongTon());
             if (sp.getKhuyenMai() == null) {
                 stmt.setNull(5, Types.VARCHAR);
@@ -164,7 +165,7 @@ public class SanPhamDAO {
             String sql = "UPDATE SanPham SET tenSP = ?, giaNhap = ?, soLuongTon = ?, maKM = ?, maDM = ? WHERE maSP = ?";
             stmt = con.prepareStatement(sql);
             stmt.setString(1, sp.getTenSP());
-            stmt.setBigDecimal(2, sp.getGiaNhap());
+            stmt.setBigDecimal(2, BigDecimal.valueOf(sp.getGiaNhap()));
             stmt.setInt(3, sp.getSoLuongTon());
             if (sp.getKhuyenMai() == null) {
                 stmt.setNull(4, Types.VARCHAR);

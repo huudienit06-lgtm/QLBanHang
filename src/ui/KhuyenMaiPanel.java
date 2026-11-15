@@ -81,7 +81,7 @@ public class KhuyenMaiPanel extends JPanel implements ActionListener, MouseListe
 
         GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Tỉ lệ giảm:"), 0, 1, 0);
         GiaoDien.themVaoLuoi(pnlForm, txtTiLeGiam, 1, 1, 1);
-        GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Loại khuyến mãi:"), 2, 1, 0);
+        GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Đơn vị giảm giá:"), 2, 1, 0);
         GiaoDien.themVaoLuoi(pnlForm, txtLoaiKM, 3, 1, 1);
 
         GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Ngày bắt đầu (yyyy-MM-dd):"), 0, 2, 0);
@@ -156,7 +156,7 @@ public class KhuyenMaiPanel extends JPanel implements ActionListener, MouseListe
         tableModel.setRowCount(0);
         for (int i = 0; i < dsKM.size(); i++) {
             KhuyenMai km = dsKM.get(i);
-            Object[] dong = { km.getMaKM(), km.getTenKM(), km.getTiLeGiamGia(), km.getLoaiKM(),
+            Object[] dong = { km.getMaKM(), km.getTenKM(), km.getTiLeGiamGia(), km.getDonViTinh(),
                     km.getNgayBatDau(), km.getNgayKetThuc(), km.getTrangThai() };
             tableModel.addRow(dong);
         }

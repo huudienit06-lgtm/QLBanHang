@@ -257,7 +257,7 @@ public class SanPhamPanel extends JPanel implements ActionListener, MouseListene
             khuyenMai = dsKhuyenMai.get(viTriKM - 1);
         }
 
-        return new SanPham(maSP, tenSP, giaNhap, soLuongTon, khuyenMai, danhMuc);
+        return new SanPham(maSP, tenSP, giaNhap.doubleValue(), soLuongTon, khuyenMai, danhMuc);
     }
 
     private void themSanPham() {
