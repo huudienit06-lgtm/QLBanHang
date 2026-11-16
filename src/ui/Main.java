@@ -95,6 +95,10 @@ public class Main extends JFrame {
                 setMenu(null);
                 setContent(new FrmDangNhap(this));
                 break;
+            case "Thống kê nhập kho":
+                setMenu(null);
+                setContent(new ThongKeNhapKho_GUI());
+                break;
             default:
                 JOptionPane.showMessageDialog(this, "Chức năng \"" + chucNang + "\" chưa được xây dựng.");
                 break;
