@@ -79,6 +79,9 @@ public class Main extends JFrame {
             case "Khuyến Mãi":
                 setContent(new KhuyenMaiPanel());
                 break;
+            case "Thuế":
+                setContent(new Thue_GUI());
+                break;
             case "Tài khoản":
                 setContent(new TaiKhoan_gui());
                 break;
@@ -88,6 +91,9 @@ public class Main extends JFrame {
             case "Lập hóa đơn":
                 setContent(new FrmHoaDon(taiKhoan));
                 break;
+            case "Lập phiếu nhập kho":
+                setContent(new PhieuNhapKho_GUI());
+                break;
             case "Thống kê hóa đơn":
                 setContent(new FrmThongKeHoaDon());
                 break;
@@ -96,7 +102,6 @@ public class Main extends JFrame {
                 setContent(new FrmDangNhap(this));
                 break;
             case "Thống kê nhập kho":
-                setMenu(null);
                 setContent(new ThongKeNhapKho_GUI());
                 break;
             default:

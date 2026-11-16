@@ -268,6 +268,7 @@ public class ThongKeNhapKho_GUI extends JPanel {
         lblSoLuong.setText("Tổng số lượng nhập: 0");
         lblTongTien.setText("Tổng tiền nhập: 0 VNĐ");
     }
+
 //    public static void main(String[] args) {
 //     JFrame frame = new JFrame("Thống kê nhập kho");
 //     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

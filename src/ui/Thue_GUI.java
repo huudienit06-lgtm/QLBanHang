@@ -25,7 +25,7 @@ import connectdb.ConnectDB;
 import dao.Thue_dao;
 import entity.Thue;
 
-public class Thue_GUI extends JFrame implements ActionListener, MouseListener {
+public class Thue_GUI extends JPanel implements ActionListener, MouseListener {
 
     /**
 	 * 
@@ -53,10 +53,10 @@ public class Thue_GUI extends JFrame implements ActionListener, MouseListener {
 
         thue_dao = new Thue_dao();
 
-        setTitle("Quản lý thuế");
-        setSize(900, 600);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        // setTitle("Quản lý thuế");
+        // setSize(900, 600);
+        // setLocationRelativeTo(null);
+        // setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         // Tiêu đề
         JLabel lblTieuDe = new JLabel("QUẢN LÝ THUẾ");
@@ -379,8 +379,8 @@ public class Thue_GUI extends JFrame implements ActionListener, MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {}
 
-    public static void main(String[] args) {
+    // public static void main(String[] args) {
 
-        new Thue_GUI().setVisible(true);
-    }
+    //     new Thue_GUI().setVisible(true);
+    // }
 }

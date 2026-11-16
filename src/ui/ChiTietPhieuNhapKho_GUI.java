@@ -462,8 +462,8 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
         }
     }
 
-    public static void main(String[] args) {
+    // public static void main(String[] args) {
 
-        new ChiTietPhieuNhapKho_GUI().setVisible(true);
-    }
+    //     new ChiTietPhieuNhapKho_GUI().setVisible(true);
+    // }
 }

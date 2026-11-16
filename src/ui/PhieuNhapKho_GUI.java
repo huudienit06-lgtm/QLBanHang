@@ -28,7 +28,7 @@ import dao.PhieuNhapKho_dao;
 import entity.NhanVien;
 import entity.PhieuNhapKho;
 
-public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
+public class PhieuNhapKho_GUI extends JPanel implements ActionListener {
 
     private static final long serialVersionUID = 1L;
 
@@ -55,7 +55,7 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
             DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public PhieuNhapKho_GUI() {
-
+         setLayout(new BorderLayout(10, 10));
         try {
             ConnectDB.getInstance().connect();
         } catch (Exception e) {
@@ -65,10 +65,10 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
         pnk_dao = new PhieuNhapKho_dao();
         nv_dao = new NhanVien_DAO();
 
-        setTitle("Quản lý phiếu nhập kho");
-        setSize(900, 550);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        // setTitle("Quản lý phiếu nhập kho");
+        // setSize(900, 550);
+        // setDefaultCloseOperation(EXIT_ON_CLOSE);
+        // setLocationRelativeTo(null);
 
         // Tiêu đề
         JLabel lblTieuDe = new JLabel("QUẢN LÝ PHIẾU NHẬP KHO");
@@ -449,8 +449,8 @@ public class PhieuNhapKho_GUI extends JFrame implements ActionListener {
         }
     }
 
-    public static void main(String[] args) {
+    // public static void main(String[] args) {
 
-        new PhieuNhapKho_GUI().setVisible(true);
-    }
+    //     new PhieuNhapKho_GUI().setVisible(true);
+    // }
 }
