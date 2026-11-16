@@ -5,8 +5,10 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -39,7 +41,16 @@ public class FrmThanhToan extends JDialog implements ActionListener, DocumentLis
         setTitle("Thanh Toán");
         if (pThucThanhToan.equals("Chuyển khoản")) {
             lblTitle = new JLabel("THANH TOÁN CHUYỂN KHOẢN");
-            pnlForm = new JPanel();
+            ImageIcon icon = new ImageIcon("D:\\HuongSuKien_java\\BTL_Java\\img\\prthanhtoan.jpg");
+            Image pr = icon.getImage();
+            Image scaledImg = pr.getScaledInstance(
+                    300,
+                    300,
+                    Image.SCALE_SMOOTH
+            );
+            JLabel lblPR = new JLabel(new ImageIcon(scaledImg));
+            pnlForm = new JPanel(new BorderLayout());
+            pnlForm.add(lblPR);
         } else {
             lblTitle = new JLabel("THANH TOÁN BẰNG TIỀN MẶT");
             pnlForm = new JPanel(new GridLayout(6, 1, 10, 10));
@@ -78,7 +89,9 @@ public class FrmThanhToan extends JDialog implements ActionListener, DocumentLis
 
         btnHuy.addActionListener(this);
         btnXacNhan.addActionListener(this);
-        txtTienNhan.getDocument().addDocumentListener(this);
+        if (txtTienNhan != null) {
+            txtTienNhan.getDocument().addDocumentListener(this);
+        }
     }
 
     private void setTienThua() {
@@ -88,12 +101,11 @@ public class FrmThanhToan extends JDialog implements ActionListener, DocumentLis
             if (tienNhan < tongTien) {
                 txtTienThua.setText("Tiền nhận chưa đủ");
                 txtTienThua.setForeground(Color.RED);
-            }
-            else{
-                txtTienThua.setText((tienNhan - tongTien)+"");
+            } else {
+                txtTienThua.setText((tienNhan - tongTien) + "");
                 txtTienThua.setForeground(Color.black);
             }
-            
+
         } catch (NumberFormatException e) {
             txtTienThua.setText("");
         }

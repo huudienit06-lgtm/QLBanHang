@@ -7,6 +7,7 @@ import entity.NhanVien;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -18,6 +19,7 @@ import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -25,9 +27,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
+import java.text.NumberFormat;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
@@ -48,7 +52,10 @@ public class FrmThongKeHoaDon extends JPanel implements ActionListener {
     private final JComboBox<NhanVien> cboNhanVien;
     private final JTextField txtThoiGian;
     private final JLabel lblGoiY;
-    private final JLabel lblKetQua;
+    private final JLabel lblTongSoHoaDon;
+    private final JLabel lblTongDoanhThu;
+    private final JLabel lblNhanVienLap;
+    private final JLabel lblThoiGianThongKe;
     private final JButton btnThongKe;
     private final DefaultTableModel modelHoaDon;
 
@@ -56,7 +63,7 @@ public class FrmThongKeHoaDon extends JPanel implements ActionListener {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        JLabel lblTieuDe = new JLabel("THỐNG KÊ HÓA ĐƠN", JLabel.CENTER);
+        JLabel lblTieuDe = new JLabel("THỐNG KÊ DOANH THU", JLabel.CENTER);
         lblTieuDe.setFont(new Font("Arial", Font.BOLD, 24));
 
         JPanel pnlDieuKhien = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
@@ -85,7 +92,8 @@ public class FrmThongKeHoaDon extends JPanel implements ActionListener {
 
         modelHoaDon = new DefaultTableModel(
                 new String[] { "Mã hóa đơn", "Ngày lập", "Mã khách hàng",
-                    "Tên khách hàng", "Mã nhân viên", "Nhân viên lập", "Trạng thái" }, 0) {
+                    "Tên khách hàng", "Mã nhân viên", "Nhân viên lập", "Trạng thái",
+                    "Giá trị hóa đơn" }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -94,14 +102,30 @@ public class FrmThongKeHoaDon extends JPanel implements ActionListener {
         JTable tblHoaDon = new JTable(modelHoaDon);
         tblHoaDon.setRowHeight(23);
         tblHoaDon.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
-        add(new JScrollPane(tblHoaDon), BorderLayout.CENTER);
 
-        JPanel pnlKetQua = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 12));
-        lblKetQua = new JLabel("Số hóa đơn: -");
-        lblKetQua.setFont(new Font("Arial", Font.BOLD, 20));
-        lblKetQua.setHorizontalAlignment(SwingConstants.CENTER);
-        pnlKetQua.add(lblKetQua);
-        add(pnlKetQua, BorderLayout.SOUTH);
+        JPanel pnlKetQua = new JPanel(new GridLayout(4, 2, 10, 8));
+        pnlKetQua.setBorder(BorderFactory.createTitledBorder("Kết quả thống kê"));
+        pnlKetQua.add(new JLabel("Tổng số hóa đơn:"));
+        lblTongSoHoaDon = taoNhanKetQua();
+        pnlKetQua.add(lblTongSoHoaDon);
+        pnlKetQua.add(new JLabel("Tổng doanh thu (đã thanh toán):"));
+        lblTongDoanhThu = taoNhanKetQua();
+        pnlKetQua.add(lblTongDoanhThu);
+        pnlKetQua.add(new JLabel("Nhân viên lập:"));
+        lblNhanVienLap = taoNhanKetQua();
+        pnlKetQua.add(lblNhanVienLap);
+        pnlKetQua.add(new JLabel("Thời gian thống kê:"));
+        lblThoiGianThongKe = taoNhanKetQua();
+        pnlKetQua.add(lblThoiGianThongKe);
+
+        JSplitPane splitPane = new JSplitPane(
+                JSplitPane.VERTICAL_SPLIT,
+                new JScrollPane(tblHoaDon),
+                pnlKetQua);
+        splitPane.setResizeWeight(0.7);
+        splitPane.setDividerLocation(0.7);
+        splitPane.setContinuousLayout(true);
+        add(splitPane, BorderLayout.CENTER);
 
         cboThoiGian.addActionListener(e -> {
             capNhatGoiY();
@@ -110,6 +134,13 @@ public class FrmThongKeHoaDon extends JPanel implements ActionListener {
         btnThongKe.addActionListener(this);
         txtThoiGian.addActionListener(this);
         capNhatGoiY();
+    }
+
+    private JLabel taoNhanKetQua() {
+        JLabel label = new JLabel("-");
+        label.setFont(new Font("Arial", Font.BOLD, 16));
+        label.setHorizontalAlignment(SwingConstants.LEFT);
+        return label;
     }
 
     private void napDanhSachNhanVien() {
@@ -236,7 +267,13 @@ public class FrmThongKeHoaDon extends JPanel implements ActionListener {
             ArrayList<HoaDon> dsHoaDon = hoaDonDao.getHoaDonTheoDieuKien(
                     khoangNgay[0], khoangNgay[1], maNV);
             modelHoaDon.setRowCount(0);
+            double tongDoanhThu = 0;
+            NumberFormat dinhDangTien = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
             for (HoaDon hoaDon : dsHoaDon) {
+                double giaTriHoaDon = hoaDon.tinhThanhTien();
+                if ("Đã thanh toán".equalsIgnoreCase(hoaDon.getTrangThai())) {
+                    tongDoanhThu += giaTriHoaDon;
+                }
                 modelHoaDon.addRow(new Object[] {
                     hoaDon.getMaHD(),
                     hoaDon.getNgayLap() == null ? "" : hoaDon.getNgayLap().format(FMT_NGAY),
@@ -244,27 +281,19 @@ public class FrmThongKeHoaDon extends JPanel implements ActionListener {
                     hoaDon.getKhachHang().getTenKH(),
                     hoaDon.getNhanVien().getMaNV(),
                     hoaDon.getNhanVien().getTenNV(),
-                    hoaDon.getTrangThai()
+                    hoaDon.getTrangThai(),
+                    dinhDangTien.format(giaTriHoaDon)
                 });
             }
 
-            StringBuilder ketQua = new StringBuilder("Số hóa đơn");
-            if (!TAT_CA.equals(cboThoiGian.getSelectedItem())) {
-                ketQua.append(" trong khoảng ")
-                        .append(khoangNgay[0].format(FMT_NGAY))
-                        .append(" - ")
-                        .append(khoangNgay[1].format(FMT_NGAY));
-            } else {
-                ketQua.append(" toàn thời gian");
-            }
-            if (nhanVien != null) {
-                ketQua.append(" của ")
-                        .append(nhanVien.getTenNV())
-                        .append(" (")
-                        .append(nhanVien.getMaNV())
-                        .append(")");
-            }
-            lblKetQua.setText(ketQua + ": " + dsHoaDon.size());
+            lblTongSoHoaDon.setText(String.valueOf(dsHoaDon.size()));
+            lblTongDoanhThu.setText(dinhDangTien.format(tongDoanhThu));
+            lblNhanVienLap.setText(nhanVien == null
+                    ? "Tất cả nhân viên"
+                    : nhanVien.getTenNV() + " (" + nhanVien.getMaNV() + ")");
+            lblThoiGianThongKe.setText(TAT_CA.equals(cboThoiGian.getSelectedItem())
+                    ? "Toàn thời gian"
+                    : khoangNgay[0].format(FMT_NGAY) + " - " + khoangNgay[1].format(FMT_NGAY));
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(
                     this,

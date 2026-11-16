@@ -214,11 +214,25 @@ public class FrmChiTietHoaDon extends JDialog implements ActionListener, Documen
                 JOptionPane.showMessageDialog(this, "Không tìm thấy sản phẩm đã chọn.");
                 return;
             }
-            if (ct.getSoLuong() < (int) spnSoLuong.getValue()) {
-                JOptionPane.showMessageDialog(null, "Không đủ số lượng tồn");
-            }
             spnSoLuong.setValue(1);
-            modelCTHD.addRow(new Object[]{ct.getSanPham().getMaSP(), ct.getSanPham().getTenSP(), ct.getSanPham().tinhGiaBan(), ct.getSanPham().tinhGiaBanSauKhuyenMai(), ct.getSoLuong(), ct.tinhThanhTien()});
+            int existingRow = -1;
+            for (int i = 0; i < modelCTHD.getRowCount(); i++) {
+                if (ct.getSanPham().getMaSP().equals(modelCTHD.getValueAt(i, 0))) {
+                    existingRow = i;
+                    break;
+                }
+            }
+            if (existingRow >= 0) {
+                int newQuantity = Integer.parseInt(modelCTHD.getValueAt(existingRow, 4).toString())
+                        + ct.getSoLuong();
+                modelCTHD.setValueAt(newQuantity, existingRow, 4);
+                modelCTHD.setValueAt(ct.getSanPham().tinhGiaBanSauKhuyenMai() * newQuantity,
+                        existingRow, 5);
+            } else {
+                modelCTHD.addRow(new Object[]{ct.getSanPham().getMaSP(), ct.getSanPham().getTenSP(),
+                    ct.getSanPham().tinhGiaBan(), ct.getSanPham().tinhGiaBanSauKhuyenMai(),
+                    ct.getSoLuong(), ct.tinhThanhTien()});
+            }
             JOptionPane.showMessageDialog(null, "Thêm thành công");
         }
         if (o.equals(btnXoa)) {

@@ -33,7 +33,6 @@ public class Menu extends JPanel implements ActionListener{
     private JMenuItem itemTaiKhoan;
     private final JMenuItem itemLapHoaDon;
     private JMenuItem itemLapPhieuNhapKho;
-    private JMenuItem itemThongKeDoanhThu;
     private final JMenuItem itemThongKeSanPham;
     private final JMenuItem itemThongKeHoaDon;
     private JMenuItem itemThongKeNhapKho;
@@ -89,13 +88,11 @@ public class Menu extends JPanel implements ActionListener{
         menuXuLy.add(itemLapHoaDon);
         menuBar.add(menuThongKe);
         if (laQuanLy) {
-            itemThongKeDoanhThu = new JMenuItem("Thống kê doanh thu");
             itemThongKeNhapKho = new JMenuItem("Thống kê nhập kho");
-            menuThongKe.add(itemThongKeDoanhThu);
             menuThongKe.add(itemThongKeNhapKho);
         }
         itemThongKeSanPham = new JMenuItem("Thống kê sản phẩm");
-        itemThongKeHoaDon = new JMenuItem("Thống kê hóa đơn");
+        itemThongKeHoaDon = new JMenuItem("Thống kê doanh thu");
 
         menuThongKe.add(itemThongKeSanPham);
         menuThongKe.add(itemThongKeHoaDon);
@@ -137,6 +134,7 @@ public class Menu extends JPanel implements ActionListener{
         
         itemSanPham.addActionListener(this);
         itemThongKeHoaDon.addActionListener(this);
+        itemThongKeSanPham.addActionListener(this);
         itemTrangChu.addActionListener(this);
         if (laQuanLy) {
             itemNhanVien.addActionListener(this);
@@ -144,7 +142,6 @@ public class Menu extends JPanel implements ActionListener{
             itemThue.addActionListener(this);
             itemTaiKhoan.addActionListener(this);
             itemLapPhieuNhapKho.addActionListener(this);
-            itemThongKeDoanhThu.addActionListener(this);
             itemThongKeNhapKho.addActionListener(this);
         }
     }
