@@ -137,6 +137,7 @@ public class Menu extends JPanel implements ActionListener{
         
         itemSanPham.addActionListener(this);
         itemThongKeHoaDon.addActionListener(this);
+        itemThongKeSanPham.addActionListener(this);
         itemTrangChu.addActionListener(this);
         if (laQuanLy) {
             itemNhanVien.addActionListener(this);
