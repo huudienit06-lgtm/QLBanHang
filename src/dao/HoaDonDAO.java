@@ -327,7 +327,7 @@ public class HoaDonDAO {
             throws java.sql.SQLException {
         ArrayList<HoaDon> ds = new ArrayList<>();
         StringBuilder sql = new StringBuilder(
-                "SELECT hd.maHD, hd.ngayLap, hd.maKH, kh.tenKH, "
+                "SELECT hd.maHD, hd.ngayLap, hd.maKH, kh.tenKH, hd.maKM, "
                 + "hd.maNV, nv.tenNV, hd.trangThai, hd.phuongThucThanhToan "
                 + "FROM HoaDon hd "
                 + "JOIN KhachHang kh ON kh.maKH = hd.maKH "
@@ -359,6 +359,7 @@ public class HoaDonDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     java.sql.Date ngayLap = rs.getDate("ngayLap");
+                    String maKM = rs.getString("maKM");
                     ds.add(new HoaDon(
                             rs.getString("maHD"),
                             ngayLap == null ? null : ngayLap.toLocalDate(),
@@ -366,7 +367,7 @@ public class HoaDonDAO {
                                     null, null, null, null),
                             new NhanVien(rs.getString("maNV"), rs.getString("tenNV"),
                                     null, null, null),
-                            null,
+                            maKM == null ? null : kmDao.timKhuyenMaiByID(maKM),
                             rs.getString("trangThai"),
                             rs.getString("phuongThucThanhToan")));
                 }

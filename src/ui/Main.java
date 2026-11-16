@@ -88,7 +88,7 @@ public class Main extends JFrame {
             case "Lập hóa đơn":
                 setContent(new FrmHoaDon(taiKhoan));
                 break;
-            case "Thống kê hóa đơn":
+            case "Thống kê doanh thu":
                 setContent(new FrmThongKeHoaDon());
                 break;
             case "Đăng Xuất":
