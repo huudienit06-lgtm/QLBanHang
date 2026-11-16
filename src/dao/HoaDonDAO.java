@@ -11,8 +11,13 @@ import entity.NhanVien;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Locale;
+import entity.ChiTietHoaDon;
 
 public class HoaDonDAO {
     private KhachHang_Dao khDao = new KhachHang_Dao();
@@ -94,6 +99,107 @@ public class HoaDonDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public boolean updateHoaDonWithDetails(HoaDon hd, List<ChiTietHoaDon> details) {
+        boolean autoCommit = true;
+        boolean autoCommitCaptured = false;
+        try {
+            autoCommit = con.getAutoCommit();
+            autoCommitCaptured = true;
+            con.setAutoCommit(false);
+
+            Map<String, Integer> newQuantities = new LinkedHashMap<>();
+            for (ChiTietHoaDon detail : details) {
+                if (detail == null || detail.getSanPham() == null
+                        || detail.getSanPham().getMaSP() == null
+                        || detail.getSanPham().getMaSP().trim().isEmpty()
+                        || detail.getSoLuong() == null || detail.getSoLuong() <= 0) {
+                    throw new SQLException("Chi tiết hóa đơn không hợp lệ");
+                }
+                String maSP = detail.getSanPham().getMaSP();
+                newQuantities.merge(maSP, detail.getSoLuong(), Math::addExact);
+            }
+
+            Map<String, Integer> oldQuantities = new LinkedHashMap<>();
+            try (PreparedStatement ps = con.prepareStatement(
+                    "SELECT maSP, soLuong FROM ChiTietHoaDon WITH (UPDLOCK, HOLDLOCK) WHERE maHD = ?")) {
+                ps.setString(1, hd.getMaHD());
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        oldQuantities.put(rs.getString("maSP"), rs.getInt("soLuong"));
+                    }
+                }
+            }
+
+            try (PreparedStatement ps = con.prepareStatement(
+                    "UPDATE HoaDon SET ngayLap = ?, maKH = ?, maNV = ?, maKM = ?, trangThai = ?, "
+                    + "phuongThucThanhToan = ? WHERE maHD = ?")) {
+                ps.setString(1, hd.getNgayLap().toString());
+                ps.setString(2, hd.getKhachHang().getMaKH());
+                ps.setString(3, hd.getNhanVien().getMaNV());
+                ps.setString(4, hd.getKhuyenMai() == null ? null : hd.getKhuyenMai().getMaKM());
+                ps.setString(5, hd.getTrangThai());
+                ps.setString(6, hd.getPhuongThucThanhToan());
+                ps.setString(7, hd.getMaHD());
+                if (ps.executeUpdate() == 0) {
+                    throw new SQLException("Không tìm thấy hóa đơn cần cập nhật");
+                }
+            }
+
+            Map<String, Integer> stockAdjustments = new LinkedHashMap<>(oldQuantities);
+            for (Map.Entry<String, Integer> entry : newQuantities.entrySet()) {
+                stockAdjustments.merge(entry.getKey(), -entry.getValue(), Integer::sum);
+            }
+            try (PreparedStatement ps = con.prepareStatement(
+                    "UPDATE SanPham SET soLuongTon = soLuongTon + ? "
+                    + "WHERE maSP = ? AND soLuongTon + ? >= 0")) {
+                for (Map.Entry<String, Integer> entry : stockAdjustments.entrySet()) {
+                    int adjustment = entry.getValue();
+                    ps.setInt(1, adjustment);
+                    ps.setString(2, entry.getKey());
+                    ps.setInt(3, adjustment);
+                    if (ps.executeUpdate() == 0) {
+                        throw new SQLException("Không đủ tồn kho cho sản phẩm " + entry.getKey());
+                    }
+                }
+            }
+
+            try (PreparedStatement ps = con.prepareStatement(
+                    "DELETE FROM ChiTietHoaDon WHERE maHD = ?")) {
+                ps.setString(1, hd.getMaHD());
+                ps.executeUpdate();
+            }
+            try (PreparedStatement ps = con.prepareStatement(
+                    "INSERT INTO ChiTietHoaDon (maHD, maSP, soLuong) VALUES (?, ?, ?)")) {
+                for (Map.Entry<String, Integer> entry : newQuantities.entrySet()) {
+                    ps.setString(1, hd.getMaHD());
+                    ps.setString(2, entry.getKey());
+                    ps.setInt(3, entry.getValue());
+                    ps.addBatch();
+                }
+                ps.executeBatch();
+            }
+
+            con.commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                con.rollback();
+            } catch (SQLException rollbackError) {
+                rollbackError.printStackTrace();
+            }
+            return false;
+        } finally {
+            if (autoCommitCaptured) {
+                try {
+                    con.setAutoCommit(autoCommit);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public boolean deleteHoaDon(String maHD) {

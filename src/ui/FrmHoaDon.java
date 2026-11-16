@@ -44,7 +44,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
-public class FrmHoaDon extends JPanel implements ActionListener, TableModelListener{
+public class FrmHoaDon extends JPanel implements ActionListener, TableModelListener {
 
     private JTextField txtMaHD;
     private JComboBox<KhachHang> cbbKhachHang;
@@ -82,9 +82,10 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
     private Box b1, b2;
     private JTextField txtTienThua;
     private double tienCanThanhToan;
-    boolean laQuanLy ;
-    private HoaDon hoaDonHienTai=null;
-    private ArrayList<ChiTietHoaDon> listChiTietHoaDonHienTai=new ArrayList<>();;
+    boolean laQuanLy;
+    private HoaDon hoaDonHienTai = null;
+    private ArrayList<ChiTietHoaDon> listChiTietHoaDonHienTai = new ArrayList<>();
+    ;
     private final JPanel pnlButton;
     private JButton btnCapNhat;
     private JButton btnLuu;
@@ -134,7 +135,6 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
         txtSDT = new JTextField();
         txtSDT.setEditable(false);
         pnlHoaDon.add(txtSDT);
-
 
 // Hàng 3: Nhân viên - Ngày lập
         pnlHoaDon.add(new JLabel("Nhân viên lập phiếu:"));
@@ -247,7 +247,7 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
         btnInHoaDon = new JButton("In hóa đơn");
         btnXoaTrang = new JButton("Xóa Trắng");
         btnXemLichSu = new JButton("Xem lịch sử");
-        
+
         pnlButton.add(btnThanhToan);
         pnlButton.add(btnInHoaDon);
         pnlButton.add(btnXoaTrang);
@@ -294,17 +294,22 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
                 break;
             }
         }
-        for (int i = 0; i < cbbKhuyenMai.getItemCount(); i++) {
-            KhuyenMai item = cbbKhuyenMai.getItemAt(i);
-            if (item != null && item.getMaKM().equals(hd.getKhuyenMai().getTenKM())) {
-                cbbKhuyenMai.setSelectedIndex(i);
-                break;
+        KhuyenMai khuyenMaiHoaDon = hd.getKhuyenMai();
+        if (khuyenMaiHoaDon == null) {
+            cbbKhuyenMai.setSelectedItem(null);
+        } else {
+            for (int i = 0; i < cbbKhuyenMai.getItemCount(); i++) {
+                KhuyenMai item = cbbKhuyenMai.getItemAt(i);
+                if (item != null && item.getMaKM().equals(khuyenMaiHoaDon.getMaKM())) {
+                    cbbKhuyenMai.setSelectedIndex(i);
+                    break;
+                }
             }
         }
         txtTenKH.setText(hd.getKhachHang().getTenKH());
         txtSDT.setText(hd.getKhachHang().getSdt());
         txtNVLap.setText(nvLap.getTenNV());
-        txtTrangThai.setText(hd.getTrangThai()==""?"Chưa thanh toán":hd.getTrangThai());
+        txtTrangThai.setText(hd.getTrangThai() == "" ? "Chưa thanh toán" : hd.getTrangThai());
         setSoTien(hd);
     }
 
@@ -327,7 +332,7 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
             frm.setVisible(true);
 
             KhachHang kh = frm.getSelectedKhachHang();
-            if(kh!=null){
+            if (kh != null) {
                 txtTenKH.setText(kh.getTenKH());
                 txtSDT.setText(kh.getSdt());
                 for (int i = 0; i < cbbKhachHang.getItemCount(); i++) {
@@ -342,14 +347,13 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
             }
         }
         if (o.equals(btnThemSanPham)) {
-            if(cbbKhachHang.getSelectedItem()==null || txtTenKH.getText().isEmpty()|| txtSDT.getText().isEmpty()){
+            if (cbbKhachHang.getSelectedItem() == null || txtTenKH.getText().isEmpty() || txtSDT.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Vui lòng chọn khách hàng");
-            }
-            else{
+            } else {
                 hoaDonHienTai = getHD();
                 FrmChiTietHoaDon frm = new FrmChiTietHoaDon(
                         (JFrame) SwingUtilities.getWindowAncestor(this),
-                        hoaDonHienTai,modelCT);
+                        hoaDonHienTai, modelCT);
                 frm.setVisible(true);
                 modelCT.removeTableModelListener(this);
                 modelCT = frm.getModelCTHD();
@@ -357,17 +361,17 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
                 tblSanPham.setModel(modelCT);
                 listChiTietHoaDonHienTai.clear();
                 for (int i = 0; i < modelCT.getRowCount(); i++) {
-                    SanPham sp = spDao.findByID((String)modelCT.getValueAt(i, 0));
+                    SanPham sp = spDao.findByID((String) modelCT.getValueAt(i, 0));
                     int soLuong = Integer.parseInt(modelCT.getValueAt(i, 4).toString());
-                    listChiTietHoaDonHienTai.add(new ChiTietHoaDon(hoaDonHienTai,sp,soLuong));
+                    listChiTietHoaDonHienTai.add(new ChiTietHoaDon(hoaDonHienTai, sp, soLuong));
                 }
                 setSoTien(hoaDonHienTai);
             }
-            
+
         }
         if (o.equals(btnThanhToan)) {
             if(listChiTietHoaDonHienTai == null
-                    || listChiTietHoaDonHienTai.isEmpty()){
+                    || listChiTietHoaDonHienTai.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Chưa thêm sản phẩm vào hóa đơn");
                 return;
             }
@@ -375,15 +379,20 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
             FrmThanhToan frm = new FrmThanhToan(parent, cbbPTTToan.getSelectedItem().toString(), tienCanThanhToan);
             frm.setVisible(true);
             if (frm.traKetQua()) {
+                String trangThaiTruoc = hoaDonHienTai.getTrangThai();
                 txtTrangThai.setText("Đã thanh toán");
                 hoaDonHienTai.setTrangThai("Đã thanh toán");
-                luuHoaDon();
-            } else{
-                txtTrangThai.setText("Chưa thanh toán");
-                JOptionPane.showMessageDialog(null, "Hóa đơn chưa được lưu do thanh toán không thành công");
+                if (luuHoaDon()) {
+                    listChiTietHoaDonHienTai.clear();
+                    xoaTrang();
+                } else {
+                    hoaDonHienTai.setTrangThai(trangThaiTruoc);
+                    txtTrangThai.setText(trangThaiTruoc);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Thanh toán bị hủy. Thông tin hóa đơn được giữ lại để tiếp tục chỉnh sửa.");
             }
-            listChiTietHoaDonHienTai.clear();
-            xoaTrang();
         }
         if (o.equals(btnInHoaDon)) {
 
@@ -401,74 +410,12 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
                 setSoTien(hoaDonHienTai);
             }
         }
-        if(o.equals(btnXoaTrang)){
+        if (o.equals(btnXoaTrang)) {
             xoaTrang();
         }
     }
 
-    // public boolean luuThayDoi(){
-    //     hdDao.updateHoaDon(hoaDonHienTai);
-    //     if(ctDao.deleteAllByMaHD(hoaDonHienTai.getMaHD())){
-    //         for (ChiTietHoaDon ct : listChiTietHoaDonHienTai) {
-    //             if(!ctDao.insertCTHH(ct)){
-    //                 JOptionPane.showMessageDialog(null,"Lưu chi tiết hóa đơn thất bại");
-    //                 return false;
-    //             }
-    //         }
-    //     }
-    //     return true;
-    // }
-    // public boolean capNhatSanPham(){
-    //     int row = tblSanPham.getSelectedRow();
-        
-    //     if(row<0){
-    //         JOptionPane.showMessageDialog(null, "Vui lòng chọn sản phẩm cần sửa");
-    //         return false;
-    //     }
-    //     else{
-    //         SanPham sp = spDao.findByID(modelCT.getValueAt(row, 0).toString());
-    //         String soLuong = JOptionPane.showInputDialog(null,"Nhập số lượng mới:","Thay đổi hoặc xóa sản phẩm",JOptionPane.QUESTION_MESSAGE);
-    //         if(soLuong==null || soLuong.trim().isEmpty()){
-    //             JOptionPane.showMessageDialog(null, "Không có thay đổi do bạn chưa nhập số lượng");
-    //             return false;
-    //         }
-    //         else {
-    //             try {
-    //                 int slnew =Integer.parseInt(soLuong);
-    //                 int slold = Integer.parseInt(modelCT.getValueAt(row, 4).toString());
-    //                 if(slnew > 0){
-    //                     int delta = slnew - slold;
-    //                     spDao.capNhatSoLuongTon(modelCT.getValueAt(row,0).toString(), delta);
-    //                     if(delta<0){
-    //                         JOptionPane.showMessageDialog(null, "Hoàn tiền cho khách hàng:"+sp.tinhGiaBan()*delta*-1);
-    //                     }else{
-    //                         JOptionPane.showMessageDialog(null, "Nhận thêm từ khách hàng:" + sp.tinhGiaBan() * delta);
-    //                     }
-    //                     return true;
-    //                 }
-    //                 if(slnew==0){
-    //                     if(ctDao.deleteCTHD(hoaDonHienTai.getMaHD(), modelCT.getValueAt(row, 0).toString())){
-    //                         listChiTietHoaDonHienTai.clear();
-    //                         listChiTietHoaDonHienTai = ctDao.getDSCTHDByID(hoaDonHienTai.getMaHD());
-    //                         JOptionPane.showMessageDialog(null, "Đã xóa sản phẩm");
-    //                     }
-    //                     else{
-    //                         JOptionPane.showMessageDialog(null, "Xóa sản phẩm thất bại");
-    //                     }
-    //                     setCTHD(hoaDonHienTai);
-    //                     setSoTien(hoaDonHienTai);
-    //                     return true;
-    //                 }
-    //             } catch (Exception e) {
-    //                 e.printStackTrace();
-    //                 JOptionPane.showMessageDialog(null, "Vui lòng nhập số nguyên dương");
-                
-    //             }
-    //             return false;
-    //         }
-    //     }
-    // }
-
+    
     public void xoaTrang() {
         txtMaHD.setText(sinhMaHD());
         cbbKhachHang.setSelectedItem(null);
@@ -541,7 +488,7 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
         LocalDate ngayHienTai = LocalDate.now();
         cbbKhuyenMai.addItem(null);
         for (KhuyenMai khuyenMai : listKM) {
-            if (khuyenMai.getNgayKetThuc().isAfter(ngayHienTai) && khuyenMai.getTrangThai().equalsIgnoreCase("Đang áp dụng")){
+            if (khuyenMai.getNgayKetThuc().isAfter(ngayHienTai) && khuyenMai.getTrangThai().equalsIgnoreCase("Đang áp dụng")) {
                 cbbKhuyenMai.addItem(khuyenMai);
             }
         }
@@ -553,11 +500,11 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
     }
 
     public void setThongTinKH() {
-        KhachHang kh =(KhachHang) cbbKhachHang.getSelectedItem();
+        KhachHang kh = (KhachHang) cbbKhachHang.getSelectedItem();
         if (kh == null) {
             txtTenKH.setText("");
             txtSDT.setText("");
-        }else {
+        } else {
             txtTenKH.setText(kh.getTenKH());
             txtSDT.setText(kh.getSdt());
         }
@@ -573,46 +520,56 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
 
     private boolean luuHoaDon() {
         HoaDon hd = hoaDonHienTai;
-
-        // Kiểm tra danh sách chi tiết
-        if (listChiTietHoaDonHienTai.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Hóa đơn chưa có sản phẩm!");
-            return false;
-        }
-
-        // Thêm hóa đơn
-        if (!hdDao.addHoaDon(hd)) {
-            JOptionPane.showMessageDialog(this,
-                    "Thêm hóa đơn thất bại!");
-            return false;
-        }
-
-        // Thêm chi tiết hóa đơn và cập nhật tồn kho
-        for (ChiTietHoaDon ct : listChiTietHoaDonHienTai) {
-
-            // Thêm chi tiết hóa đơn
-            if (!ctDao.insertCTHH(ct)) {
+        if (hdDao.getHoaDonById(hoaDonHienTai.getMaHD()) == null) {
+            // Kiểm tra danh sách chi tiết
+            if (listChiTietHoaDonHienTai.isEmpty()) {
                 JOptionPane.showMessageDialog(this,
-                        "Thêm chi tiết hóa đơn thất bại: "
-                        + ct.getSanPham().getMaSP());
+                        "Hóa đơn chưa có sản phẩm!");
                 return false;
             }
 
-            // Cập nhật số lượng tồn
-            boolean capNhat = spDao.capNhatSoLuongTon(
-                    ct.getSanPham().getMaSP(),
-                    ct.getSoLuong()
-            );
-
-            if (!capNhat) {
+            // Thêm hóa đơn
+            if (!hdDao.addHoaDon(hd)) {
                 JOptionPane.showMessageDialog(this,
-                        "Không đủ số lượng tồn cho sản phẩm: "
-                        + ct.getSanPham().getTenSP());
+                        "Thêm hóa đơn thất bại!");
+                return false;
+            }
+
+            // Thêm chi tiết hóa đơn và cập nhật tồn kho
+            for (ChiTietHoaDon ct : listChiTietHoaDonHienTai) {
+
+                // Thêm chi tiết hóa đơn
+                if (!ctDao.insertCTHH(ct)) {
+                    JOptionPane.showMessageDialog(this,
+                            "Thêm chi tiết hóa đơn thất bại: "
+                            + ct.getSanPham().getMaSP());
+                    return false;
+                }
+
+                // Cập nhật số lượng tồn
+                boolean capNhat = spDao.capNhatSoLuongTon(
+                        ct.getSanPham().getMaSP(),
+                        ct.getSoLuong()
+                );
+
+                if (!capNhat) {
+                    JOptionPane.showMessageDialog(this,
+                            "Không đủ số lượng tồn cho sản phẩm: "
+                            + ct.getSanPham().getTenSP());
+                    return false;
+                }
+            }
+
+        } else {
+            if (hdDao.updateHoaDonWithDetails(hoaDonHienTai, listChiTietHoaDonHienTai)) {
+                JOptionPane.showMessageDialog(null, "Đã cập nhật hóa đơn");
+                return true;
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Cập nhật hóa đơn thất bại. Vui lòng kiểm tra tồn kho và thử lại.");
                 return false;
             }
         }
-
-        return true;
+            return true;
+        }
     }
-}
