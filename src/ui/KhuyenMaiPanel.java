@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -35,7 +37,7 @@ public class KhuyenMaiPanel extends JPanel implements ActionListener, MouseListe
     private JTextField txtMaKM;
     private JTextField txtTenKM;
     private JTextField txtTiLeGiam;
-    private JTextField txtLoaiKM;
+    private JTextField txtDonViTinh;
     private JTextField txtNgayBatDau;
     private JTextField txtNgayKetThuc;
     private JComboBox<String> cboTrangThai;
@@ -51,89 +53,75 @@ public class KhuyenMaiPanel extends JPanel implements ActionListener, MouseListe
     public KhuyenMaiPanel() {
         khuyenMaiDAO = new KhuyenMaiDAO();
 
-        setLayout(new BorderLayout(0, 12));
-        setBackground(GiaoDien.MAU_NEN);
-        setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // ----- Phần trên: tiêu đề, form nhập, các nút -----
-        JPanel pnlTren = new JPanel(new BorderLayout(0, 10));
-        pnlTren.setOpaque(false);
-        pnlTren.add(GiaoDien.taoTieuDe("QUẢN LÝ KHUYẾN MÃI"), BorderLayout.NORTH);
-
-        JPanel pnlForm = GiaoDien.taoKhungForm("Thông tin khuyến mãi");
-        txtMaKM = GiaoDien.taoOText(15);
-        GiaoDien.khoaOText(txtMaKM);
-        txtTenKM = GiaoDien.taoOText(20);
-        txtTiLeGiam = GiaoDien.taoOText(15);
-        txtLoaiKM = GiaoDien.taoOText(20);
-        txtNgayBatDau = GiaoDien.taoOText(15);
-        txtNgayKetThuc = GiaoDien.taoOText(15);
-        cboTrangThai = GiaoDien.taoComboBox();
+        // ----- Phần trên: form nhập, các nút, ô tìm kiếm -----
+        txtMaKM = new JTextField(10);
+        txtMaKM.setEditable(false);
+        txtTenKM = new JTextField(20);
+        txtTiLeGiam = new JTextField(8);
+        txtDonViTinh = new JTextField(14);
+        txtNgayBatDau = new JTextField(10);
+        txtNgayKetThuc = new JTextField(10);
+        cboTrangThai = new JComboBox<String>();
         cboTrangThai.addItem("Đang áp dụng");
+        cboTrangThai.addItem("Đã kết thúc");
         cboTrangThai.addItem("Ngừng áp dụng");
-        cboTrangThai.addItem("Hết hạn");
         cboTrangThai.setEditable(true);
 
-        GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Mã khuyến mãi:"), 0, 0, 0);
-        GiaoDien.themVaoLuoi(pnlForm, txtMaKM, 1, 0, 1);
-        GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Tên khuyến mãi:"), 2, 0, 0);
-        GiaoDien.themVaoLuoi(pnlForm, txtTenKM, 3, 0, 1);
+        JPanel dongForm1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        dongForm1.add(new JLabel("Mã KM:"));
+        dongForm1.add(txtMaKM);
+        dongForm1.add(new JLabel("Tên KM:"));
+        dongForm1.add(txtTenKM);
+        dongForm1.add(new JLabel("Tỉ lệ giảm:"));
+        dongForm1.add(txtTiLeGiam);
+        dongForm1.add(new JLabel("Đơn vị giảm giá:"));
+        dongForm1.add(txtDonViTinh);
 
-        GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Tỉ lệ giảm:"), 0, 1, 0);
-        GiaoDien.themVaoLuoi(pnlForm, txtTiLeGiam, 1, 1, 1);
-        GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Đơn vị giảm giá:"), 2, 1, 0);
-        GiaoDien.themVaoLuoi(pnlForm, txtLoaiKM, 3, 1, 1);
+        JPanel dongForm2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        dongForm2.add(new JLabel("Ngày bắt đầu (yyyy-MM-dd):"));
+        dongForm2.add(txtNgayBatDau);
+        dongForm2.add(new JLabel("Ngày kết thúc (yyyy-MM-dd):"));
+        dongForm2.add(txtNgayKetThuc);
+        dongForm2.add(new JLabel("Trạng thái:"));
+        dongForm2.add(cboTrangThai);
 
-        GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Ngày bắt đầu (yyyy-MM-dd):"), 0, 2, 0);
-        GiaoDien.themVaoLuoi(pnlForm, txtNgayBatDau, 1, 2, 1);
-        GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Ngày kết thúc (yyyy-MM-dd):"), 2, 2, 0);
-        GiaoDien.themVaoLuoi(pnlForm, txtNgayKetThuc, 3, 2, 1);
+        btnThem = new JButton("Thêm");
+        btnSua = new JButton("Sửa");
+        btnXoa = new JButton("Xóa");
+        btnLamMoi = new JButton("Làm mới");
+        JPanel dongNut = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        dongNut.add(btnThem);
+        dongNut.add(btnSua);
+        dongNut.add(btnXoa);
+        dongNut.add(btnLamMoi);
 
-        GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Trạng thái:"), 0, 3, 0);
-        GiaoDien.themVaoLuoi(pnlForm, cboTrangThai, 1, 3, 1);
-        pnlTren.add(pnlForm, BorderLayout.CENTER);
+        txtTimKiem = new JTextField(20);
+        btnTim = new JButton("Tìm");
+        btnHienTatCa = new JButton("Hiện tất cả");
+        JPanel dongTim = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        dongTim.add(new JLabel("Tìm theo mã hoặc tên:"));
+        dongTim.add(txtTimKiem);
+        dongTim.add(btnTim);
+        dongTim.add(btnHienTatCa);
 
-        JPanel pnlNut = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        pnlNut.setOpaque(false);
-        btnThem = GiaoDien.taoNut("Thêm", GiaoDien.MAU_THEM);
-        btnSua = GiaoDien.taoNut("Sửa", GiaoDien.MAU_SUA);
-        btnXoa = GiaoDien.taoNut("Xóa", GiaoDien.MAU_XOA);
-        btnLamMoi = GiaoDien.taoNut("Làm mới", GiaoDien.MAU_PHU);
-        pnlNut.add(btnThem);
-        pnlNut.add(btnSua);
-        pnlNut.add(btnXoa);
-        pnlNut.add(btnLamMoi);
-        pnlTren.add(pnlNut, BorderLayout.SOUTH);
+        JPanel pnlBac = new JPanel(new GridLayout(0, 1));
+        pnlBac.add(dongForm1);
+        pnlBac.add(dongForm2);
+        pnlBac.add(dongNut);
+        pnlBac.add(dongTim);
+        add(pnlBac, BorderLayout.NORTH);
 
-        add(pnlTren, BorderLayout.NORTH);
-
-        // ----- Phần giữa: ô tìm kiếm và bảng -----
-        JPanel pnlBang = new JPanel(new BorderLayout(0, 8));
-        pnlBang.setOpaque(false);
-
-        JPanel pnlTim = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        pnlTim.setOpaque(false);
-        txtTimKiem = GiaoDien.taoOText(22);
-        btnTim = GiaoDien.taoNut("Tìm", GiaoDien.MAU_CHINH);
-        btnHienTatCa = GiaoDien.taoNut("Hiện tất cả", GiaoDien.MAU_PHU);
-        pnlTim.add(GiaoDien.taoNhan("Tìm theo mã hoặc tên:"));
-        pnlTim.add(txtTimKiem);
-        pnlTim.add(btnTim);
-        pnlTim.add(btnHienTatCa);
-        pnlBang.add(pnlTim, BorderLayout.NORTH);
-
-        String[] tenCot = { "Mã KM", "Tên khuyến mãi", "Tỉ lệ giảm", "Loại KM", "Ngày bắt đầu", "Ngày kết thúc",
-                "Trạng thái" };
+        String[] tenCot = { "Mã KM", "Tên khuyến mãi", "Tỉ lệ giảm", "Đơn vị giảm giá", "Ngày bắt đầu",
+                "Ngày kết thúc", "Trạng thái" };
         tableModel = new DefaultTableModel(tenCot, 0);
         table = new JTable(tableModel);
         table.setDefaultEditor(Object.class, null);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        GiaoDien.dinhDangBang(table);
-        JScrollPane scroll = new JScrollPane(table);
-        scroll.getViewport().setBackground(Color.WHITE);
-        pnlBang.add(scroll, BorderLayout.CENTER);
-
-        add(pnlBang, BorderLayout.CENTER);
+        table.setRowHeight(24);
+        add(new JScrollPane(table), BorderLayout.CENTER);
 
         // ----- Gắn sự kiện -----
         btnThem.addActionListener(this);
@@ -167,7 +155,7 @@ public class KhuyenMaiPanel extends JPanel implements ActionListener, MouseListe
         txtMaKM.setText(khuyenMaiDAO.phatSinhMa());
         txtTenKM.setText("");
         txtTiLeGiam.setText("");
-        txtLoaiKM.setText("");
+        txtDonViTinh.setText("");
         txtNgayBatDau.setText("");
         txtNgayKetThuc.setText("");
         cboTrangThai.setSelectedIndex(0);
@@ -180,18 +168,18 @@ public class KhuyenMaiPanel extends JPanel implements ActionListener, MouseListe
         String maKM = txtMaKM.getText().trim();
         String tenKM = txtTenKM.getText().trim();
         String tiLeText = txtTiLeGiam.getText().trim();
-        String loaiKM = txtLoaiKM.getText().trim();
+        String donViTinh = txtDonViTinh.getText().trim();
         String ngayBDText = txtNgayBatDau.getText().trim();
         String ngayKTText = txtNgayKetThuc.getText().trim();
         String trangThai = cboTrangThai.getSelectedItem().toString().trim();
 
-        if (tenKM.equals("") || tiLeText.equals("") || loaiKM.equals("") || ngayBDText.equals("")
+        if (tenKM.equals("") || tiLeText.equals("") || donViTinh.equals("") || ngayBDText.equals("")
                 || ngayKTText.equals("") || trangThai.equals("")) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin khuyến mãi!");
             return null;
         }
-        if (tenKM.length() > 30 || loaiKM.length() > 20 || trangThai.length() > 20) {
-            JOptionPane.showMessageDialog(this, "Tên tối đa 30 ký tự, loại và trạng thái tối đa 20 ký tự!");
+        if (tenKM.length() > 30 || donViTinh.length() > 20 || trangThai.length() > 20) {
+            JOptionPane.showMessageDialog(this, "Tên tối đa 30 ký tự, đơn vị giảm giá và trạng thái tối đa 20 ký tự!");
             return null;
         }
 
@@ -223,7 +211,15 @@ public class KhuyenMaiPanel extends JPanel implements ActionListener, MouseListe
             return null;
         }
 
-        return new KhuyenMai(maKM, tenKM, tiLe, loaiKM, ngayBD, ngayKT, trangThai);
+        KhuyenMai km = new KhuyenMai();
+        km.setMaKM(maKM);
+        km.setTenKM(tenKM);
+        km.setTiLeGiamGia(tiLe);
+        km.setDonViTinh(donViTinh);
+        km.setNgayBatDau(ngayBD);
+        km.setNgayKetThuc(ngayKT);
+        km.setTrangThai(trangThai);
+        return km;
     }
 
     private void themKhuyenMai() {
@@ -313,7 +309,7 @@ public class KhuyenMaiPanel extends JPanel implements ActionListener, MouseListe
             txtMaKM.setText(tableModel.getValueAt(dong, 0).toString());
             txtTenKM.setText(tableModel.getValueAt(dong, 1).toString());
             txtTiLeGiam.setText(tableModel.getValueAt(dong, 2).toString());
-            txtLoaiKM.setText(tableModel.getValueAt(dong, 3).toString());
+            txtDonViTinh.setText(tableModel.getValueAt(dong, 3).toString());
             txtNgayBatDau.setText(tableModel.getValueAt(dong, 4).toString());
             txtNgayKetThuc.setText(tableModel.getValueAt(dong, 5).toString());
             cboTrangThai.setSelectedItem(tableModel.getValueAt(dong, 6).toString());

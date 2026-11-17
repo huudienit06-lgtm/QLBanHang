@@ -67,10 +67,11 @@ public class DanhMucDAO {
         PreparedStatement stmt = null;
         int n = 0;
         try {
-            String sql = "INSERT INTO DanhMuc (maDM, tenDM) VALUES (?, ?)";
+            String sql = "INSERT INTO DanhMuc (maDM, tenDM, loiNhuan) VALUES (?, ?, ?)";
             stmt = con.prepareStatement(sql);
             stmt.setString(1, dm.getMaDM());
             stmt.setString(2, dm.getTenDM());
+            stmt.setFloat(3, dm.getLoiNhuan());
             n = stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -85,10 +86,11 @@ public class DanhMucDAO {
         PreparedStatement stmt = null;
         int n = 0;
         try {
-            String sql = "UPDATE DanhMuc SET tenDM = ? WHERE maDM = ?";
+            String sql = "UPDATE DanhMuc SET tenDM = ?, loiNhuan = ? WHERE maDM = ?";
             stmt = con.prepareStatement(sql);
             stmt.setString(1, dm.getTenDM());
-            stmt.setString(2, dm.getMaDM());
+            stmt.setFloat(2, dm.getLoiNhuan());
+            stmt.setString(3, dm.getMaDM());
             n = stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

@@ -99,7 +99,7 @@ public class KhuyenMaiDAO {
         PreparedStatement stmt = null;
         int n = 0;
         try {
-            String sql = "INSERT INTO KhuyenMai (maKM, tenKM, tiLeGiamGia, loaiKM, ngayBatDau, ngayKetThuc, trangThai) "
+            String sql = "INSERT INTO KhuyenMai (maKM, tenKM, tiLeGiamGia, donViTinh, ngayBatDau, ngayKetThuc, trangThai) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?)";
             stmt = con.prepareStatement(sql);
             stmt.setString(1, km.getMaKM());
@@ -123,7 +123,7 @@ public class KhuyenMaiDAO {
         PreparedStatement stmt = null;
         int n = 0;
         try {
-            String sql = "UPDATE KhuyenMai SET tenKM = ?, tiLeGiamGia = ?, loaiKM = ?, ngayBatDau = ?, "
+            String sql = "UPDATE KhuyenMai SET tenKM = ?, tiLeGiamGia = ?, donViTinh = ?, ngayBatDau = ?, "
                     + "ngayKetThuc = ?, trangThai = ? WHERE maKM = ?";
             stmt = con.prepareStatement(sql);
             stmt.setString(1, km.getTenKM());

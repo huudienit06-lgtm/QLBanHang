@@ -1,16 +1,17 @@
 package ui;
 
-import dao.DanhMucDAO;
-import entity.DanhMuc;
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -31,6 +32,7 @@ public class DanhMucPanel extends JPanel implements ActionListener, MouseListene
 
     private JTextField txtMaDM;
     private JTextField txtTenDM;
+    private JTextField txtLoiNhuan;
     private JTextField txtTimKiem;
 
     private JButton btnThem;
@@ -43,65 +45,55 @@ public class DanhMucPanel extends JPanel implements ActionListener, MouseListene
     public DanhMucPanel() {
         danhMucDAO = new DanhMucDAO();
 
-        setLayout(new BorderLayout(0, 12));
-        setBackground(GiaoDien.MAU_NEN);
-        setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // ----- Phần trên: tiêu đề, form nhập, các nút -----
-        JPanel pnlTren = new JPanel(new BorderLayout(0, 10));
-        pnlTren.setOpaque(false);
-        pnlTren.add(GiaoDien.taoTieuDe("QUẢN LÝ DANH MỤC"), BorderLayout.NORTH);
+        // ----- Phần trên: form nhập, các nút, ô tìm kiếm -----
+        txtMaDM = new JTextField(12);
+        txtMaDM.setEditable(false);
+        txtTenDM = new JTextField(25);
+        txtLoiNhuan = new JTextField(10);
 
-        JPanel pnlForm = GiaoDien.taoKhungForm("Thông tin danh mục");
-        txtMaDM = GiaoDien.taoOText(15);
-        GiaoDien.khoaOText(txtMaDM);
-        txtTenDM = GiaoDien.taoOText(30);
-        GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Mã danh mục:"), 0, 0, 0);
-        GiaoDien.themVaoLuoi(pnlForm, txtMaDM, 1, 0, 1);
-        GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Tên danh mục:"), 2, 0, 0);
-        GiaoDien.themVaoLuoi(pnlForm, txtTenDM, 3, 0, 1);
-        pnlTren.add(pnlForm, BorderLayout.CENTER);
+        JPanel dongForm1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        dongForm1.add(new JLabel("Mã danh mục:"));
+        dongForm1.add(txtMaDM);
+        dongForm1.add(new JLabel("Tên danh mục:"));
+        dongForm1.add(txtTenDM);
+        dongForm1.add(new JLabel("Lợi nhuận (0.05 = 5%):"));
+        dongForm1.add(txtLoiNhuan);
 
-        JPanel pnlNut = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        pnlNut.setOpaque(false);
-        btnThem = GiaoDien.taoNut("Thêm", GiaoDien.MAU_THEM);
-        btnSua = GiaoDien.taoNut("Sửa", GiaoDien.MAU_SUA);
-        btnXoa = GiaoDien.taoNut("Xóa", GiaoDien.MAU_XOA);
-        btnLamMoi = GiaoDien.taoNut("Làm mới", GiaoDien.MAU_PHU);
-        pnlNut.add(btnThem);
-        pnlNut.add(btnSua);
-        pnlNut.add(btnXoa);
-        pnlNut.add(btnLamMoi);
-        pnlTren.add(pnlNut, BorderLayout.SOUTH);
+        btnThem = new JButton("Thêm");
+        btnSua = new JButton("Sửa");
+        btnXoa = new JButton("Xóa");
+        btnLamMoi = new JButton("Làm mới");
+        JPanel dongNut = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        dongNut.add(btnThem);
+        dongNut.add(btnSua);
+        dongNut.add(btnXoa);
+        dongNut.add(btnLamMoi);
 
-        add(pnlTren, BorderLayout.NORTH);
+        txtTimKiem = new JTextField(20);
+        btnTim = new JButton("Tìm");
+        btnHienTatCa = new JButton("Hiện tất cả");
+        JPanel dongTim = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        dongTim.add(new JLabel("Tìm theo mã hoặc tên:"));
+        dongTim.add(txtTimKiem);
+        dongTim.add(btnTim);
+        dongTim.add(btnHienTatCa);
 
-        // ----- Phần giữa: ô tìm kiếm và bảng -----
-        JPanel pnlBang = new JPanel(new BorderLayout(0, 8));
-        pnlBang.setOpaque(false);
+        JPanel pnlBac = new JPanel(new GridLayout(0, 1));
+        pnlBac.add(dongForm1);
+        pnlBac.add(dongNut);
+        pnlBac.add(dongTim);
+        add(pnlBac, BorderLayout.NORTH);
 
-        JPanel pnlTim = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        pnlTim.setOpaque(false);
-        txtTimKiem = GiaoDien.taoOText(22);
-        btnTim = GiaoDien.taoNut("Tìm", GiaoDien.MAU_CHINH);
-        btnHienTatCa = GiaoDien.taoNut("Hiện tất cả", GiaoDien.MAU_PHU);
-        pnlTim.add(GiaoDien.taoNhan("Tìm theo mã hoặc tên:"));
-        pnlTim.add(txtTimKiem);
-        pnlTim.add(btnTim);
-        pnlTim.add(btnHienTatCa);
-        pnlBang.add(pnlTim, BorderLayout.NORTH);
-
-        String[] tenCot = { "Mã danh mục", "Tên danh mục" };
+        String[] tenCot = { "Mã danh mục", "Tên danh mục", "Lợi nhuận" };
         tableModel = new DefaultTableModel(tenCot, 0);
         table = new JTable(tableModel);
         table.setDefaultEditor(Object.class, null);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        GiaoDien.dinhDangBang(table);
-        JScrollPane scroll = new JScrollPane(table);
-        scroll.getViewport().setBackground(java.awt.Color.WHITE);
-        pnlBang.add(scroll, BorderLayout.CENTER);
-
-        add(pnlBang, BorderLayout.CENTER);
+        table.setRowHeight(24);
+        add(new JScrollPane(table), BorderLayout.CENTER);
 
         // ----- Gắn sự kiện -----
         btnThem.addActionListener(this);
@@ -125,7 +117,7 @@ public class DanhMucPanel extends JPanel implements ActionListener, MouseListene
         tableModel.setRowCount(0);
         for (int i = 0; i < dsDM.size(); i++) {
             DanhMuc dm = dsDM.get(i);
-            Object[] dong = { dm.getMaDM(), dm.getTenDM() };
+            Object[] dong = { dm.getMaDM(), dm.getTenDM(), dm.getLoiNhuan() };
             tableModel.addRow(dong);
         }
     }
@@ -134,6 +126,7 @@ public class DanhMucPanel extends JPanel implements ActionListener, MouseListene
     private void xoaTrang() {
         txtMaDM.setText(danhMucDAO.phatSinhMa());
         txtTenDM.setText("");
+        txtLoiNhuan.setText("");
         table.clearSelection();
         txtTenDM.requestFocus();
     }
@@ -150,6 +143,25 @@ public class DanhMucPanel extends JPanel implements ActionListener, MouseListene
             txtTenDM.requestFocus();
             return false;
         }
+        String loiNhuanText = txtLoiNhuan.getText().trim();
+        if (loiNhuanText.equals("")) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập lợi nhuận!");
+            txtLoiNhuan.requestFocus();
+            return false;
+        }
+        double loiNhuan = 0;
+        try {
+            loiNhuan = Double.parseDouble(loiNhuanText);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Lợi nhuận phải là số!");
+            txtLoiNhuan.requestFocus();
+            return false;
+        }
+        if (loiNhuan < 0) {
+            JOptionPane.showMessageDialog(this, "Lợi nhuận không được âm!");
+            txtLoiNhuan.requestFocus();
+            return false;
+        }
         return true;
     }
 
@@ -157,7 +169,8 @@ public class DanhMucPanel extends JPanel implements ActionListener, MouseListene
         if (!kiemTraDuLieu()) {
             return;
         }
-        DanhMuc dm = new DanhMuc(txtMaDM.getText().trim(), txtTenDM.getText().trim());
+        float loiNhuan = Float.parseFloat(txtLoiNhuan.getText().trim());
+        DanhMuc dm = new DanhMuc(txtMaDM.getText().trim(), txtTenDM.getText().trim(), loiNhuan);
         if (danhMucDAO.themDanhMuc(dm)) {
             JOptionPane.showMessageDialog(this, "Thêm danh mục thành công!");
             lamMoi();
@@ -174,7 +187,8 @@ public class DanhMucPanel extends JPanel implements ActionListener, MouseListene
         if (!kiemTraDuLieu()) {
             return;
         }
-        DanhMuc dm = new DanhMuc(txtMaDM.getText().trim(), txtTenDM.getText().trim());
+        float loiNhuan = Float.parseFloat(txtLoiNhuan.getText().trim());
+        DanhMuc dm = new DanhMuc(txtMaDM.getText().trim(), txtTenDM.getText().trim(), loiNhuan);
         if (danhMucDAO.suaDanhMuc(dm)) {
             JOptionPane.showMessageDialog(this, "Sửa danh mục thành công!");
             lamMoi();
@@ -239,6 +253,7 @@ public class DanhMucPanel extends JPanel implements ActionListener, MouseListene
         if (dong >= 0) {
             txtMaDM.setText(tableModel.getValueAt(dong, 0).toString());
             txtTenDM.setText(tableModel.getValueAt(dong, 1).toString());
+            txtLoiNhuan.setText(tableModel.getValueAt(dong, 2).toString());
         }
     }
 
