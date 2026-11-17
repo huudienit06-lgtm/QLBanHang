@@ -58,6 +58,8 @@ public class FrmChiTietHoaDon extends JDialog implements ActionListener, Documen
     private JSpinner spnSoLuong;
     private final HoaDon hoaDon;
 
+    private SanPhamDAO spDao = new SanPhamDAO();
+
     public FrmChiTietHoaDon(JFrame parent, HoaDon hd , DefaultTableModel modelCT) {
         super(parent, "Chi tiết hóa đơn", true);
         hoaDon = hd;
