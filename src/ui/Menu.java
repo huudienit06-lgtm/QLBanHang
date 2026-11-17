@@ -37,6 +37,7 @@ public class Menu extends JPanel implements ActionListener{
     private JMenuItem itemLapPhieuNhapKho;
     private final JMenuItem itemThongKeSanPham;
     private final JMenuItem itemThongKeHoaDon;
+    private final JMenuItem itemThongKeKhachHang;
     private JMenuItem itemThongKeNhapKho;
 
     public Menu(NhanVien nv, Main main) {
@@ -96,9 +97,11 @@ public class Menu extends JPanel implements ActionListener{
         }
         itemThongKeSanPham = new JMenuItem("Thống kê sản phẩm");
         itemThongKeHoaDon = new JMenuItem("Thống kê doanh thu");
+        itemThongKeKhachHang = new JMenuItem("Thống kê khách hàng");
 
         menuThongKe.add(itemThongKeSanPham);
         menuThongKe.add(itemThongKeHoaDon);
+        menuThongKe.add(itemThongKeKhachHang);
 
         GridBagConstraints menuConstraints = new GridBagConstraints();
         menuConstraints.gridx = 0;
@@ -138,6 +141,7 @@ public class Menu extends JPanel implements ActionListener{
         itemSanPham.addActionListener(this);
         itemThongKeHoaDon.addActionListener(this);
         itemThongKeSanPham.addActionListener(this);
+        itemThongKeKhachHang.addActionListener(this);
         itemTrangChu.addActionListener(this);
         if (laQuanLy) {
             itemNhanVien.addActionListener(this);

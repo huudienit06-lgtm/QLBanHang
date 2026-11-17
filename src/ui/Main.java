@@ -103,6 +103,9 @@ public class Main extends JFrame {
             case "Thống kê nhập kho":
                 setContent(new ThongKeNhapKho_GUI());
                 break;
+            case "Thống kê khách hàng":
+                setContent(new ThongKeKhachHang_gui());
+                break;
             default:
                 JOptionPane.showMessageDialog(this, "Chức năng \"" + chucNang + "\" chưa được xây dựng.");
                 break;
