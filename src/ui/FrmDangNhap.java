@@ -35,7 +35,6 @@ public class FrmDangNhap extends JPanel implements ActionListener {
     private final JPasswordField txtMatKhau;
     private final JCheckBox chkHienMK;
     private final JButton btnDangNhap;
-    private final JButton btnQuenMK;
     private final char kyTuMatKhauMacDinh;
 
     public FrmDangNhap(Main main) {
@@ -78,8 +77,6 @@ public class FrmDangNhap extends JPanel implements ActionListener {
         b1.add(chkHienMK);
 
         btnDangNhap = new JButton("Đăng Nhập");
-        btnQuenMK = new JButton("Quên Mật Khẩu");
-        pnlButton.add(btnQuenMK);
         pnlButton.add(btnDangNhap);
         b.add(b1);
         b.add(pnlButton);
@@ -88,12 +85,13 @@ public class FrmDangNhap extends JPanel implements ActionListener {
         add(pnlNen, BorderLayout.CENTER);
 
         btnDangNhap.addActionListener(this);
-        btnQuenMK.addActionListener(this);
+
         chkHienMK.addActionListener(this);
 
     }
 
     private static class NenDangNhap extends JPanel {
+
         private final BufferedImage anhNen;
 
         NenDangNhap() {
@@ -158,8 +156,6 @@ public class FrmDangNhap extends JPanel implements ActionListener {
             } else {
                 main.dangNhapThanhCong(tk);
             }
-        } else if (o.equals(btnQuenMK)) {
-            // TODO: xử lý quên mật khẩu
         }
     }
 
