@@ -159,7 +159,7 @@ public class Thue_GUI extends JPanel implements ActionListener, MouseListener {
 
         // Đọc dữ liệu
         ReadDataFromDB();
-
+        xoaTrang();
     }
 
     // Đọc dữ liệu từ database lên bảng
@@ -236,8 +236,8 @@ public class Thue_GUI extends JPanel implements ActionListener, MouseListener {
         txtTenThue.setText("");
         txtTiLeThue.setText("");
         txtTim.setText("");
-
-        txtMaThue.setEditable(true);
+        txtMaThue.setText(thue_dao.sinhMaThue());
+        txtMaThue.setEditable(false);
 
         table.clearSelection();
 

@@ -257,6 +257,7 @@ public class PhieuNhapKho_GUI extends JPanel implements ActionListener {
                     txtNgayLap.setText(modelPNK.getValueAt(row, 1).toString());
                     cboNhanVien.setSelectedItem(modelPNK.getValueAt(row, 2).toString());
                     txtTrangThai.setText(modelPNK.getValueAt(row, 3).toString());
+                    txtSoLuongSP.setEditable(false);
                 }
             }
         });
