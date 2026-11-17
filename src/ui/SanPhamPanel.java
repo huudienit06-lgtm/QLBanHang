@@ -1,12 +1,7 @@
 package ui;
 
-import dao.DanhMucDAO;
-import dao.KhuyenMaiDAO;
-import dao.SanPhamDAO;
-import entity.DanhMuc;
-import entity.KhuyenMai;
-import entity.SanPham;
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -15,8 +10,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -68,80 +65,67 @@ public class SanPhamPanel extends JPanel implements ActionListener, MouseListene
         dsDanhMuc = new ArrayList<DanhMuc>();
         dsKhuyenMai = new ArrayList<KhuyenMai>();
 
-        setLayout(new BorderLayout(0, 12));
-        setBackground(GiaoDien.MAU_NEN);
-        setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // ----- Phần trên: tiêu đề, form nhập, các nút -----
-        JPanel pnlTren = new JPanel(new BorderLayout(0, 10));
-        pnlTren.setOpaque(false);
-        pnlTren.add(GiaoDien.taoTieuDe("QUẢN LÝ SẢN PHẨM"), BorderLayout.NORTH);
+        // ----- Phần trên: form nhập, các nút, ô tìm kiếm -----
+        txtMaSP = new JTextField(10);
+        txtMaSP.setEditable(false);
+        txtTenSP = new JTextField(20);
+        txtGiaNhap = new JTextField(10);
+        txtSoLuongTon = new JTextField(8);
+        cboDanhMuc = new JComboBox<String>();
+        cboKhuyenMai = new JComboBox<String>();
 
-        JPanel pnlForm = GiaoDien.taoKhungForm("Thông tin sản phẩm");
-        txtMaSP = GiaoDien.taoOText(15);
-        GiaoDien.khoaOText(txtMaSP);
-        txtTenSP = GiaoDien.taoOText(20);
-        txtGiaNhap = GiaoDien.taoOText(15);
-        txtSoLuongTon = GiaoDien.taoOText(15);
-        cboDanhMuc = GiaoDien.taoComboBox();
-        cboKhuyenMai = GiaoDien.taoComboBox();
+        JPanel dongForm1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        dongForm1.add(new JLabel("Mã SP:"));
+        dongForm1.add(txtMaSP);
+        dongForm1.add(new JLabel("Tên SP:"));
+        dongForm1.add(txtTenSP);
+        dongForm1.add(new JLabel("Giá nhập:"));
+        dongForm1.add(txtGiaNhap);
+        dongForm1.add(new JLabel("Số lượng tồn:"));
+        dongForm1.add(txtSoLuongTon);
 
-        GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Mã sản phẩm:"), 0, 0, 0);
-        GiaoDien.themVaoLuoi(pnlForm, txtMaSP, 1, 0, 1);
-        GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Tên sản phẩm:"), 2, 0, 0);
-        GiaoDien.themVaoLuoi(pnlForm, txtTenSP, 3, 0, 1);
+        JPanel dongForm2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        dongForm2.add(new JLabel("Danh mục:"));
+        dongForm2.add(cboDanhMuc);
+        dongForm2.add(new JLabel("Khuyến mãi:"));
+        dongForm2.add(cboKhuyenMai);
 
-        GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Giá nhập:"), 0, 1, 0);
-        GiaoDien.themVaoLuoi(pnlForm, txtGiaNhap, 1, 1, 1);
-        GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Số lượng tồn:"), 2, 1, 0);
-        GiaoDien.themVaoLuoi(pnlForm, txtSoLuongTon, 3, 1, 1);
+        btnThem = new JButton("Thêm");
+        btnSua = new JButton("Sửa");
+        btnXoa = new JButton("Xóa");
+        btnLamMoi = new JButton("Làm mới");
+        JPanel dongNut = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        dongNut.add(btnThem);
+        dongNut.add(btnSua);
+        dongNut.add(btnXoa);
+        dongNut.add(btnLamMoi);
 
-        GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Danh mục:"), 0, 2, 0);
-        GiaoDien.themVaoLuoi(pnlForm, cboDanhMuc, 1, 2, 1);
-        GiaoDien.themVaoLuoi(pnlForm, GiaoDien.taoNhan("Khuyến mãi:"), 2, 2, 0);
-        GiaoDien.themVaoLuoi(pnlForm, cboKhuyenMai, 3, 2, 1);
-        pnlTren.add(pnlForm, BorderLayout.CENTER);
+        txtTimKiem = new JTextField(20);
+        btnTim = new JButton("Tìm");
+        btnHienTatCa = new JButton("Hiện tất cả");
+        JPanel dongTim = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        dongTim.add(new JLabel("Tìm theo mã hoặc tên:"));
+        dongTim.add(txtTimKiem);
+        dongTim.add(btnTim);
+        dongTim.add(btnHienTatCa);
 
-        JPanel pnlNut = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        pnlNut.setOpaque(false);
-        btnThem = GiaoDien.taoNut("Thêm", GiaoDien.MAU_THEM);
-        btnSua = GiaoDien.taoNut("Sửa", GiaoDien.MAU_SUA);
-        btnXoa = GiaoDien.taoNut("Xóa", GiaoDien.MAU_XOA);
-        btnLamMoi = GiaoDien.taoNut("Làm mới", GiaoDien.MAU_PHU);
-        pnlNut.add(btnThem);
-        pnlNut.add(btnSua);
-        pnlNut.add(btnXoa);
-        pnlNut.add(btnLamMoi);
-        pnlTren.add(pnlNut, BorderLayout.SOUTH);
-
-        add(pnlTren, BorderLayout.NORTH);
-
-        // ----- Phần giữa: ô tìm kiếm và bảng -----
-        JPanel pnlBang = new JPanel(new BorderLayout(0, 8));
-        pnlBang.setOpaque(false);
-
-        JPanel pnlTim = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        pnlTim.setOpaque(false);
-        txtTimKiem = GiaoDien.taoOText(22);
-        btnTim = GiaoDien.taoNut("Tìm", GiaoDien.MAU_CHINH);
-        btnHienTatCa = GiaoDien.taoNut("Hiện tất cả", GiaoDien.MAU_PHU);
-        pnlTim.add(GiaoDien.taoNhan("Tìm theo mã hoặc tên:"));
-        pnlTim.add(txtTimKiem);
-        pnlTim.add(btnTim);
-        pnlTim.add(btnHienTatCa);
-        pnlBang.add(pnlTim, BorderLayout.NORTH);
+        JPanel pnlBac = new JPanel(new GridLayout(0, 1));
+        pnlBac.add(dongForm1);
+        pnlBac.add(dongForm2);
+        pnlBac.add(dongNut);
+        pnlBac.add(dongTim);
+        add(pnlBac, BorderLayout.NORTH);
 
         String[] tenCot = { "Mã SP", "Tên sản phẩm", "Giá nhập", "Tồn kho", "Danh mục", "Khuyến mãi" };
         tableModel = new DefaultTableModel(tenCot, 0);
         table = new JTable(tableModel);
         table.setDefaultEditor(Object.class, null);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        GiaoDien.dinhDangBang(table);
-        JScrollPane scroll = new JScrollPane(table);
-        scroll.getViewport().setBackground(Color.WHITE);
-        pnlBang.add(scroll, BorderLayout.CENTER);
-
-        add(pnlBang, BorderLayout.CENTER);
+        table.setRowHeight(24);
+        add(new JScrollPane(table), BorderLayout.CENTER);
 
         // ----- Gắn sự kiện -----
         btnThem.addActionListener(this);
@@ -193,7 +177,8 @@ public class SanPhamPanel extends JPanel implements ActionListener, MouseListene
             if (sp.getKhuyenMai() != null) {
                 tenKM = sp.getKhuyenMai().getMaKM() + " - " + sp.getKhuyenMai().getTenKM();
             }
-            Object[] dong = { sp.getMaSP(), sp.getTenSP(), sp.getGiaNhap(), sp.getSoLuongTon(), tenDM, tenKM };
+            String giaNhap = BigDecimal.valueOf(sp.getGiaNhap()).stripTrailingZeros().toPlainString();
+            Object[] dong = { sp.getMaSP(), sp.getTenSP(), giaNhap, sp.getSoLuongTon(), tenDM, tenKM };
             tableModel.addRow(dong);
         }
     }
@@ -231,16 +216,16 @@ public class SanPhamPanel extends JPanel implements ActionListener, MouseListene
             return null;
         }
 
-        BigDecimal giaNhap = null;
+        double giaNhap = 0;
         int soLuongTon = 0;
         try {
-            giaNhap = new BigDecimal(giaText);
+            giaNhap = Double.parseDouble(giaText);
             soLuongTon = Integer.parseInt(tonText);
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Giá nhập và số lượng tồn phải là số!");
             return null;
         }
-        if (giaNhap.signum() < 0 || soLuongTon < 0) {
+        if (giaNhap < 0 || soLuongTon < 0) {
             JOptionPane.showMessageDialog(this, "Giá nhập và số lượng tồn không được âm!");
             return null;
         }
@@ -257,7 +242,14 @@ public class SanPhamPanel extends JPanel implements ActionListener, MouseListene
             khuyenMai = dsKhuyenMai.get(viTriKM - 1);
         }
 
-        return new SanPham(maSP, tenSP, giaNhap.doubleValue(), soLuongTon, khuyenMai, danhMuc);
+        SanPham sp = new SanPham();
+        sp.setMaSP(maSP);
+        sp.setTenSP(tenSP);
+        sp.setGiaNhap(giaNhap);
+        sp.setSoLuongTon(soLuongTon);
+        sp.setKhuyenMai(khuyenMai);
+        sp.setDanhMuc(danhMuc);
+        return sp;
     }
 
     private void themSanPham() {

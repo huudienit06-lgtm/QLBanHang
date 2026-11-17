@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -63,24 +64,18 @@ public class ThongKeSanPhamPanel extends JPanel implements ActionListener, Chang
     public ThongKeSanPhamPanel() {
         sanPhamDAO = new SanPhamDAO();
 
-        setLayout(new BorderLayout(0, 12));
-        setBackground(GiaoDien.MAU_NEN);
-        setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
-
-        add(GiaoDien.taoTieuDe("THỐNG KÊ SẢN PHẨM"), BorderLayout.NORTH);
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // ----- Khung 1: tồn kho và cảnh báo -----
-        JPanel pnlTonKho = new JPanel(new BorderLayout(0, 8));
-        pnlTonKho.setOpaque(false);
+        JPanel pnlTonKho = new JPanel(new BorderLayout(5, 5));
 
-        JPanel pnlDieuKhienTon = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        pnlDieuKhienTon.setOpaque(false);
+        JPanel pnlDieuKhienTon = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         spnNguongSapHet = new JSpinner(new SpinnerNumberModel(10, 0, 100000, 1));
-        btnCapNhatTon = GiaoDien.taoNut("Cập nhật", GiaoDien.MAU_CHINH);
-        lblTongKet = GiaoDien.taoNhan(" ");
-        lblTongKet.setFont(GiaoDien.FONT_DAM);
-        lblTongKet.setForeground(GiaoDien.MAU_XOA);
-        pnlDieuKhienTon.add(GiaoDien.taoNhan("Tồn kho hiện tại - cảnh báo sắp hết khi số lượng ≤"));
+        btnCapNhatTon = new JButton("Cập nhật");
+        lblTongKet = new JLabel(" ");
+        lblTongKet.setForeground(Color.RED);
+        pnlDieuKhienTon.add(new JLabel("Tồn kho hiện tại - cảnh báo sắp hết khi số lượng ≤"));
         pnlDieuKhienTon.add(spnNguongSapHet);
         pnlDieuKhienTon.add(btnCapNhatTon);
         pnlDieuKhienTon.add(lblTongKet);
@@ -90,31 +85,27 @@ public class ThongKeSanPhamPanel extends JPanel implements ActionListener, Chang
         modelTonKho = new DefaultTableModel(cotTonKho, 0);
         tblTonKho = new JTable(modelTonKho);
         tblTonKho.setDefaultEditor(Object.class, null);
-        GiaoDien.dinhDangBang(tblTonKho);
+        tblTonKho.setRowHeight(24);
         tblTonKho.setDefaultRenderer(Object.class, new CanhBaoRenderer());
-        JScrollPane scrollTon = new JScrollPane(tblTonKho);
-        scrollTon.getViewport().setBackground(Color.WHITE);
-        pnlTonKho.add(scrollTon, BorderLayout.CENTER);
+        pnlTonKho.add(new JScrollPane(tblTonKho), BorderLayout.CENTER);
 
         // ----- Khung 2: sản phẩm bán chạy -----
-        JPanel pnlBanChay = new JPanel(new BorderLayout(0, 8));
-        pnlBanChay.setOpaque(false);
+        JPanel pnlBanChay = new JPanel(new BorderLayout(5, 5));
 
-        JPanel pnlDieuKhienBan = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        pnlDieuKhienBan.setOpaque(false);
-        cboKyThongKe = GiaoDien.taoComboBox();
+        JPanel pnlDieuKhienBan = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        cboKyThongKe = new JComboBox<String>();
         cboKyThongKe.addItem("Theo ngày");
         cboKyThongKe.addItem("Theo tháng");
         cboKyThongKe.addItem("Theo năm");
-        txtGiaTriKy = GiaoDien.taoOText(10);
-        lblDinhDang = GiaoDien.taoNhan(" ");
+        txtGiaTriKy = new JTextField(10);
+        lblDinhDang = new JLabel(" ");
         spnTop = new JSpinner(new SpinnerNumberModel(5, 1, 1000, 1));
-        btnXemThongKe = GiaoDien.taoNut("Xem thống kê", GiaoDien.MAU_THEM);
-        pnlDieuKhienBan.add(GiaoDien.taoNhan("Sản phẩm bán chạy:"));
+        btnXemThongKe = new JButton("Xem thống kê");
+        pnlDieuKhienBan.add(new JLabel("Sản phẩm bán chạy:"));
         pnlDieuKhienBan.add(cboKyThongKe);
         pnlDieuKhienBan.add(txtGiaTriKy);
         pnlDieuKhienBan.add(lblDinhDang);
-        pnlDieuKhienBan.add(GiaoDien.taoNhan("Top:"));
+        pnlDieuKhienBan.add(new JLabel("Top:"));
         pnlDieuKhienBan.add(spnTop);
         pnlDieuKhienBan.add(btnXemThongKe);
         pnlBanChay.add(pnlDieuKhienBan, BorderLayout.NORTH);
@@ -123,20 +114,16 @@ public class ThongKeSanPhamPanel extends JPanel implements ActionListener, Chang
         modelBanChay = new DefaultTableModel(cotBanChay, 0);
         tblBanChay = new JTable(modelBanChay);
         tblBanChay.setDefaultEditor(Object.class, null);
-        GiaoDien.dinhDangBang(tblBanChay);
-        JScrollPane scrollBan = new JScrollPane(tblBanChay);
-        scrollBan.getViewport().setBackground(Color.WHITE);
+        tblBanChay.setRowHeight(24);
 
         bieuDo = new BieuDoCot();
-        JSplitPane splitBanChay = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollBan, bieuDo);
+        JSplitPane splitBanChay = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(tblBanChay), bieuDo);
         splitBanChay.setResizeWeight(0.45);
         pnlBanChay.add(splitBanChay, BorderLayout.CENTER);
 
         // Ghép hai khung lại
         JSplitPane splitChinh = new JSplitPane(JSplitPane.VERTICAL_SPLIT, pnlTonKho, pnlBanChay);
         splitChinh.setResizeWeight(0.45);
-        splitChinh.setBorder(null);
-        splitChinh.setOpaque(false);
         add(splitChinh, BorderLayout.CENTER);
 
         // ----- Gắn sự kiện -----
@@ -289,7 +276,6 @@ public class ThongKeSanPhamPanel extends JPanel implements ActionListener, Chang
 
         public BieuDoCot() {
             setBackground(Color.WHITE);
-            setBorder(BorderFactory.createLineBorder(GiaoDien.MAU_VIEN));
         }
 
         public void setDuLieu(ArrayList<String> dsTen, ArrayList<Integer> dsSoLuong) {
@@ -304,7 +290,6 @@ public class ThongKeSanPhamPanel extends JPanel implements ActionListener, Chang
             Graphics2D g2 = (Graphics2D) g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            g2.setFont(GiaoDien.FONT_THUONG);
             FontMetrics fm = g2.getFontMetrics();
 
             int rong = getWidth();
@@ -347,7 +332,7 @@ public class ThongKeSanPhamPanel extends JPanel implements ActionListener, Chang
                 int x = leTrai + i * beRongMoiCot + (beRongMoiCot - beRongCot) / 2;
                 int y = leDuoi - chieuCaoCot;
 
-                g2.setColor(GiaoDien.MAU_CHINH);
+                g2.setColor(Color.BLUE);
                 g2.fillRect(x, y, beRongCot, chieuCaoCot);
 
                 // Số lượng ghi phía trên cột

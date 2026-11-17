@@ -25,7 +25,6 @@ public class QuanLySanPhamFrame extends JFrame implements ChangeListener {
         pnlThongKe = new ThongKeSanPhamPanel();
 
         tabs = new JTabbedPane();
-        tabs.setFont(GiaoDien.FONT_DAM);
         tabs.addTab("Sản phẩm", pnlSanPham);
         tabs.addTab("Danh mục", pnlDanhMuc);
         tabs.addTab("Khuyến mãi", pnlKhuyenMai);
