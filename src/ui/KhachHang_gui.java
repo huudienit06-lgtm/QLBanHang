@@ -1,4 +1,3 @@
-
 package ui;
 
 import java.awt.*;
@@ -29,13 +28,9 @@ public class KhachHang_gui extends JPanel {
     public KhachHang_gui() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        setBackground(new Color(240, 244, 248));
 
         JLabel title = new JLabel("QUẢN LÝ KHÁCH HÀNG", SwingConstants.CENTER);
         title.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        title.setForeground(Color.WHITE);
-        title.setBackground(new Color(41, 128, 185));
-        title.setOpaque(true);
         title.setPreferredSize(new Dimension(0, 50));
         title.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 
@@ -44,12 +39,11 @@ public class KhachHang_gui extends JPanel {
 
         JPanel form = new JPanel(new GridBagLayout());
         form.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(new Color(189, 195, 199)),
+                BorderFactory.createEtchedBorder(),
                 "Thông tin khách hàng"));
         form.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(189, 195, 199)),
+                BorderFactory.createEtchedBorder(),
                 BorderFactory.createTitledBorder("Thông tin khách hàng")));
-        form.setBackground(Color.WHITE);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -119,17 +113,14 @@ public class KhachHang_gui extends JPanel {
         form.add(cboLoai, gbc);
 
         // Định dạng ô nhập liệu
-        Color mauVien = new Color(189, 195, 199);
-
         JTextField[] dsText = {
                 txtMa, txtTen, txtSdt, txtGmail, txtDiaChi, txtTim
         };
 
         for (JTextField txt : dsText) {
             txt.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            txt.setBackground(Color.WHITE);
             txt.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(mauVien),
+                    BorderFactory.createEtchedBorder(),
                     BorderFactory.createEmptyBorder(5, 8, 5, 8)));
         }
 
@@ -137,7 +128,6 @@ public class KhachHang_gui extends JPanel {
 
         // Các nút chức năng
         JPanel btns = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-        btns.setBackground(new Color(240, 244, 248));
 
         JButton btnThem = new JButton("Thêm");
         JButton btnSua = new JButton("Sửa");
@@ -147,22 +137,11 @@ public class KhachHang_gui extends JPanel {
 
         JButton[] dsNut = {btnThem, btnSua, btnXoa, btnLam, btnTim};
 
-        Color[] dsMau = {
-                new Color(39, 174, 96),
-                new Color(243, 156, 18),
-                new Color(231, 76, 60),
-                new Color(127, 140, 141),
-                new Color(41, 128, 185)
-        };
-
         for (int i = 0; i < dsNut.length; i++) {
             dsNut[i].setFont(new Font("Segoe UI", Font.BOLD, 13));
-            dsNut[i].setForeground(Color.WHITE);
-            dsNut[i].setBackground(dsMau[i]);
             dsNut[i].setFocusPainted(false);
             dsNut[i].setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
             dsNut[i].setCursor(new Cursor(Cursor.HAND_CURSOR));
-            dsNut[i].setOpaque(true);
         }
 
         btns.add(btnThem);
@@ -174,7 +153,6 @@ public class KhachHang_gui extends JPanel {
         btns.add(btnTim);
 
         JPanel north = new JPanel(new BorderLayout());
-        north.setBackground(new Color(240, 244, 248));
         north.add(title, BorderLayout.NORTH);
         north.add(form, BorderLayout.CENTER);
         north.add(btns, BorderLayout.SOUTH);
@@ -185,17 +163,10 @@ public class KhachHang_gui extends JPanel {
         // Định dạng bảng
         table.setRowHeight(30);
         table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        table.setForeground(new Color(44, 62, 80));
-        table.setBackground(Color.WHITE);
-        table.setSelectionBackground(new Color(174, 214, 241));
-        table.setSelectionForeground(Color.BLACK);
         table.setShowGrid(true);
-        table.setGridColor(new Color(220, 225, 230));
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
-        table.getTableHeader().setBackground(new Color(41, 128, 185));
-        table.getTableHeader().setForeground(Color.WHITE);
         table.getTableHeader().setPreferredSize(new Dimension(0, 35));
         table.getTableHeader().setReorderingAllowed(false);
 
@@ -234,7 +205,6 @@ public class KhachHang_gui extends JPanel {
         JLabel label = new JLabel(text);
         label.setPreferredSize(new Dimension(120, 25));
         label.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        label.setForeground(new Color(44, 62, 80));
         return label;
     }
 

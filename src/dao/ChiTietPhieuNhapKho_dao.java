@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import connectdb.ConnectDB;
-import entity.NhanVien;
 import entity.PhieuNhapKho;
 import entity.SanPham;
 import entity.ChiTietPhieuNhapKho;
