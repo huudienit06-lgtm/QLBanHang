@@ -12,6 +12,7 @@ import dao.KhachHang_Dao;
 public class ThongKeKhachHang_gui extends JPanel {
     private final KhachHang_Dao khDao = new KhachHang_Dao();
     private final HoaDonDAO hdDao = new HoaDonDAO();
+    
     private final DecimalFormat money = new DecimalFormat("#,##0");
 
     private final JLabel lblSoLuong = new JLabel("0", SwingConstants.CENTER);
