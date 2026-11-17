@@ -73,7 +73,58 @@ public class Thue_dao {
 
         return thue;
     }
+public ArrayList<Thue> timThueTheoTen(String tenThue) {
+    ArrayList<Thue> dsThue = new ArrayList<>();
 
+    ConnectDB.getInstance();
+    Connection con = ConnectDB.getConnection();
+
+    PreparedStatement stmt = null;
+
+    try {
+        String[] tuKhoa = tenThue.trim().split("\\s+");
+
+        StringBuilder sql = new StringBuilder(
+            "SELECT * FROM Thue WHERE 1=1"
+        );
+
+        for (String tu : tuKhoa) {
+            sql.append(" AND tenThue LIKE ?");
+        }
+
+        stmt = con.prepareStatement(sql.toString());
+
+        for (int i = 0; i < tuKhoa.length; i++) {
+            stmt.setString(i + 1, "%" + tuKhoa[i] + "%");
+        }
+
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            String maThue = rs.getString(1);
+            String ten = rs.getString(2);
+            Double tiLeThue = rs.getDouble(3);
+
+            Thue thue = new Thue(maThue, ten, tiLeThue);
+            dsThue.add(thue);
+        }
+
+        rs.close();
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (stmt != null) {
+                stmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    return dsThue;
+}
     public boolean themThue(Thue thue){
         ConnectDB.getInstance();
         Connection con = ConnectDB.getConnection();

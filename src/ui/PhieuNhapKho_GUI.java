@@ -2,6 +2,8 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
 // import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -20,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
 import connectdb.ConnectDB;
@@ -56,6 +59,14 @@ public class PhieuNhapKho_GUI extends JPanel implements ActionListener {
 
     public PhieuNhapKho_GUI() {
          setLayout(new BorderLayout(10, 10));
+        Color background = new Color(219, 234, 254);
+        JLabel lblTitle = new JLabel("QUẢN LÝ PHIẾU NHẬP KHO", SwingConstants.CENTER);
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 30));
+        lblTitle.setForeground(new Color(30, 64, 175));
+        JPanel Title = new JPanel(new FlowLayout());
+        Title.setBackground(background);
+        Title.add(lblTitle);
+        add(Title,BorderLayout.NORTH);
         try {
             ConnectDB.getInstance().connect();
         } catch (Exception e) {
@@ -70,10 +81,6 @@ public class PhieuNhapKho_GUI extends JPanel implements ActionListener {
         // setDefaultCloseOperation(EXIT_ON_CLOSE);
         // setLocationRelativeTo(null);
 
-        // Tiêu đề
-        JLabel lblTieuDe = new JLabel("QUẢN LÝ PHIẾU NHẬP KHO");
-        lblTieuDe.setFont(new Font("Arial", Font.BOLD, 22));
-
         Box b = Box.createVerticalBox();
 
         Box b1, b2, b3;
@@ -82,7 +89,7 @@ public class PhieuNhapKho_GUI extends JPanel implements ActionListener {
 
         // Dòng tiêu đề
         b.add(b1 = Box.createHorizontalBox());
-        b1.add(lblTieuDe);
+        b1.add(lblTitle);
 
         b.add(Box.createVerticalStrut(15));
 
@@ -305,6 +312,7 @@ public class PhieuNhapKho_GUI extends JPanel implements ActionListener {
 
                     ReadDataFromDB();
                     xoaTrang();
+                    txtMaPNK.setText(pnk_dao.sinhMaPNK());
 
                 } else {
 

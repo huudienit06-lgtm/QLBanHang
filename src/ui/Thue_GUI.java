@@ -2,6 +2,8 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,12 +13,14 @@ import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
 import connectdb.ConnectDB;
@@ -44,6 +48,8 @@ public class Thue_GUI extends JPanel implements ActionListener, MouseListener {
     private DefaultTableModel model;
 
     private Thue_dao thue_dao;
+    private JComboBox<String> cboTim;
+    private JButton btnReload;
 
     public Thue_GUI() {
 
@@ -57,11 +63,18 @@ public class Thue_GUI extends JPanel implements ActionListener, MouseListener {
         // setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         // Tiêu đề
-        JLabel lblTieuDe = new JLabel("QUẢN LÝ THUẾ");
-        lblTieuDe.setFont(new Font("Arial", Font.BOLD, 25));
+        setLayout(new BorderLayout(10, 10));
+        Color background = new Color(219, 234, 254);
+        JLabel lblTitle = new JLabel("THỐNG KÊ HÀNG NHẬP KHO", SwingConstants.CENTER);
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 30));
+        lblTitle.setForeground(new Color(30, 64, 175));
+        JPanel Title = new JPanel(new FlowLayout());
+        Title.setBackground(background);
+        Title.add(lblTitle);
+        add(Title,BorderLayout.NORTH);
 
         JPanel pnlTieuDe = new JPanel();
-        pnlTieuDe.add(lblTieuDe);
+        pnlTieuDe.add(lblTitle);
 
         // Thông tin thuế
         JPanel pnlThongTin = new JPanel();
@@ -83,10 +96,14 @@ public class Thue_GUI extends JPanel implements ActionListener, MouseListener {
         // Tìm kiếm
         JPanel pnlTim = new JPanel();
 
-        pnlTim.add(new JLabel("Mã thuế cần tìm:"));
+        cboTim = new JComboBox<>(new String[]{
+        "Tìm theo mã thuế",
+        "Tìm theo tên thuế"
+});
+
+        pnlTim.add(cboTim);
         txtTim = new JTextField(15);
         pnlTim.add(txtTim);
-
         btnTim = new JButton("Tìm");
         pnlTim.add(btnTim);
 
@@ -106,11 +123,13 @@ public class Thue_GUI extends JPanel implements ActionListener, MouseListener {
         btnXoa = new JButton("Xóa");
         btnSua = new JButton("Sửa");
         btnXoaTrang = new JButton("Xóa trắng");
+        btnReload = new JButton("Reload");
 
         pnlButton.add(btnThem);
         pnlButton.add(btnXoa);
         pnlButton.add(btnSua);
         pnlButton.add(btnXoaTrang);
+        pnlButton.add(btnReload);
 
         // Sắp xếp giao diện
         Box box = Box.createVerticalBox();
@@ -134,6 +153,7 @@ public class Thue_GUI extends JPanel implements ActionListener, MouseListener {
         btnSua.addActionListener(this);
         btnXoaTrang.addActionListener(this);
         btnTim.addActionListener(this);
+        btnReload.addActionListener(this);
 
         table.addMouseListener(this);
 
@@ -321,20 +341,43 @@ public class Thue_GUI extends JPanel implements ActionListener, MouseListener {
 
         // Tìm kiếm
         else if (o.equals(btnTim)) {
-            String maThue = txtTim.getText().trim();
+        String tuKhoa = txtTim.getText().trim();
+        if (tuKhoa.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "Vui lòng nhập thông tin cần tìm!");
+            txtTim.requestFocus();
+            return;
+    }
 
-            if (maThue.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                        "Vui lòng nhập mã thuế cần tìm!");
-                txtTim.requestFocus();
-                return;
-            }
+        model.setRowCount(0);
 
-            Thue thue = thue_dao.timThue(maThue);
+    // Tìm theo mã thuế
+        if (cboTim.getSelectedIndex() == 0) {
 
-            model.setRowCount(0);
+        Thue thue = thue_dao.timThue(tuKhoa);
 
-            if (thue != null) {
+        if (thue != null) {
+            Object[] row = {
+                thue.getMaThue(),
+                thue.getTenThue(),
+                thue.getTiLeThue()
+            };
+
+            model.addRow(row);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Không tìm thấy mã thuế!");
+        }
+    }
+
+    // Tìm theo tên thuế
+        else {
+
+        ArrayList<Thue> dsThue = thue_dao.timThueTheoTen(tuKhoa);
+
+            if (!dsThue.isEmpty()) {
+
+            for (Thue thue : dsThue) {
                 Object[] row = {
                     thue.getMaThue(),
                     thue.getTenThue(),
@@ -342,12 +385,23 @@ public class Thue_GUI extends JPanel implements ActionListener, MouseListener {
                 };
 
                 model.addRow(row);
-            } else {
-                JOptionPane.showMessageDialog(this,
-                        "Không tìm thấy mã thuế!");
             }
+
+            } else {
+            JOptionPane.showMessageDialog(this,
+                    "Không tìm thấy tên thuế!");
         }
     }
+}
+
+        // Reload dữ liệu
+        else if (o.equals(btnReload)) {
+            ReadDataFromDB();
+            xoaTrang();
+            txtMaThue.setText(thue_dao.sinhMaThue());
+            JOptionPane.showMessageDialog(this, "Dữ liệu đã được tải lại!");
+        }
+}
 
     @Override
     public void mouseClicked(MouseEvent e) {

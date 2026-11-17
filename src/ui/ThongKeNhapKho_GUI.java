@@ -22,8 +22,6 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeSet;
-
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -57,13 +55,22 @@ public class ThongKeNhapKho_GUI extends JPanel {
 
     public ThongKeNhapKho_GUI() {
 
-        setLayout(new BorderLayout(10, 10));
-        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        // setLayout(new BorderLayout(10, 10));
+        // setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JLabel title = new JLabel("THỐNG KÊ HÀNG NHẬP KHO",
-                SwingConstants.CENTER);
-        title.setFont(new Font("Arial", Font.BOLD, 22));
-        title.setForeground(Color.BLUE);
+        // JLabel title = new JLabel("THỐNG KÊ HÀNG NHẬP KHO",
+        //         SwingConstants.CENTER);
+        // title.setFont(new Font("Arial", Font.BOLD, 22));
+        // title.setForeground(Color.BLUE);
+        setLayout(new BorderLayout(10, 10));
+        Color background = new Color(219, 234, 254);
+        JLabel lblTitle = new JLabel("THỐNG KÊ HÀNG NHẬP KHO", SwingConstants.CENTER);
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 30));
+        lblTitle.setForeground(new Color(30, 64, 175));
+        JPanel Title = new JPanel(new FlowLayout());
+        Title.setBackground(background);
+        Title.add(lblTitle);
+        add(Title,BorderLayout.NORTH);
 
         cboLoai = new JComboBox<>(new String[]{"Tuần", "Tháng", "Năm"});
         cboThoiGian = new JComboBox<>();
@@ -82,7 +89,7 @@ public class ThongKeNhapKho_GUI extends JPanel {
         pnlLoc.add(btnThongKe);
 
         JPanel pnlTop = new JPanel(new BorderLayout());
-        pnlTop.add(title, BorderLayout.NORTH);
+        pnlTop.add(lblTitle, BorderLayout.NORTH);
         pnlTop.add(pnlLoc, BorderLayout.CENTER);
 
         add(pnlTop, BorderLayout.NORTH);
@@ -141,7 +148,7 @@ public class ThongKeNhapKho_GUI extends JPanel {
                    + "FROM PhieuNhapKho WHERE ngayLap IS NOT NULL";
 
         try {
-            Connection con = ConnectDB.getInstance().getConnection();
+            Connection con = ConnectDB.getConnection();
 
             try (PreparedStatement ps = con.prepareStatement(sql);
                  ResultSet rs = ps.executeQuery()) {
