@@ -330,9 +330,7 @@ public class NhanVien_gui extends JPanel {
             loadData();
             return;
         }
-
         model.setRowCount(0);
-
         NhanVien nv = dao.timNhanVientheoMa(ma1);
 
         if (nv != null) {

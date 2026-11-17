@@ -220,14 +220,11 @@ public class TaiKhoan_gui extends JPanel {
     private boolean validateForm() {
 
         if (txtMa.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Mã nhân viên không được để trống!");
+            JOptionPane.showMessageDialog(this, "Mã nhân viên không được để trống!");
             return false;
         }
-
         if (new String(txtMk.getPassword()).length() < 6) {
-            JOptionPane.showMessageDialog(this,
-                    "Mật khẩu phải có ít nhất 6 ký tự!");
+            JOptionPane.showMessageDialog(this, "Mật khẩu phải có ít nhất 6 ký tự!");
             return false;
         }
 
@@ -240,11 +237,7 @@ public class TaiKhoan_gui extends JPanel {
         NhanVien nv = new NhanVien();
         nv.setMaNV(txtMa.getText().trim());
 
-        return new TaiKhoan(
-                nv,
-                new String(txtMk.getPassword()),
-                String.valueOf(cboTrangThai.getSelectedItem())
-        );
+        return new TaiKhoan(nv,new String(txtMk.getPassword()),String.valueOf(cboTrangThai.getSelectedItem()));
     }
 
     // Thêm tài khoản
@@ -253,13 +246,11 @@ public class TaiKhoan_gui extends JPanel {
         if (!validateForm()) {
             return;
         }
-
         if (dao.themTaiKhoan(readForm())) {
             loadData();
             clearForm();
         } else {
-            JOptionPane.showMessageDialog(this,
-                    "Thêm thất bại (nhân viên chưa tồn tại hoặc đã có tài khoản)!");
+            JOptionPane.showMessageDialog(this,"Thêm thất bại (nhân viên chưa tồn tại hoặc đã có tài khoản)!");
         }
     }
 
@@ -286,20 +277,12 @@ public class TaiKhoan_gui extends JPanel {
 
     // Xóa tài khoản
     private void xoa() {
-
         if (table.getSelectedRow() < 0) {
-            JOptionPane.showMessageDialog(this,
-                    "Hãy chọn tài khoản cần xóa!");
+            JOptionPane.showMessageDialog(this, "Hãy chọn tài khoản cần xóa!");
             return;
         }
 
-        int chon = JOptionPane.showConfirmDialog(
-                this,
-                "Xóa tài khoản này?",
-                "Xác nhận",
-                JOptionPane.YES_NO_OPTION
-        );
-
+        int chon = JOptionPane.showConfirmDialog(this, "Xóa tài khoản này?" , "Xác nhận", JOptionPane.YES_NO_OPTION );
         if (chon != JOptionPane.YES_OPTION) {
             return;
         }
@@ -314,30 +297,19 @@ public class TaiKhoan_gui extends JPanel {
 
     // Đổi mật khẩu
     private void doiMatKhau() {
-
         if (table.getSelectedRow() < 0) {
-            JOptionPane.showMessageDialog(this,
-                    "Hãy chọn tài khoản!");
+            JOptionPane.showMessageDialog(this,"Hãy chọn tài khoản!");
             return;
         }
-
         if (new String(txtMk.getPassword()).length() < 6) {
-            JOptionPane.showMessageDialog(this,
-                    "Nhập mật khẩu mới (>= 6 ký tự) vào ô Mật khẩu rồi bấm lại!");
+            JOptionPane.showMessageDialog(this, "Nhập mật khẩu mới (>= 6 ký tự) vào ô Mật khẩu rồi bấm lại!");
             return;
         }
-
-        if (dao.doiMatKhau(
-                txtMa.getText().trim(),
-                new String(txtMk.getPassword()))) {
-
-            JOptionPane.showMessageDialog(this,
-                    "Đổi mật khẩu thành công!");
-
+        if (dao.doiMatKhau(txtMa.getText().trim(), new String(txtMk.getPassword()))) {
+            JOptionPane.showMessageDialog(this,"Đổi mật khẩu thành công!");
             loadData();
         } else {
-            JOptionPane.showMessageDialog(this,
-                    "Đổi mật khẩu thất bại!");
+            JOptionPane.showMessageDialog(this,"Đổi mật khẩu thất bại!");
         }
     }
 }
