@@ -12,10 +12,9 @@ public class Main extends JFrame {
 
     private TaiKhoan taiKhoan = null;
     JPanel pnlContent = new JPanel(new BorderLayout());
-    JPanel pnlMenu = new JPanel(new BorderLayout());
-    
+    JPanel pnlMenu = new JPanel(new BorderLayout(20,20));
+
     public Main() throws HeadlessException {
-        
         setTitle("Quản Lý Bán Hàng");
         setSize(1300, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

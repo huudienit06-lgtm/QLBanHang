@@ -5,12 +5,14 @@ import dao.NhanVien_DAO;
 import entity.HoaDon;
 import entity.NhanVien;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -31,7 +33,6 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
-import java.text.NumberFormat;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
@@ -42,10 +43,10 @@ public class FrmThongKeHoaDon extends JPanel implements ActionListener {
     private static final String THANG = "Tháng";
     private static final String NAM = "Năm";
     private static final String TAT_CA = "Tất cả";
-    private static final DateTimeFormatter FMT_NGAY =
-            DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
-    private static final DateTimeFormatter FMT_THANG =
-            DateTimeFormatter.ofPattern("MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
+    private static final DateTimeFormatter FMT_NGAY
+            = DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
+    private static final DateTimeFormatter FMT_THANG
+            = DateTimeFormatter.ofPattern("MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
 
     private final HoaDonDAO hoaDonDao = new HoaDonDAO();
     private final JComboBox<String> cboThoiGian;
@@ -63,13 +64,20 @@ public class FrmThongKeHoaDon extends JPanel implements ActionListener {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        JLabel lblTieuDe = new JLabel("THỐNG KÊ DOANH THU", JLabel.CENTER);
-        lblTieuDe.setFont(new Font("Arial", Font.BOLD, 24));
+        Color background = new Color(219, 234, 254);
+
+        JLabel lblTitle = new JLabel("Thống kê doanh thu");
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 30));
+        lblTitle.setForeground(new Color(30, 64, 175));
+        JPanel Title = new JPanel(new FlowLayout());
+        Title.setBackground(background);
+        Title.add(lblTitle);
+        add(Title,BorderLayout.NORTH);
 
         JPanel pnlDieuKhien = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         pnlDieuKhien.setBorder(BorderFactory.createTitledBorder("Điều kiện thống kê"));
         pnlDieuKhien.add(new JLabel("Thời gian:"));
-        cboThoiGian = new JComboBox<>(new String[] { NGAY, TUAN, THANG, NAM, TAT_CA });
+        cboThoiGian = new JComboBox<>(new String[]{NGAY, TUAN, THANG, NAM, TAT_CA});
         pnlDieuKhien.add(cboThoiGian);
 
         txtThoiGian = new JTextField(LocalDate.now().format(FMT_NGAY), 10);
@@ -86,14 +94,14 @@ public class FrmThongKeHoaDon extends JPanel implements ActionListener {
         pnlDieuKhien.add(btnThongKe);
 
         JPanel pnlTren = new JPanel(new BorderLayout(5, 5));
-        pnlTren.add(lblTieuDe, BorderLayout.NORTH);
+        pnlTren.add(Title, BorderLayout.NORTH);
         pnlTren.add(pnlDieuKhien, BorderLayout.CENTER);
         add(pnlTren, BorderLayout.NORTH);
 
         modelHoaDon = new DefaultTableModel(
-                new String[] { "Mã hóa đơn", "Ngày lập", "Mã khách hàng",
+                new String[]{"Mã hóa đơn", "Ngày lập", "Mã khách hàng",
                     "Tên khách hàng", "Mã nhân viên", "Nhân viên lập", "Trạng thái",
-                    "Giá trị hóa đơn" }, 0) {
+                    "Giá trị hóa đơn"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -213,7 +221,7 @@ public class FrmThongKeHoaDon extends JPanel implements ActionListener {
     private LocalDate[] tinhKhoangNgay() {
         String loai = (String) cboThoiGian.getSelectedItem();
         if (TAT_CA.equals(loai)) {
-            return new LocalDate[] { null, null };
+            return new LocalDate[]{null, null};
         }
 
         String thoiGian = txtThoiGian.getText().trim();
@@ -221,24 +229,24 @@ public class FrmThongKeHoaDon extends JPanel implements ActionListener {
             switch (loai) {
                 case NGAY: {
                     LocalDate ngay = LocalDate.parse(thoiGian, FMT_NGAY);
-                    return new LocalDate[] { ngay, ngay };
+                    return new LocalDate[]{ngay, ngay};
                 }
                 case TUAN: {
                     LocalDate ngay = LocalDate.parse(thoiGian, FMT_NGAY);
                     LocalDate dauTuan = ngay.with(
                             TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-                    return new LocalDate[] { dauTuan, dauTuan.plusDays(6) };
+                    return new LocalDate[]{dauTuan, dauTuan.plusDays(6)};
                 }
                 case THANG: {
                     YearMonth thang = YearMonth.parse(thoiGian, FMT_THANG);
-                    return new LocalDate[] { thang.atDay(1), thang.atEndOfMonth() };
+                    return new LocalDate[]{thang.atDay(1), thang.atEndOfMonth()};
                 }
                 default: {
                     int nam = Integer.parseInt(thoiGian);
                     if (nam < 1900 || nam > 2999) {
                         throw new NumberFormatException();
                     }
-                    return new LocalDate[] {
+                    return new LocalDate[]{
                         LocalDate.of(nam, 1, 1),
                         LocalDate.of(nam, 12, 31)
                     };
@@ -274,7 +282,7 @@ public class FrmThongKeHoaDon extends JPanel implements ActionListener {
                 if ("Đã thanh toán".equalsIgnoreCase(hoaDon.getTrangThai())) {
                     tongDoanhThu += giaTriHoaDon;
                 }
-                modelHoaDon.addRow(new Object[] {
+                modelHoaDon.addRow(new Object[]{
                     hoaDon.getMaHD(),
                     hoaDon.getNgayLap() == null ? "" : hoaDon.getNgayLap().format(FMT_NGAY),
                     hoaDon.getKhachHang().getMaKH(),

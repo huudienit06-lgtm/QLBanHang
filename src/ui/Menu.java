@@ -1,6 +1,8 @@
 package ui;
 
 import entity.NhanVien;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -44,6 +46,7 @@ public class Menu extends JPanel implements ActionListener{
         setLayout(new GridBagLayout());
 
         menuBar = new JMenuBar();
+        menuBar.setBackground(Color.CYAN);
         menuBar.setLayout(new GridLayout(1, 0));
         menuHeThong = new JMenu("Hệ Thống");
         menuDanhMuc = new JMenu("Danh Mục");
@@ -112,8 +115,8 @@ public class Menu extends JPanel implements ActionListener{
         JLabel lblMaVaChucVu = new JLabel(
                 "Mã: " + (nv != null && nv.getMaNV() != null ? nv.getMaNV() : "")
                 + " | Chức vụ: " + (nv != null && nv.getChucVu() != null ? nv.getChucVu() : ""));
-        lblTenNhanVien.setHorizontalAlignment(SwingConstants.RIGHT);
-        lblMaVaChucVu.setHorizontalAlignment(SwingConstants.RIGHT);
+        lblTenNhanVien.setHorizontalAlignment(SwingConstants.CENTER);
+        lblMaVaChucVu.setHorizontalAlignment(SwingConstants.CENTER);
         pnlThongTinNhanVien.add(lblTenNhanVien);
         pnlThongTinNhanVien.add(lblMaVaChucVu);
 
@@ -144,7 +147,33 @@ public class Menu extends JPanel implements ActionListener{
             itemLapPhieuNhapKho.addActionListener(this);
             itemThongKeNhapKho.addActionListener(this);
         }
+        Color navy = new Color(30, 58, 138);
+        Color white = Color.WHITE;
+
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.setBackground(navy);
+        menuBar.setOpaque(true);
+        menuBar.setBorderPainted(false);
+
+        Font menuFont = new Font("Arial", Font.BOLD, 14);
+        JMenu[] menus = {
+            menuHeThong, menuDanhMuc, menuXuLy, menuThongKe
+        };
+
+        for (JMenu menu : menus) {
+            menu.setBackground(navy);
+            menu.setForeground(white);
+            menu.setFont(menuFont);
+            menu.setOpaque(true);
+        }
+
+        pnlThongTinNhanVien.setBackground(navy);
+        lblMaVaChucVu.setForeground(white);
+        lblTenNhanVien.setForeground(white);
+
     }
+
+
 
     @Override
     public void actionPerformed(ActionEvent e) {

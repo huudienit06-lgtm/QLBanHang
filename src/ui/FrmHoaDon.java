@@ -97,9 +97,13 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
         setLayout(new BorderLayout());
         // JPanel pnlThongTin = new JPanel();
 
+        Color background = new Color(219, 234, 254);
+       
         JLabel lblTitle = new JLabel("Lập Hóa Đơn");
         lblTitle.setFont(new Font("Arial", Font.BOLD, 30));
+        lblTitle.setForeground(new Color(30, 64, 175));
         JPanel Title = new JPanel(new FlowLayout());
+        Title.setBackground(background);
         Title.add(lblTitle);
         add(Title, BorderLayout.NORTH);
 
