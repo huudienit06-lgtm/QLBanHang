@@ -5,10 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.FlowLayout;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
@@ -59,7 +55,6 @@ public class ThongKeSanPhamPanel extends JPanel implements ActionListener, Chang
     private JLabel lblDinhDang;
     private JSpinner spnTop;
     private JButton btnXemThongKe;
-    private BieuDoCot bieuDo;
 
     public ThongKeSanPhamPanel() {
         sanPhamDAO = new SanPhamDAO();
@@ -125,10 +120,7 @@ public class ThongKeSanPhamPanel extends JPanel implements ActionListener, Chang
         tblBanChay.setDefaultEditor(Object.class, null);
         tblBanChay.setRowHeight(24);
 
-        bieuDo = new BieuDoCot();
-        JSplitPane splitBanChay = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(tblBanChay), bieuDo);
-        splitBanChay.setResizeWeight(0.45);
-        pnlBanChay.add(splitBanChay, BorderLayout.CENTER);
+        pnlBanChay.add(new JScrollPane(tblBanChay), BorderLayout.CENTER);
 
         // Ghép hai khung lại
         JSplitPane splitChinh = new JSplitPane(JSplitPane.VERTICAL_SPLIT, pnlTonKho, pnlBanChay);
@@ -227,16 +219,11 @@ public class ThongKeSanPhamPanel extends JPanel implements ActionListener, Chang
         ArrayList<Object[]> dsBanChay = sanPhamDAO.getSanPhamBanChay(top, tuNgay, denNgay);
 
         modelBanChay.setRowCount(0);
-        ArrayList<String> dsTen = new ArrayList<String>();
-        ArrayList<Integer> dsSoLuong = new ArrayList<Integer>();
         for (int i = 0; i < dsBanChay.size(); i++) {
             Object[] dong = dsBanChay.get(i);
             Object[] dongBang = { i + 1, dong[0], dong[1], dong[2] };
             modelBanChay.addRow(dongBang);
-            dsTen.add(dong[1].toString());
-            dsSoLuong.add(Integer.parseInt(dong[2].toString()));
         }
-        bieuDo.setDuLieu(dsTen, dsSoLuong);
     }
 
     @Override
@@ -275,88 +262,6 @@ public class ThongKeSanPhamPanel extends JPanel implements ActionListener, Chang
                 c.setForeground(Color.BLACK);
             }
             return c;
-        }
-    }
-
-    // Biểu đồ cột: mỗi cột là một sản phẩm, chiều cao theo số lượng bán
-    private class BieuDoCot extends JPanel {
-        private ArrayList<String> dsTen = new ArrayList<String>();
-        private ArrayList<Integer> dsSoLuong = new ArrayList<Integer>();
-
-        public BieuDoCot() {
-            setBackground(Color.WHITE);
-        }
-
-        public void setDuLieu(ArrayList<String> dsTen, ArrayList<Integer> dsSoLuong) {
-            this.dsTen = dsTen;
-            this.dsSoLuong = dsSoLuong;
-            repaint();
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            Graphics2D g2 = (Graphics2D) g;
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            FontMetrics fm = g2.getFontMetrics();
-
-            int rong = getWidth();
-            int cao = getHeight();
-
-            if (dsSoLuong.size() == 0) {
-                String thongBao = "Không có dữ liệu bán hàng trong kỳ này";
-                g2.setColor(Color.GRAY);
-                g2.drawString(thongBao, (rong - fm.stringWidth(thongBao)) / 2, cao / 2);
-                return;
-            }
-
-            int leTrai = 45;
-            int leDuoi = cao - 45;
-            int leTren = 35;
-
-            // Tìm số lượng lớn nhất để quy đổi chiều cao cột
-            int lonNhat = 1;
-            for (int i = 0; i < dsSoLuong.size(); i++) {
-                if (dsSoLuong.get(i) > lonNhat) {
-                    lonNhat = dsSoLuong.get(i);
-                }
-            }
-
-            // Vẽ hai trục
-            g2.setColor(Color.DARK_GRAY);
-            g2.drawLine(leTrai, leTren, leTrai, leDuoi);
-            g2.drawLine(leTrai, leDuoi, rong - 15, leDuoi);
-            g2.drawString("Số lượng bán", leTrai, leTren - 12);
-
-            int soCot = dsSoLuong.size();
-            int beRongMoiCot = (rong - 15 - leTrai) / soCot;
-            int beRongCot = beRongMoiCot * 2 / 3;
-            if (beRongCot < 10) {
-                beRongCot = 10;
-            }
-
-            for (int i = 0; i < soCot; i++) {
-                int chieuCaoCot = dsSoLuong.get(i) * (leDuoi - leTren - 20) / lonNhat;
-                int x = leTrai + i * beRongMoiCot + (beRongMoiCot - beRongCot) / 2;
-                int y = leDuoi - chieuCaoCot;
-
-                g2.setColor(Color.BLUE);
-                g2.fillRect(x, y, beRongCot, chieuCaoCot);
-
-                // Số lượng ghi phía trên cột
-                g2.setColor(Color.BLACK);
-                String soLuong = dsSoLuong.get(i).toString();
-                g2.drawString(soLuong, x + (beRongCot - fm.stringWidth(soLuong)) / 2, y - 5);
-
-                // Tên sản phẩm ghi phía dưới, cắt bớt nếu dài quá bề rộng
-                String ten = dsTen.get(i);
-                while (ten.length() > 1 && fm.stringWidth(ten) > beRongMoiCot - 4) {
-                    ten = ten.substring(0, ten.length() - 1);
-                }
-                int xTen = leTrai + i * beRongMoiCot + (beRongMoiCot - fm.stringWidth(ten)) / 2;
-                g2.drawString(ten, xTen, leDuoi + 20);
-            }
         }
     }
 }
