@@ -65,7 +65,7 @@ public class Thue_GUI extends JPanel implements ActionListener, MouseListener {
         // Tiêu đề
         setLayout(new BorderLayout(10, 10));
         Color background = new Color(219, 234, 254);
-        JLabel lblTitle = new JLabel("THỐNG KÊ HÀNG NHẬP KHO", SwingConstants.CENTER);
+        JLabel lblTitle = new JLabel("QUẢN LÝ THUẾ", SwingConstants.CENTER);
         lblTitle.setFont(new Font("Arial", Font.BOLD, 30));
         lblTitle.setForeground(new Color(30, 64, 175));
         JPanel Title = new JPanel(new FlowLayout());
