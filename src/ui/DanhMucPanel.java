@@ -1,6 +1,8 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -59,7 +61,7 @@ public class DanhMucPanel extends JPanel implements ActionListener, MouseListene
         dongForm1.add(txtMaDM);
         dongForm1.add(new JLabel("Tên danh mục:"));
         dongForm1.add(txtTenDM);
-        dongForm1.add(new JLabel("Lợi nhuận (0.05 = 5%):"));
+        dongForm1.add(new JLabel("Lợi nhuận (%):"));
         dongForm1.add(txtLoiNhuan);
 
         btnThem = new JButton("Thêm");
@@ -85,7 +87,19 @@ public class DanhMucPanel extends JPanel implements ActionListener, MouseListene
         pnlBac.add(dongForm1);
         pnlBac.add(dongNut);
         pnlBac.add(dongTim);
-        add(pnlBac, BorderLayout.NORTH);
+        Color background = new Color(219, 234, 254);
+        JLabel lblTitle = new JLabel("Quản lý danh mục");
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 30));
+        lblTitle.setForeground(new Color(30, 64, 175));
+        JPanel Title = new JPanel(new FlowLayout());
+        Title.setBackground(background);
+        Title.add(lblTitle);
+
+        // Tiêu đề nằm trên cùng, form nhập nằm ngay dưới tiêu đề
+        JPanel pnlTren = new JPanel(new BorderLayout(0, 10));
+        pnlTren.add(Title, BorderLayout.NORTH);
+        pnlTren.add(pnlBac, BorderLayout.CENTER);
+        add(pnlTren, BorderLayout.NORTH);
 
         String[] tenCot = { "Mã danh mục", "Tên danh mục", "Lợi nhuận" };
         tableModel = new DefaultTableModel(tenCot, 0);
@@ -117,7 +131,7 @@ public class DanhMucPanel extends JPanel implements ActionListener, MouseListene
         tableModel.setRowCount(0);
         for (int i = 0; i < dsDM.size(); i++) {
             DanhMuc dm = dsDM.get(i);
-            Object[] dong = { dm.getMaDM(), dm.getTenDM(), dm.getLoiNhuan() };
+            Object[] dong = { dm.getMaDM(), dm.getTenDM(), dinhDangThapPhan(dm.getLoiNhuan()) };
             tableModel.addRow(dong);
         }
     }
@@ -129,6 +143,26 @@ public class DanhMucPanel extends JPanel implements ActionListener, MouseListene
         txtLoiNhuan.setText("");
         table.clearSelection();
         txtTenDM.requestFocus();
+    }
+
+    // Hiện số thập phân lên bảng: 0.5 -> "0.5", 1.0 -> "1"
+    private String dinhDangThapPhan(double thapPhan) {
+        return java.math.BigDecimal.valueOf(thapPhan)
+                .stripTrailingZeros()
+                .toPlainString();
+    }
+
+    // 0.05 -> "5", 0.075 -> "7.5"
+    private String thapPhanSangPhanTram(double thapPhan) {
+        return java.math.BigDecimal.valueOf(thapPhan)
+                .multiply(java.math.BigDecimal.valueOf(100))
+                .stripTrailingZeros()
+                .toPlainString();
+    }
+
+    // "5" -> 0.05 (đã kiểm tra hợp lệ ở kiemTraDuLieu)
+    private double phanTramSangThapPhan(String text) {
+        return Double.parseDouble(text.trim().replace(',', '.')) / 100;
     }
 
     private boolean kiemTraDuLieu() {
@@ -143,22 +177,22 @@ public class DanhMucPanel extends JPanel implements ActionListener, MouseListene
             txtTenDM.requestFocus();
             return false;
         }
-        String loiNhuanText = txtLoiNhuan.getText().trim();
+        String loiNhuanText = txtLoiNhuan.getText().trim().replace(',', '.');
         if (loiNhuanText.equals("")) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập lợi nhuận!");
             txtLoiNhuan.requestFocus();
             return false;
         }
-        double loiNhuan = 0;
+        double phanTram = 0;
         try {
-            loiNhuan = Double.parseDouble(loiNhuanText);
+            phanTram = Double.parseDouble(loiNhuanText);
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Lợi nhuận phải là số!");
             txtLoiNhuan.requestFocus();
             return false;
         }
-        if (loiNhuan < 0) {
-            JOptionPane.showMessageDialog(this, "Lợi nhuận không được âm!");
+        if (phanTram < 0 || phanTram > 100) {
+            JOptionPane.showMessageDialog(this, "Lợi nhuận phải từ 0 đến 100 (%)!");
             txtLoiNhuan.requestFocus();
             return false;
         }
@@ -169,7 +203,7 @@ public class DanhMucPanel extends JPanel implements ActionListener, MouseListene
         if (!kiemTraDuLieu()) {
             return;
         }
-        float loiNhuan = Float.parseFloat(txtLoiNhuan.getText().trim());
+        double loiNhuan = phanTramSangThapPhan(txtLoiNhuan.getText());
         DanhMuc dm = new DanhMuc(txtMaDM.getText().trim(), txtTenDM.getText().trim(), loiNhuan);
         if (danhMucDAO.themDanhMuc(dm)) {
             JOptionPane.showMessageDialog(this, "Thêm danh mục thành công!");
@@ -187,7 +221,7 @@ public class DanhMucPanel extends JPanel implements ActionListener, MouseListene
         if (!kiemTraDuLieu()) {
             return;
         }
-        float loiNhuan = Float.parseFloat(txtLoiNhuan.getText().trim());
+        double loiNhuan = phanTramSangThapPhan(txtLoiNhuan.getText());
         DanhMuc dm = new DanhMuc(txtMaDM.getText().trim(), txtTenDM.getText().trim(), loiNhuan);
         if (danhMucDAO.suaDanhMuc(dm)) {
             JOptionPane.showMessageDialog(this, "Sửa danh mục thành công!");
@@ -253,7 +287,8 @@ public class DanhMucPanel extends JPanel implements ActionListener, MouseListene
         if (dong >= 0) {
             txtMaDM.setText(tableModel.getValueAt(dong, 0).toString());
             txtTenDM.setText(tableModel.getValueAt(dong, 1).toString());
-            txtLoiNhuan.setText(tableModel.getValueAt(dong, 2).toString());
+            double thapPhan = Double.parseDouble(tableModel.getValueAt(dong, 2).toString());
+            txtLoiNhuan.setText(thapPhanSangPhanTram(thapPhan));
         }
     }
 

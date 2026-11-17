@@ -25,7 +25,7 @@ public class DanhMucDAO {
             rs = stmt.executeQuery();
             while (rs.next()) {
                 DanhMuc dm = new DanhMuc(rs.getString("maDM"), rs.getString("tenDM"),
-                        rs.getFloat("loiNhuan"));
+                        rs.getDouble("loiNhuan"));
                 dsDM.add(dm);
             }
         } catch (SQLException e) {
@@ -51,7 +51,7 @@ public class DanhMucDAO {
             rs = stmt.executeQuery();
             while (rs.next()) {
                 DanhMuc dm = new DanhMuc(rs.getString("maDM"), rs.getString("tenDM"),
-                        rs.getFloat("loiNhuan"));
+                        rs.getDouble("loiNhuan"));
                 dsDM.add(dm);
             }
         } catch (SQLException e) {
@@ -71,7 +71,7 @@ public class DanhMucDAO {
             stmt = con.prepareStatement(sql);
             stmt.setString(1, dm.getMaDM());
             stmt.setString(2, dm.getTenDM());
-            stmt.setFloat(3, dm.getLoiNhuan());
+            stmt.setDouble(3, dm.getLoiNhuan());
             n = stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -89,7 +89,7 @@ public class DanhMucDAO {
             String sql = "UPDATE DanhMuc SET tenDM = ?, loiNhuan = ? WHERE maDM = ?";
             stmt = con.prepareStatement(sql);
             stmt.setString(1, dm.getTenDM());
-            stmt.setFloat(2, dm.getLoiNhuan());
+            stmt.setDouble(2, dm.getLoiNhuan());
             stmt.setString(3, dm.getMaDM());
             n = stmt.executeUpdate();
         } catch (SQLException e) {

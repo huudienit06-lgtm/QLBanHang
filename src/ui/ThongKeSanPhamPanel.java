@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.FlowLayout;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -66,6 +67,15 @@ public class ThongKeSanPhamPanel extends JPanel implements ActionListener, Chang
 
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        Color background = new Color(219, 234, 254);
+        JLabel lblTitle = new JLabel("Thống kê sản phẩm");
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 30));
+        lblTitle.setForeground(new Color(30, 64, 175));
+        JPanel Title = new JPanel(new FlowLayout());
+        Title.setBackground(background);
+        Title.add(lblTitle);
+        add(Title, BorderLayout.NORTH);
 
         // ----- Khung 1: tồn kho và cảnh báo -----
         JPanel pnlTonKho = new JPanel(new BorderLayout(5, 5));

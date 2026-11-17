@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -117,7 +118,19 @@ public class SanPhamPanel extends JPanel implements ActionListener, MouseListene
         pnlBac.add(dongForm2);
         pnlBac.add(dongNut);
         pnlBac.add(dongTim);
-        add(pnlBac, BorderLayout.NORTH);
+        Color background = new Color(219, 234, 254);
+        JLabel lblTitle = new JLabel("Quản lý sản phẩm");
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 30));
+        lblTitle.setForeground(new Color(30, 64, 175));
+        JPanel Title = new JPanel(new FlowLayout());
+        Title.setBackground(background);
+        Title.add(lblTitle);
+
+        // Tiêu đề nằm trên cùng, form nhập nằm ngay dưới tiêu đề
+        JPanel pnlTren = new JPanel(new BorderLayout(0, 10));
+        pnlTren.add(Title, BorderLayout.NORTH);
+        pnlTren.add(pnlBac, BorderLayout.CENTER);
+        add(pnlTren, BorderLayout.NORTH);
 
         String[] tenCot = { "Mã SP", "Tên sản phẩm", "Giá nhập", "Tồn kho", "Danh mục", "Khuyến mãi" };
         tableModel = new DefaultTableModel(tenCot, 0);

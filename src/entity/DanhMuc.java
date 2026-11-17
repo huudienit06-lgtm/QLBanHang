@@ -4,23 +4,23 @@ public class DanhMuc {
 
     private String maDM;
     private String tenDM;
-    private float loiNhuan;
+    private double loiNhuan;
 
     public DanhMuc() {
+    }
+
+    public DanhMuc(String maDM) {
+        this.maDM = maDM;
     }
 
     public DanhMuc(String maDM, String tenDM) {
         this(maDM, tenDM, 0);
     }
 
-    public DanhMuc(String maDM, String tenDM, float loiNhuan) {
+    public DanhMuc(String maDM, String tenDM, double loiNhuan) {
         this.maDM = maDM;
         this.tenDM = tenDM;
-        this.loiNhuan = loiNhuan;
-    }
-
-    public DanhMuc(String maDM) {
-        this.maDM = maDM;
+        setLoiNhuan(loiNhuan);
     }
 
     public String getMaDM() {
@@ -39,12 +39,14 @@ public class DanhMuc {
         this.tenDM = tenDM;
     }
 
-    public float getLoiNhuan() {
+    public double getLoiNhuan() {
         return loiNhuan;
     }
 
-    public void setLoiNhuan(float loiNhuan) {
+    public void setLoiNhuan(double loiNhuan) {
+        if (loiNhuan < 0) {
+            throw new IllegalArgumentException("Lợi nhuận không được âm");
+        }
         this.loiNhuan = loiNhuan;
     }
-
 }
