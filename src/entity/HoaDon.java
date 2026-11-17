@@ -2,9 +2,11 @@ package entity;
 
 import dao.ChiTietHoaDonDAO;
 import dao.Thue_dao;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class HoaDon {
 
@@ -116,6 +118,7 @@ public class HoaDon {
         }
         return tongTien;
     }
+
     public double tinhTongTien() {
         tongTien = 0;
         ArrayList<ChiTietHoaDon> list = new ChiTietHoaDonDAO().getDSCTHDByID(this.maHD);
@@ -128,7 +131,7 @@ public class HoaDon {
     public double tinhKhuyenMai() {
         double tongKhuyenMai = 0;
         if (this.getKhuyenMai() == null) {
-            tongKhuyenMai=0;
+            tongKhuyenMai = 0;
         } else {
             if ("Phần trăm".equals(this.getKhuyenMai().getDonViTinh())) {
                 tongKhuyenMai = tongTien * (this.getKhuyenMai().getTiLeGiamGia() / 100);
@@ -181,6 +184,16 @@ public class HoaDon {
             return false;
         }
         return true;
+    }
+
+    public String getTongTienFormatted(double tien) {
+        NumberFormat nf = NumberFormat.getInstance(
+                new Locale("vi", "VN")
+        );
+
+        nf.setMaximumFractionDigits(0);
+
+        return nf.format(tien)+"VND";
     }
 
     @Override

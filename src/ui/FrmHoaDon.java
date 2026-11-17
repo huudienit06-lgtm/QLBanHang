@@ -14,6 +14,8 @@ import entity.NhanVien;
 import entity.SanPham;
 import entity.TaiKhoan;
 import entity.Thue;
+import util.XuatHoaDon;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -26,6 +28,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -91,14 +94,9 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
     private JButton btnLuu;
 
     public FrmHoaDon(TaiKhoan taiKhoan) {
-        nvLap = taiKhoan.getNhanVien();
-        laQuanLy = nvLap != null
-                && "Quản lý".equalsIgnoreCase(nvLap.getChucVu());
         setLayout(new BorderLayout());
-        // JPanel pnlThongTin = new JPanel();
-
         Color background = new Color(219, 234, 254);
-       
+
         JLabel lblTitle = new JLabel("Lập Hóa Đơn");
         lblTitle.setFont(new Font("Arial", Font.BOLD, 30));
         lblTitle.setForeground(new Color(30, 64, 175));
@@ -106,6 +104,10 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
         Title.setBackground(background);
         Title.add(lblTitle);
         add(Title, BorderLayout.NORTH);
+
+        nvLap = taiKhoan.getNhanVien();
+        laQuanLy = nvLap != null
+                && "Quản lý".equalsIgnoreCase(nvLap.getChucVu());
 
         pnlHoaDon = new JPanel(new GridLayout(5, 4, 10, 10));
         pnlHoaDon.setBorder(
@@ -321,7 +323,10 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
         modelCT.setRowCount(0);
         ArrayList<ChiTietHoaDon> list = ctDao.getDSCTHDByID(hd.getMaHD());
         for (ChiTietHoaDon ct : list) {
-            modelCT.addRow(new Object[]{ct.getSanPham().getMaSP(), ct.getSanPham().getTenSP(), ct.getSanPham().tinhGiaBan(), ct.getSanPham().tinhGiaBanSauKhuyenMai(), ct.getSoLuong(), ct.tinhThanhTien()});
+            modelCT.addRow(new Object[]{ct.getSanPham().getMaSP(), ct.getSanPham().getTenSP(),
+                ct.getSanPham().getGiaBanFormatted(),
+                ct.getSanPham().getGiaBanSauKhuyenMaiFormatted(),
+                ct.getSoLuong(), ct.getThanhTienFormatted()});
         }
     }
 
@@ -374,7 +379,7 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
 
         }
         if (o.equals(btnThanhToan)) {
-            if(listChiTietHoaDonHienTai == null
+            if (listChiTietHoaDonHienTai == null
                     || listChiTietHoaDonHienTai.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Chưa thêm sản phẩm vào hóa đơn");
                 return;
@@ -399,7 +404,17 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
             }
         }
         if (o.equals(btnInHoaDon)) {
+            HoaDon hd = hoaDonHienTai;
 
+            List<ChiTietHoaDon> dsCTHD = listChiTietHoaDonHienTai;
+
+            String html = taoNoiDungHTML(hd, dsCTHD);
+
+            XuatHoaDon.xuat(
+                    this,
+                    hd.getMaHD(),
+                    html
+            );
         }
         if (o.equals(btnXemLichSu)) {
 
@@ -419,7 +434,6 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
         }
     }
 
-    
     public void xoaTrang() {
         txtMaHD.setText(sinhMaHD());
         cbbKhachHang.setSelectedItem(null);
@@ -574,6 +588,140 @@ public class FrmHoaDon extends JPanel implements ActionListener, TableModelListe
                 return false;
             }
         }
-            return true;
-        }
+        return true;
     }
+
+    private String escapeHTML(String value) {
+        if (value == null) {
+            return "";
+        }
+
+        return value.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#39;");
+    }
+
+    private String taoNoiDungHTML(HoaDon hd, List<ChiTietHoaDon> dsCTHD) {
+
+        StringBuilder sb = new StringBuilder();
+
+        // Phần đầu HTML và CSS
+        sb.append("""
+        <!DOCTYPE html>
+        <html lang="vi">
+        <head>
+        <meta charset="UTF-8">
+        <title>Hóa đơn</title>
+        </head>
+        <body>
+        <h1>HÓA ĐƠN BÁN HÀNG</h1>
+        """);
+
+        // Thông tin hóa đơn
+        sb.append("<p>Mã hóa đơn: ")
+                .append(escapeHTML(hd.getMaHD()))
+                .append("</p>");
+
+        sb.append("<p>Ngày lập: ")
+                .append(escapeHTML(hd.getNgayLapFormatted()))
+                .append("</p>");
+
+        sb.append("<p>Khách hàng: ")
+                .append(escapeHTML(hd.getKhachHang().getTenKH()))
+                .append("</p>");
+
+        sb.append("<table border='1' cellspacing='0' cellpadding='8'>");
+
+        sb.append("""
+        <tr>
+            <th>STT</th>
+            <th>Sản phẩm</th>
+            <th>Số lượng</th>
+            <th>Đơn giá</th>
+            <th>Thành tiền</th>
+        </tr>
+        """);
+
+        // Duyệt danh sách chi tiết hóa đơn
+        int stt = 1;
+
+        for (ChiTietHoaDon ct : dsCTHD) {
+
+            sb.append("<tr>");
+
+            sb.append("<td>").append(stt++).append("</td>");
+
+            sb.append("<td>")
+                    .append(escapeHTML(ct.getSanPham().getTenSP()))
+                    .append("</td>");
+
+            sb.append("<td>")
+                    .append(ct.getSoLuong())
+                    .append("</td>");
+
+            sb.append("<td>")
+                    .append(ct.getSanPham().getGiaBanSauKhuyenMaiFormatted())
+                    .append("</td>");
+
+            sb.append("<td>")
+                    .append(ct.getThanhTienFormatted())
+                    .append("</td>");
+
+            sb.append("</tr>");
+        }
+        if (hd.getKhuyenMai() != null) {
+            sb.append("<tr>");
+            sb.append("<td>").append("Khuyến mãi:" + hd.getKhuyenMai().getTenKM()).append("</td>");
+            sb.append("<td>").append("</td>");
+            sb.append("<td>").append("</td>");
+            sb.append("<td>").append("</td>");
+            sb.append("<td>")
+                    .append(hd.getTongTienFormatted(hd.tinhKhuyenMai()))
+                    .append("</td>");
+            sb.append("</tr>");
+        }
+
+        ArrayList<Thue> listThue = new Thue_dao().getAllThue();
+        for (Thue t : listThue) {
+            sb.append("<tr>");
+            sb.append("<td>").append(t.getTenThue()).append("</td>");
+            sb.append("<td>").append("</td>");
+            sb.append("<td>").append("</td>");
+            sb.append("<td>").append("</td>");
+            sb.append("<td>")
+                    .append(t.getTienThueFormatted(tienCanThanhToan))
+                    .append("</td>");
+            sb.append("</tr>");
+        }
+
+        sb.append("<tr>");
+        sb.append("<td>").append("Tổng tiền:").append("</td>");
+        sb.append("<td>").append("</td>");
+        sb.append("<td>").append("</td>");
+        sb.append("<td>").append("</td>");
+        sb.append("<td>")
+                .append(hd.getTongTienFormatted(tienCanThanhToan))
+                .append("</td>");
+        sb.append("</tr>");
+
+        sb.append("<tr>");
+        sb.append("<td>").append("Trạng thái:").append("</td>");
+        sb.append("<td>").append("</td>");
+        sb.append("<td>").append("</td>");
+        sb.append("<td>").append("</td>");
+        sb.append("<td>").append(hd.getTrangThai()).append("</td>");
+        sb.append("</tr>");
+        sb.append("</table>");
+
+        sb.append("""
+        <h3>CẢM ƠN QUÝ KHÁCH!</h3>
+        </body>
+        </html>
+        """);
+
+        return sb.toString();
+    }
+
+}

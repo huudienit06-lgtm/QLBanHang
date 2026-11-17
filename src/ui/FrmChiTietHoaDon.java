@@ -226,12 +226,14 @@ public class FrmChiTietHoaDon extends JDialog implements ActionListener, Documen
                 int newQuantity = Integer.parseInt(modelCTHD.getValueAt(existingRow, 4).toString())
                         + ct.getSoLuong();
                 modelCTHD.setValueAt(newQuantity, existingRow, 4);
-                modelCTHD.setValueAt(ct.getSanPham().tinhGiaBanSauKhuyenMai() * newQuantity,
+                modelCTHD.setValueAt(new ChiTietHoaDon(
+                        hoaDon, ct.getSanPham(), newQuantity).getThanhTienFormatted(),
                         existingRow, 5);
             } else {
                 modelCTHD.addRow(new Object[]{ct.getSanPham().getMaSP(), ct.getSanPham().getTenSP(),
-                    ct.getSanPham().tinhGiaBan(), ct.getSanPham().tinhGiaBanSauKhuyenMai(),
-                    ct.getSoLuong(), ct.tinhThanhTien()});
+                    ct.getSanPham().getGiaBanFormatted(),
+                    ct.getSanPham().getGiaBanSauKhuyenMaiFormatted(),
+                    ct.getSoLuong(), ct.getThanhTienFormatted()});
             }
             JOptionPane.showMessageDialog(null, "Thêm thành công");
         }
@@ -253,12 +255,19 @@ public class FrmChiTietHoaDon extends JDialog implements ActionListener, Documen
         if (o.equals(btnSua)) {
             int row = tblCTHD.getSelectedRow();
             if ( row >= 0) {
+                SanPham sp = spDao.findByID(txtMaSP.getText());
+                if (sp == null) {
+                    JOptionPane.showMessageDialog(this, "Không tìm thấy sản phẩm đã chọn.");
+                    return;
+                }
+                ChiTietHoaDon ct = new ChiTietHoaDon(
+                        hoaDon, sp, (int) spnSoLuong.getValue());
                 modelCTHD.setValueAt(txtMaSP.getText(),row, 0);
                 modelCTHD.setValueAt(txtTenSP.getText(), row, 1);
-                modelCTHD.setValueAt(txtGiaBan.getText(),row, 2);
-                modelCTHD.setValueAt(txtGiaSauKhuyenMai.getText(),row, 3);
+                modelCTHD.setValueAt(sp.getGiaBanFormatted(),row, 2);
+                modelCTHD.setValueAt(sp.getGiaBanSauKhuyenMaiFormatted(),row, 3);
                 modelCTHD.setValueAt(spnSoLuong.getValue(), row, 4);
-                modelCTHD.setValueAt(txtTongTien.getText(), row, 5);
+                modelCTHD.setValueAt(ct.getThanhTienFormatted(), row, 5);
             } else {
                 JOptionPane.showMessageDialog(null, "Vui lòng chọn dòng cần sửa");
             }
@@ -315,7 +324,8 @@ public class FrmChiTietHoaDon extends JDialog implements ActionListener, Documen
         String thuocTinhTim = tenSP.isEmpty() ? maSP : tenSP;
         ArrayList<SanPham> rs = new SanPhamDAO().timSanPham(thuocTinhTim);
         for (SanPham sp : rs) {
-            modelSP.addRow(new Object[]{sp.getMaSP(), sp.getTenSP(), sp.getSoLuongTon(), sp.tinhGiaBan(), sp.tinhGiaBanSauKhuyenMai()});
+            modelSP.addRow(new Object[]{sp.getMaSP(), sp.getTenSP(), sp.getSoLuongTon(),
+                sp.getGiaBanFormatted(), sp.getGiaBanSauKhuyenMaiFormatted()});
         }
     }
 
@@ -324,10 +334,15 @@ public class FrmChiTietHoaDon extends JDialog implements ActionListener, Documen
         if (e.getSource() == tblSP) {
             int row = tblSP.getSelectedRow();
             if (row != -1) {
-                txtMaSP.setText(modelSP.getValueAt(row, 0).toString());
-                txtTenSP.setText(modelSP.getValueAt(row, 1).toString());
-                txtGiaBan.setText(modelSP.getValueAt(row, 3).toString());
-                txtGiaSauKhuyenMai.setText(modelSP.getValueAt(row, 4).toString());
+                SanPham sp = spDao.findByID(modelSP.getValueAt(row, 0).toString());
+                if (sp == null) {
+                    JOptionPane.showMessageDialog(this, "Không tìm thấy sản phẩm đã chọn.");
+                    return;
+                }
+                txtMaSP.setText(sp.getMaSP());
+                txtTenSP.setText(sp.getTenSP());
+                txtGiaBan.setText(String.valueOf(sp.tinhGiaBan()));
+                txtGiaSauKhuyenMai.setText(String.valueOf(sp.tinhGiaBanSauKhuyenMai()));
             }
             tinhTongTien();
         } else if (e.getSource() == tblCTHD) {
@@ -341,12 +356,18 @@ public class FrmChiTietHoaDon extends JDialog implements ActionListener, Documen
             return;
         }
 
-        txtMaSP.setText(String.valueOf(modelCTHD.getValueAt(row, 0)));
-        txtTenSP.setText(String.valueOf(modelCTHD.getValueAt(row, 1)));
-        txtGiaBan.setText(String.valueOf(modelCTHD.getValueAt(row, 2)));
-        txtGiaSauKhuyenMai.setText(String.valueOf(modelCTHD.getValueAt(row, 3)));
-        spnSoLuong.setValue(Integer.parseInt(String.valueOf(modelCTHD.getValueAt(row, 4))));
-        txtTongTien.setText(String.valueOf(modelCTHD.getValueAt(row, 5)));
+        SanPham sp = spDao.findByID(String.valueOf(modelCTHD.getValueAt(row, 0)));
+        if (sp == null) {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy sản phẩm đã chọn.");
+            return;
+        }
+        int soLuong = Integer.parseInt(String.valueOf(modelCTHD.getValueAt(row, 4)));
+        txtMaSP.setText(sp.getMaSP());
+        txtTenSP.setText(sp.getTenSP());
+        txtGiaBan.setText(String.valueOf(sp.tinhGiaBan()));
+        txtGiaSauKhuyenMai.setText(String.valueOf(sp.tinhGiaBanSauKhuyenMai()));
+        spnSoLuong.setValue(soLuong);
+        txtTongTien.setText(new ChiTietHoaDon(hoaDon, sp, soLuong).getThanhTienFormatted());
     }
 
     @Override
