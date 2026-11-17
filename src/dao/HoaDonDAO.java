@@ -446,11 +446,9 @@ public class HoaDonDAO {
             ps.setString(1, "%" + (maHD == null ? "" : maHD.trim()) + "%");
             ps.setString(2, "%" + (tenKH == null ? "" : tenKH.trim()) + "%");
             ps.setString(3, "%" + (tenNV == null ? "" : tenNV.trim()) + "%");
-
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     String maKM = rs.getString("maKM");
-
                     HoaDon hd = new HoaDon(
                             rs.getString("maHD"),
                             rs.getDate("ngayLap").toLocalDate(),
@@ -480,4 +478,49 @@ public class HoaDonDAO {
         return result;
     }
 
+
+
+    // hàm được sử dụng cho Thống kê khách hàng
+
+    private static final String TIEN_HOA_DON =
+            "FROM HoaDon hd "
+          + "JOIN ChiTietHoaDon ct ON hd.maHD = ct.maHD "
+          + "JOIN SanPham sp ON ct.maSP = sp.maSP "
+          + "LEFT JOIN DanhMuc dm ON sp.maDM = dm.maDM ";
+
+    public double giaTriHoaDonTrungBinh() {
+        String sql = "SELECT ISNULL(SUM(ct.soLuong * sp.giaNhap * (1 + ISNULL(dm.loiNhuan, 0))) "
+                + "/ NULLIF(COUNT(DISTINCT hd.maHD), 0), 0) " + TIEN_HOA_DON;
+        try (PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    public List<Object[]> topKhachHang(int n) {
+        List<Object[]> ds = new ArrayList<>();
+        String sql = "SELECT TOP (?) kh.maKH, kh.tenKH, COUNT(DISTINCT hd.maHD) AS soHD, "
+                + "SUM(ct.soLuong * sp.giaNhap * (1 + ISNULL(dm.loiNhuan, 0))) AS tongChi "
+                + TIEN_HOA_DON
+                + "JOIN KhachHang kh ON hd.maKH = kh.maKH "
+                + "GROUP BY kh.maKH, kh.tenKH "
+                + "ORDER BY tongChi DESC";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, n);
+            try (ResultSet rs = ps.executeQuery()) {
+                int stt = 1;
+                while (rs.next()) {
+                    ds.add(new Object[]{stt++, rs.getString("maKH"), rs.getString("tenKH"),
+                            rs.getInt("soHD"), rs.getDouble("tongChi")});
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ds;
+    } 
 }

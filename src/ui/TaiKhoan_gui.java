@@ -1,4 +1,3 @@
-
 package ui;
 
 import dao.TaiKhoan_Dao;
@@ -33,21 +32,16 @@ public class TaiKhoan_gui extends JPanel {
 
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        setBackground(new Color(240, 244, 248));
 
         JLabel title = new JLabel("QUẢN LÝ TÀI KHOẢN", SwingConstants.CENTER);
         title.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        title.setForeground(Color.WHITE);
-        title.setBackground(new Color(41, 128, 185));
-        title.setOpaque(true);
         title.setPreferredSize(new Dimension(0, 50));
         title.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 
         JPanel form = new JPanel(new GridBagLayout());
         form.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(189, 195, 199)),
+                BorderFactory.createEtchedBorder(),
                 BorderFactory.createTitledBorder("Thông tin tài khoản")));
-        form.setBackground(Color.WHITE);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -86,33 +80,27 @@ public class TaiKhoan_gui extends JPanel {
         form.add(cboTrangThai, gbc);
 
         // Định dạng ô nhập liệu
-        Color mauVien = new Color(189, 195, 199);
-
         JTextField[] dsText = {txtMa};
 
         for (JTextField txt : dsText) {
             txt.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            txt.setBackground(Color.WHITE);
             txt.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(mauVien),
+                    BorderFactory.createEtchedBorder(),
                     BorderFactory.createEmptyBorder(5, 8, 5, 8)));
         }
 
         txtMk.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        txtMk.setBackground(Color.WHITE);
         txtMk.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(mauVien),
+                BorderFactory.createEtchedBorder(),
                 BorderFactory.createEmptyBorder(5, 8, 5, 8)));
 
         cboTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
         JPanel formContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 5));
-        formContainer.setBackground(new Color(240, 244, 248));
         formContainer.add(form);
 
         // Các nút chức năng
         JPanel btns = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-        btns.setBackground(new Color(240, 244, 248));
 
         JButton btnThem = new JButton("Thêm");
         JButton btnSua = new JButton("Sửa");
@@ -124,22 +112,11 @@ public class TaiKhoan_gui extends JPanel {
                 btnThem, btnSua, btnXoa, btnDoiMk, btnLam
         };
 
-        Color[] dsMau = {
-                new Color(39, 174, 96),
-                new Color(243, 156, 18),
-                new Color(231, 76, 60),
-                new Color(41, 128, 185),
-                new Color(127, 140, 141)
-        };
-
         for (int i = 0; i < dsNut.length; i++) {
             dsNut[i].setFont(new Font("Segoe UI", Font.BOLD, 13));
-            dsNut[i].setForeground(Color.WHITE);
-            dsNut[i].setBackground(dsMau[i]);
             dsNut[i].setFocusPainted(false);
             dsNut[i].setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
             dsNut[i].setCursor(new Cursor(Cursor.HAND_CURSOR));
-            dsNut[i].setOpaque(true);
         }
 
         btns.add(btnThem);
@@ -150,7 +127,6 @@ public class TaiKhoan_gui extends JPanel {
 
         // Khu vực phía trên
         JPanel north = new JPanel(new BorderLayout());
-        north.setBackground(new Color(240, 244, 248));
 
         north.add(title, BorderLayout.NORTH);
         north.add(formContainer, BorderLayout.CENTER);
@@ -161,17 +137,10 @@ public class TaiKhoan_gui extends JPanel {
         // Bảng tài khoản
         table.setRowHeight(30);
         table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        table.setForeground(new Color(44, 62, 80));
-        table.setBackground(Color.WHITE);
-        table.setSelectionBackground(new Color(174, 214, 241));
-        table.setSelectionForeground(Color.BLACK);
         table.setShowGrid(true);
-        table.setGridColor(new Color(220, 225, 230));
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
-        table.getTableHeader().setBackground(new Color(41, 128, 185));
-        table.getTableHeader().setForeground(Color.WHITE);
         table.getTableHeader().setPreferredSize(new Dimension(0, 35));
         table.getTableHeader().setReorderingAllowed(false);
 
@@ -203,7 +172,6 @@ public class TaiKhoan_gui extends JPanel {
         JLabel label = new JLabel(text);
         label.setPreferredSize(new Dimension(120, 25));
         label.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        label.setForeground(new Color(44, 62, 80));
         return label;
     }
 

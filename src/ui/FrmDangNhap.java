@@ -50,7 +50,7 @@ public class FrmDangNhap extends JPanel implements ActionListener {
         pnlDangNhap.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(190, 205, 225)),
                 BorderFactory.createEmptyBorder(16, 20, 16, 20)));
-        Box b, b1, b2;
+        Box b, b1;
         b = Box.createVerticalBox();
         b1 = Box.createVerticalBox();
         JPanel pnlButton = new JPanel(new GridLayout(1, 2));

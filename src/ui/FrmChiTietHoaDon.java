@@ -1,6 +1,6 @@
 package ui;
 
-import dao.ChiTietHoaDonDAO;
+// import dao.ChiTietHoaDonDAO;
 import dao.SanPhamDAO;
 import entity.ChiTietHoaDon;
 import entity.HoaDon;
@@ -35,8 +35,8 @@ import javax.swing.table.DefaultTableModel;
 
 public class FrmChiTietHoaDon extends JDialog implements ActionListener, DocumentListener, MouseListener, ChangeListener {
 
-    private final ChiTietHoaDonDAO dao = new ChiTietHoaDonDAO();
-    private final SanPhamDAO spDao = new SanPhamDAO();
+    // private final ChiTietHoaDonDAO dao = new ChiTietHoaDonDAO();
+    // private final SanPhamDAO spDao = new SanPhamDAO();
     private final JTextField txtMaSP;
     private final JTextField txtTenSP;
     // private final JTextField txtSoLuong;

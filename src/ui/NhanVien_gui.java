@@ -1,4 +1,3 @@
-
 package ui;
 
 import java.awt.*;
@@ -29,17 +28,8 @@ public class NhanVien_gui extends JPanel {
     private final JComboBox<String> cboGT = new JComboBox<>(new String[]{"Nam", "Nữ"});
     private final JComboBox<String> cboChucVu = new JComboBox<>(new String[]{"Quản lý", "Nhân viên"});
 
-    // Màu giao diện
-    private final Color MAU_NEN = new Color(240, 244, 248);
-    private final Color MAU_CHINH = new Color(41, 128, 185);
-    private final Color MAU_THEM = new Color(39, 174, 96);
-    private final Color MAU_SUA = new Color(243, 156, 18);
-    private final Color MAU_XOA = new Color(231, 76, 60);
-    private final Color MAU_PHU = new Color(127, 140, 141);
-
     public NhanVien_gui() {
         setLayout(new BorderLayout(0, 12));
-        setBackground(MAU_NEN);
         setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
         txtMa.setEditable(false);
@@ -48,14 +38,12 @@ public class NhanVien_gui extends JPanel {
         // Tiêu đề
         JLabel title = new JLabel("QUẢN LÝ NHÂN VIÊN", SwingConstants.CENTER);
         title.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        title.setForeground(MAU_CHINH);
         title.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 
         // Form thông tin
         JPanel form = new JPanel(new GridBagLayout());
-        form.setBackground(Color.WHITE);
         form.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(220, 225, 230)),
+                BorderFactory.createEtchedBorder(),
                 BorderFactory.createEmptyBorder(10, 30, 10, 30)
         ));
 
@@ -124,11 +112,11 @@ public class NhanVien_gui extends JPanel {
         JPanel btns = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         btns.setOpaque(false);
 
-        JButton btnThem = taoNut("Thêm", MAU_THEM);
-        JButton btnSua = taoNut("Sửa", MAU_SUA);
-        JButton btnXoa = taoNut("Xóa", MAU_XOA);
-        JButton btnLam = taoNut("Làm mới", MAU_PHU);
-        JButton btnTim = taoNut("Tìm theo mã", MAU_CHINH);
+        JButton btnThem = taoNut("Thêm");
+        JButton btnSua = taoNut("Sửa");
+        JButton btnXoa = taoNut("Xóa");
+        JButton btnLam = taoNut("Làm mới");
+        JButton btnTim = taoNut("Tìm theo mã");
 
         btns.add(btnThem);
         btns.add(btnSua);
@@ -154,21 +142,12 @@ public class NhanVien_gui extends JPanel {
         // Bảng nhân viên
         table.setRowHeight(30);
         table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        table.setForeground(Color.BLACK);
-        table.setBackground(Color.WHITE);
-        table.setSelectionBackground(new Color(214, 234, 248));
-        table.setSelectionForeground(Color.BLACK);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        table.setGridColor(new Color(230, 230, 230));
 
-        table.getTableHeader().setBackground(MAU_CHINH);
-        table.getTableHeader().setForeground(Color.WHITE);
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
         table.getTableHeader().setPreferredSize(new Dimension(0, 35));
 
         JScrollPane scroll = new JScrollPane(table);
-        scroll.getViewport().setBackground(Color.WHITE);
-        scroll.setBorder(BorderFactory.createLineBorder(new Color(220, 225, 230)));
 
         add(scroll, BorderLayout.CENTER);
 
@@ -191,12 +170,10 @@ public class NhanVien_gui extends JPanel {
         loadData();
     }
 
-    // Tạo nút có màu
-    private JButton taoNut(String text, Color mau) {
+    // Tạo nút
+    private JButton taoNut(String text) {
         JButton btn = new JButton(text);
         btn.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btn.setBackground(mau);
-        btn.setForeground(Color.WHITE);
         btn.setFocusPainted(false);
         btn.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -208,7 +185,6 @@ public class NhanVien_gui extends JPanel {
         JLabel label = new JLabel(text);
         label.setPreferredSize(new Dimension(120, 28));
         label.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        label.setForeground(new Color(52, 73, 94));
         return label;
     }
 
