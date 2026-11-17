@@ -1,6 +1,8 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
 import connectdb.ConnectDB;
@@ -50,7 +53,17 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
     private SanPhamDAO sp_dao;
 
     public ChiTietPhieuNhapKho_GUI() {
+        setLayout(new BorderLayout(10, 10));
 
+        // Tiêu đề
+        Color background = new Color(219, 234, 254);
+        JLabel lblTitle = new JLabel("QUẢN LÝ CHI TIẾT PHIẾU NHẬP KHO", SwingConstants.CENTER);
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 30));
+        lblTitle.setForeground(new Color(30, 64, 175));
+
+        JPanel Title = new JPanel(new FlowLayout());
+        Title.setBackground(background);
+        Title.add(lblTitle);
         try {
             ConnectDB.getInstance().connect();
         } catch (Exception e) {
@@ -63,12 +76,10 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
 
         setTitle("Quản lý chi tiết phiếu nhập kho");
         setSize(950, 550);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
         // Tiêu đề
-        JLabel lblTieuDe = new JLabel("QUẢN LÝ CHI TIẾT PHIẾU NHẬP KHO");
-        lblTieuDe.setFont(new Font("Arial", Font.BOLD, 22));
 
         Box b = Box.createVerticalBox();
 
@@ -78,7 +89,7 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
 
         // Dòng tiêu đề
         b.add(b1 = Box.createHorizontalBox());
-        b1.add(lblTieuDe);
+        b1.add(lblTitle);
 
         b.add(Box.createVerticalStrut(15));
 

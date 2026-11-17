@@ -1,11 +1,11 @@
-
 package ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,6 +22,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeSet;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -35,13 +36,21 @@ import javax.swing.table.DefaultTableModel;
 import connectdb.ConnectDB;
 import dao.ChiTietPhieuNhapKho_dao;
 import entity.ChiTietPhieuNhapKho;
-public class ThongKeNhapKho_GUI extends JPanel {
+
+public class ThongKeNhapKho_GUI extends JPanel{
+
+    private static final long serialVersionUID = 1L;
 
     private static final DateTimeFormatter FMT =
             DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    private static final DateTimeFormatter FMT_THANG =
+            DateTimeFormatter.ofPattern("MM/yyyy");
+
     private static final DecimalFormat DF =
             new DecimalFormat("#,###");
+
+    private static final String TAT_CA = "Tất cả";
 
     private JComboBox<String> cboLoai, cboThoiGian, cboSoLuong;
     private JLabel lblKhoang, lblSoLuong, lblTongTien;
@@ -53,29 +62,28 @@ public class ThongKeNhapKho_GUI extends JPanel {
 
     private boolean dangTai = false;
 
+    public JButton btnReload;
+
     public ThongKeNhapKho_GUI() {
 
-        // setLayout(new BorderLayout(10, 10));
-        // setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        // JLabel title = new JLabel("THỐNG KÊ HÀNG NHẬP KHO",
-        //         SwingConstants.CENTER);
-        // title.setFont(new Font("Arial", Font.BOLD, 22));
-        // title.setForeground(Color.BLUE);
         setLayout(new BorderLayout(10, 10));
+
+        // Tiêu đề
         Color background = new Color(219, 234, 254);
         JLabel lblTitle = new JLabel("THỐNG KÊ HÀNG NHẬP KHO", SwingConstants.CENTER);
         lblTitle.setFont(new Font("Arial", Font.BOLD, 30));
         lblTitle.setForeground(new Color(30, 64, 175));
+
         JPanel Title = new JPanel(new FlowLayout());
         Title.setBackground(background);
         Title.add(lblTitle);
-        add(Title,BorderLayout.NORTH);
 
-        cboLoai = new JComboBox<>(new String[]{"Tuần", "Tháng", "Năm"});
+        // Bộ lọc
+        cboLoai = new JComboBox<>(new String[]{TAT_CA, "Ngày", "Tuần", "Tháng", "Năm"});
         cboThoiGian = new JComboBox<>();
         cboSoLuong = new JComboBox<>(
-                new String[]{"5", "10", "15", "20", "25", "50", "Tất cả"});
+                new String[]{"5", "10", "15", "20", "25", "50", TAT_CA});
+        cboSoLuong.setSelectedItem(TAT_CA);
 
         JButton btnThongKe = new JButton("Thống kê");
 
@@ -87,17 +95,19 @@ public class ThongKeNhapKho_GUI extends JPanel {
         pnlLoc.add(new JLabel("Số lượng:"));
         pnlLoc.add(cboSoLuong);
         pnlLoc.add(btnThongKe);
-
         JPanel pnlTop = new JPanel(new BorderLayout());
-        pnlTop.add(lblTitle, BorderLayout.NORTH);
+        pnlTop.add(Title, BorderLayout.NORTH);
         pnlTop.add(pnlLoc, BorderLayout.CENTER);
 
         add(pnlTop, BorderLayout.NORTH);
 
+        // Bảng
         model = new DefaultTableModel(new String[]{
-            "Mã PNK", "Mã SP", "Tên SP", "Số lượng",
+            "Mã PNK", "Mã SP", "Tên SP", "Số lượng", "Số lượng tồn",
             "Giá nhập", "Thành tiền", "Ngày nhập"
         }, 0) {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
@@ -108,6 +118,7 @@ public class ThongKeNhapKho_GUI extends JPanel {
         table.setRowHeight(25);
         add(new JScrollPane(table), BorderLayout.CENTER);
 
+        // Tổng kết
         lblKhoang = new JLabel("Khoảng thời gian: -");
         lblSoLuong = new JLabel("Tổng số lượng nhập: 0");
         lblTongTien = new JLabel("Tổng tiền nhập: 0 VNĐ");
@@ -120,29 +131,44 @@ public class ThongKeNhapKho_GUI extends JPanel {
 
         add(pnlBottom, BorderLayout.SOUTH);
 
+        // Sự kiện
         cboLoai.addActionListener(e -> {
             loadThoiGian();
-            xoaKetQua();
+            if (cboLoai.getSelectedItem().equals(TAT_CA)) {
+                thongKe(false);
+            } else {
+                xoaKetQua();
+            }
         });
 
         cboThoiGian.addActionListener(e -> {
             if (!dangTai && cboThoiGian.getSelectedItem() != null)
-                thongKe();
+                thongKe(false);
         });
 
-        cboSoLuong.addActionListener(e -> thongKe());
-        btnThongKe.addActionListener(e -> thongKe());
+        cboSoLuong.addActionListener(e -> thongKe(false));
+        btnThongKe.addActionListener(e -> thongKe(true));
 
+        // Mở lên là hiển thị tất cả dữ liệu
         loadThoiGian();
+        thongKe(false);
     }
 
-    // Lấy thời gian từ database
+    // Lấy danh sách thời gian từ database
     private void loadThoiGian() {
 
         dangTai = true;
         cboThoiGian.removeAllItems();
 
         String loai = cboLoai.getSelectedItem().toString();
+
+        // "Tất cả" không cần chọn thời gian
+        if (loai.equals(TAT_CA)) {
+            cboThoiGian.setEnabled(false);
+            dangTai = false;
+            return;
+        }
+        cboThoiGian.setEnabled(true);
 
         String sql = "SELECT DISTINCT CAST(ngayLap AS DATE) ngayLap "
                    + "FROM PhieuNhapKho WHERE ngayLap IS NOT NULL";
@@ -153,19 +179,29 @@ public class ThongKeNhapKho_GUI extends JPanel {
             try (PreparedStatement ps = con.prepareStatement(sql);
                  ResultSet rs = ps.executeQuery()) {
 
-                TreeSet<String> ds = new TreeSet<>(
+                // Dùng LocalDate để sắp xếp đúng thứ tự thời gian
+                TreeSet<LocalDate> dsNgay = new TreeSet<>(
                         Comparator.reverseOrder());
 
                 while (rs.next()) {
-                    LocalDate ngay = rs.getDate("ngayLap").toLocalDate();
+                    dsNgay.add(rs.getDate("ngayLap").toLocalDate());
+                }
 
-                    if (loai.equals("Tuần"))
-                        ds.add(ngay.format(FMT));
+                // LinkedHashSet-like: giữ thứ tự, bỏ trùng
+                ArrayList<String> ds = new ArrayList<>();
+
+                for (LocalDate ngay : dsNgay) {
+                    String s;
+
+                    if (loai.equals("Ngày") || loai.equals("Tuần"))
+                        s = ngay.format(FMT);
                     else if (loai.equals("Tháng"))
-                        ds.add(ngay.format(
-                                DateTimeFormatter.ofPattern("MM/yyyy")));
+                        s = ngay.format(FMT_THANG);
                     else
-                        ds.add(String.valueOf(ngay.getYear()));
+                        s = String.valueOf(ngay.getYear());
+
+                    if (!ds.contains(s))
+                        ds.add(s);
                 }
 
                 for (String s : ds)
@@ -182,13 +218,27 @@ public class ThongKeNhapKho_GUI extends JPanel {
     // Xác định khoảng thời gian
     private LocalDate[] tinhKhoang() {
 
+        String loai = cboLoai.getSelectedItem().toString();
+
+        // Tất cả: lấy khoảng đủ rộng để bao trọn dữ liệu
+        if (loai.equals(TAT_CA)) {
+            return new LocalDate[]{
+                LocalDate.of(1900, 1, 1),
+                LocalDate.of(2999, 12, 31)
+            };
+        }
+
         if (cboThoiGian.getSelectedItem() == null)
             return null;
 
-        String loai = cboLoai.getSelectedItem().toString();
         String text = cboThoiGian.getSelectedItem().toString();
 
         try {
+            if (loai.equals("Ngày")) {
+                LocalDate ngay = LocalDate.parse(text, FMT);
+                return new LocalDate[]{ngay, ngay};
+            }
+
             if (loai.equals("Tuần")) {
                 LocalDate ngay = LocalDate.parse(text, FMT);
                 LocalDate dau = ngay.with(
@@ -197,8 +247,7 @@ public class ThongKeNhapKho_GUI extends JPanel {
             }
 
             if (loai.equals("Tháng")) {
-                YearMonth thang = YearMonth.parse(
-                        text, DateTimeFormatter.ofPattern("MM/yyyy"));
+                YearMonth thang = YearMonth.parse(text, FMT_THANG);
                 return new LocalDate[]{thang.atDay(1), thang.atEndOfMonth()};
             }
 
@@ -215,7 +264,8 @@ public class ThongKeNhapKho_GUI extends JPanel {
     }
 
     // Thống kê
-    private void thongKe() {
+    // baoKhongCoDuLieu = true: hiện hộp thoại khi không có dữ liệu
+    private void thongKe(boolean baoKhongCoDuLieu) {
 
         LocalDate[] k = tinhKhoang();
         if (k == null) return;
@@ -227,7 +277,7 @@ public class ThongKeNhapKho_GUI extends JPanel {
 
         model.setRowCount(0);
 
-        int gioiHan = cboSoLuong.getSelectedItem().equals("Tất cả")
+        int gioiHan = cboSoLuong.getSelectedItem().equals(TAT_CA)
                 ? Integer.MAX_VALUE
                 : Integer.parseInt(cboSoLuong.getSelectedItem().toString());
 
@@ -250,6 +300,7 @@ public class ThongKeNhapKho_GUI extends JPanel {
                     ct.getSanPham().getMaSP(),
                     ct.getSanPham().getTenSP(),
                     sl,
+                    ct.getSanPham().getSoLuongTon(),
                     DF.format(gia),
                     DF.format(tien),
                     ct.getPhieuNhapKho().getNgayLap().format(FMT)
@@ -258,13 +309,17 @@ public class ThongKeNhapKho_GUI extends JPanel {
             }
         }
 
-        lblKhoang.setText("Khoảng thời gian: "
-                + k[0].format(FMT) + " - " + k[1].format(FMT));
+        if (cboLoai.getSelectedItem().equals(TAT_CA)) {
+            lblKhoang.setText("Khoảng thời gian: Tất cả");
+        } else {
+            lblKhoang.setText("Khoảng thời gian: "
+                    + k[0].format(FMT) + " - " + k[1].format(FMT));
+        }
 
         lblSoLuong.setText("Tổng số lượng nhập: " + DF.format(tongSL));
         lblTongTien.setText("Tổng tiền nhập: " + DF.format(tongTien) + " VNĐ");
 
-        if (ds.isEmpty())
+        if (ds.isEmpty() && baoKhongCoDuLieu)
             JOptionPane.showMessageDialog(this, "Không có dữ liệu nhập kho!");
     }
 
@@ -275,12 +330,4 @@ public class ThongKeNhapKho_GUI extends JPanel {
         lblTongTien.setText("Tổng tiền nhập: 0 VNĐ");
     }
 
-//    public static void main(String[] args) {
-//     JFrame frame = new JFrame("Thống kê nhập kho");
-//     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//     frame.setSize(1000, 600);
-//     frame.setLocationRelativeTo(null);
-//     frame.add(new ThongKeNhapKho_GUI());
-//     frame.setVisible(true);
-// }
 }

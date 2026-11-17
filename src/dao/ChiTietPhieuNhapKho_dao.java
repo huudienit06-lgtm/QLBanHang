@@ -301,12 +301,12 @@ public class ChiTietPhieuNhapKho_dao {
         ArrayList<ChiTietPhieuNhapKho> dsCTPNK = new ArrayList<>();
         ConnectDB.getInstance();
         Connection con = ConnectDB.getConnection();
-        String sql = "SELECT ct.maPNK, ct.maSP, sp.tenSP, ct.soLuong, sp.giaNhap, pnk.ngayLap "
-                + "FROM ChiTietPhieuNhapKho ct "
-                + "JOIN PhieuNhapKho pnk ON ct.maPNK = pnk.maPNK "
-                + "JOIN SanPham sp ON ct.maSP = sp.maSP "
-                + "WHERE pnk.ngayLap BETWEEN ? AND ? "
-                + "ORDER BY pnk.ngayLap DESC, ct.maPNK";
+        String sql = "SELECT ct.maPNK, ct.maSP, sp.tenSP, ct.soLuong, sp.soLuongTon, sp.giaNhap, pnk.ngayLap "
+        + "FROM ChiTietPhieuNhapKho ct "
+        + "JOIN PhieuNhapKho pnk ON ct.maPNK = pnk.maPNK "
+        + "JOIN SanPham sp ON ct.maSP = sp.maSP "
+        + "WHERE pnk.ngayLap BETWEEN ? AND ? "
+        + "ORDER BY pnk.ngayLap ASC, ct.maPNK";
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setDate(1, Date.valueOf(tuNgay));
             stmt.setDate(2, Date.valueOf(denNgay));
@@ -319,6 +319,7 @@ public class ChiTietPhieuNhapKho_dao {
                     sp.setTenSP(rs.getString("tenSP"));
                     sp.setGiaNhap(rs.getDouble("giaNhap"));
                     Integer soLuong = rs.getInt("soLuong");
+                    sp.setSoLuongTon(rs.getInt("soLuongTon"));  
                     dsCTPNK.add(new ChiTietPhieuNhapKho(pnk, sp, soLuong));
                 }
             }
@@ -326,5 +327,83 @@ public class ChiTietPhieuNhapKho_dao {
             e.printStackTrace();
         }
         return dsCTPNK;
+}
+public boolean themPhieuNhapKhoVaNhieuChiTiet(
+        PhieuNhapKho pnk,
+        ArrayList<ChiTietPhieuNhapKho> dsChiTiet) {
+
+    ConnectDB.getInstance();
+    Connection con = ConnectDB.getConnection();
+
+    boolean autoCommitCu = true;
+
+    try {
+        autoCommitCu = con.getAutoCommit();
+        con.setAutoCommit(false);
+
+        // 1. Thêm phiếu nhập kho
+        String sqlPNK = "INSERT INTO PhieuNhapKho "
+                + "(maPNK, ngayLap, maNV, trangThai) "
+                + "VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement ps = con.prepareStatement(sqlPNK)) {
+            ps.setString(1, pnk.getMaPNK());
+            ps.setDate(2, Date.valueOf(pnk.getNgayLap()));
+            ps.setString(3, pnk.getNhanVien().getMaNV());
+            ps.setString(4, pnk.getTrangThai());
+
+            ps.executeUpdate();
+        }
+
+        // 2. Thêm từng sản phẩm vào chi tiết phiếu nhập
+        String sqlCT = "INSERT INTO ChiTietPhieuNhapKho "
+                + "(maPNK, maSP, soLuong) VALUES (?, ?, ?)";
+
+        String sqlSP = "UPDATE SanPham "
+                + "SET soLuongTon = soLuongTon + ? "
+                + "WHERE maSP = ?";
+
+        try (PreparedStatement psCT = con.prepareStatement(sqlCT);
+             PreparedStatement psSP = con.prepareStatement(sqlSP)) {
+
+            for (ChiTietPhieuNhapKho ct : dsChiTiet) {
+
+                // Thêm chi tiết phiếu nhập
+                psCT.setString(1, pnk.getMaPNK());
+                psCT.setString(2, ct.getSanPham().getMaSP());
+                psCT.setInt(3, ct.getSoLuong());
+                psCT.executeUpdate();
+
+                // Cập nhật tồn kho
+                psSP.setInt(1, ct.getSoLuong());
+                psSP.setString(2, ct.getSanPham().getMaSP());
+
+                if (psSP.executeUpdate() == 0) {
+                    throw new SQLException("Không tìm thấy sản phẩm: "
+                            + ct.getSanPham().getMaSP());
+                }
+            }
+        }
+
+        con.commit();
+        return true;
+
+    } catch (SQLException e) {
+        try {
+            con.rollback();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        e.printStackTrace();
+        return false;
+
+    } finally {
+        try {
+            con.setAutoCommit(autoCommitCu);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
 }
