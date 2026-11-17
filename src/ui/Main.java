@@ -94,6 +94,9 @@ public class Main extends JFrame {
             case "Lập phiếu nhập kho":
                 setContent(new PhieuNhapKho_GUI());
                 break;
+            case "Thống kê doanh thu":
+                setContent(new FrmThongKeHoaDon());
+                break;
             case "Đăng Xuất":
                 setMenu(null);
                 setContent(new FrmDangNhap(this));
