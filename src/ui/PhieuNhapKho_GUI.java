@@ -566,7 +566,7 @@ public class PhieuNhapKho_GUI extends JPanel implements ActionListener {
 
                     JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
 
-                    ReadDataFromDB();
+                    capNhatDuLieu();
                     xoaTrang();
 
                 } else {
@@ -605,7 +605,7 @@ public class PhieuNhapKho_GUI extends JPanel implements ActionListener {
 
                     JOptionPane.showMessageDialog(this, "Xóa thành công!");
 
-                    ReadDataFromDB();
+                    capNhatDuLieu();
                     xoaTrang();
 
                 } else {
@@ -648,12 +648,23 @@ public class PhieuNhapKho_GUI extends JPanel implements ActionListener {
         else if (o.equals(btnXoaTrang)) {
 
             xoaTrang();
+            ReadDataFromDB();
         }
 
-        // Mở màn hình chi tiết phiếu nhập kho
         else if (o.equals(btnChiTiet)) {
 
             new ChiTietPhieuNhapKho_GUI().setVisible(true);
         }
     }
+    // Cập nhật lại dữ liệu từ database lên giao diện
+private void capNhatDuLieu() {
+    listSP = sp_dao.getAllSanPham();
+    cboMaSP.removeAllItems();
+    for (SanPham sp : listSP) {
+        cboMaSP.addItem(sp.getMaSP() + " - " + sp.getTenSP());
+    }
+    ReadDataFromDB();
+    modelPNK.fireTableDataChanged();
+    xoaTrang();
+}
 }
