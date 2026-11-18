@@ -155,7 +155,7 @@ public class PhieuNhapKho_dao {
 
             if (rs.next()) {
                 int so = rs.getInt(1) + 1;
-                return String.format("PNK%03d", so);
+                return String.format("PNK%04d", so);
             }
 
         } catch (SQLException e) {

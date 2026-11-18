@@ -202,7 +202,7 @@ public ArrayList<Thue> timThueTheoTen(String tenThue) {
 
             if (rs.next()) {
                 int so = rs.getInt(1) + 1;
-                return String.format("TH%03d", so);
+                return String.format("TH%04d", so);
             }
 
         } catch (SQLException e) {

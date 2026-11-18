@@ -139,6 +139,7 @@ public class PhieuNhapKho_GUI extends JPanel implements ActionListener {
         b5.add(cboMaSP = new JComboBox<String>());
         b5.add(lblSoLuong = new JLabel("Số lượng: "));
         b5.add(txtSoLuongSP = new JTextField());
+        txtSoLuongSP.setEditable(true);
         b5.add(Box.createHorizontalStrut(5));
         b5.add(btnThemSP = new JButton("Thêm SP"));
         b5.add(Box.createHorizontalStrut(5));
@@ -442,6 +443,7 @@ public class PhieuNhapKho_GUI extends JPanel implements ActionListener {
         txtNgayLap.setText(LocalDate.now().format(formatter));
         txtTrangThai.setText("");
         txtSoLuongSP.setText("");
+        txtSoLuongSP.setEditable(true);
 
         if (cboNhanVien.getItemCount() > 0) {
             cboNhanVien.setSelectedIndex(0);

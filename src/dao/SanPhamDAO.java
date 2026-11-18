@@ -161,6 +161,7 @@ public class SanPhamDAO {
         Connection con = ConnectDB.getConnection();
         PreparedStatement stmt = null;
         int n = 0;
+        
         try {
             String sql = "UPDATE SanPham SET tenSP = ?, giaNhap = ?, soLuongTon = ?, maKM = ?, maDM = ? WHERE maSP = ?";
             stmt = con.prepareStatement(sql);
@@ -222,7 +223,7 @@ public class SanPhamDAO {
         } finally {
             dongTaiNguyen(stmt, rs);
         }
-        return "SP" + String.format("%03d", soLonNhat + 1);
+        return "SP" + String.format("%04d", soLonNhat + 1);
     }
 
     // Sản phẩm bán chạy trong khoảng ngày (bỏ qua hóa đơn đã hủy).
