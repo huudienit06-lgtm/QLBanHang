@@ -109,7 +109,8 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
 
         b3.add(lblSoLuong = new JLabel("Số lượng: "));
         b3.add(txtSoLuong = new JTextField());
-
+        txtSoLuong.setEditable(true);
+        txtSoLuong.setEnabled(true);
         lblMaSP.setPreferredSize(lblMaPNK.getPreferredSize());
         lblSoLuong.setPreferredSize(lblMaPNK.getPreferredSize());
 

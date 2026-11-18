@@ -177,7 +177,7 @@ public class KhuyenMaiDAO {
         } finally {
             dongTaiNguyen(stmt, rs);
         }
-        return "KM" + String.format("%04d", soLonNhat + 1);
+        return "KM" + String.format("%03d", soLonNhat + 1);
     }
 
     private void dongTaiNguyen(PreparedStatement stmt, ResultSet rs) {

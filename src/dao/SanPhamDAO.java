@@ -222,7 +222,7 @@ public class SanPhamDAO {
         } finally {
             dongTaiNguyen(stmt, rs);
         }
-        return "SP" + String.format("%04d", soLonNhat + 1);
+        return "SP" + String.format("%03d", soLonNhat + 1);
     }
 
     // Sản phẩm bán chạy trong khoảng ngày (bỏ qua hóa đơn đã hủy).

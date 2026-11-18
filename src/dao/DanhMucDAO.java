@@ -135,7 +135,7 @@ public class DanhMucDAO {
         } finally {
             dongTaiNguyen(stmt, rs);
         }
-        return "DM" + String.format("%04d", soLonNhat + 1);
+        return "DM" + String.format("%03d", soLonNhat + 1);
     }
 
     private void dongTaiNguyen(PreparedStatement stmt, ResultSet rs) {
