@@ -392,12 +392,10 @@ public class Thue_GUI extends JPanel implements ActionListener, MouseListener {
     }
 }
 
-        // Reload dữ liệu
         else if (o.equals(btnReload)) {
             ReadDataFromDB();
             xoaTrang();
             txtMaThue.setText(thue_dao.sinhMaThue());
-            JOptionPane.showMessageDialog(this, "Dữ liệu đã được tải lại!");
         }
 }
 

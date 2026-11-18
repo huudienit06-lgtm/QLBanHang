@@ -52,6 +52,8 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
     private PhieuNhapKho_dao pnk_dao;
     private SanPhamDAO sp_dao;
 
+    private JButton btnReload;
+
     public ChiTietPhieuNhapKho_GUI() {
         setLayout(new BorderLayout(10, 10));
 
@@ -164,6 +166,7 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
         pnlRight.add(btnSua = new JButton("Sửa"));
         pnlRight.add(btnXoa = new JButton("Xóa"));
         pnlRight.add(btnXoaTrang = new JButton("Xóa trắng"));
+        pnlRight.add(btnReload = new JButton("Reload"));
 
         // Đăng ký sự kiện
         btnTim.addActionListener(this);
@@ -171,7 +174,7 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
         btnSua.addActionListener(this);
         btnXoa.addActionListener(this);
         btnXoaTrang.addActionListener(this);
-
+        btnReload.addActionListener(this);
         // Sự kiện chọn dòng trong bảng
         tableCTPNK.getSelectionModel().addListSelectionListener(e -> {
 
@@ -321,8 +324,7 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(this,
                             "Thêm chi tiết phiếu nhập kho thành công!");
 
-                    ReadDataFromDB();
-                    xoaTrang();
+                    capNhatDuLieu();
 
                 } else {
 
@@ -363,8 +365,7 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(this,
                             "Cập nhật thành công!");
 
-                    ReadDataFromDB();
-                    xoaTrang();
+                    capNhatDuLieu();
 
                 } else {
 
@@ -410,8 +411,7 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(this,
                             "Xóa thành công!");
 
-                    ReadDataFromDB();
-                    xoaTrang();
+                    capNhatDuLieu();
 
                 } else {
 
@@ -464,6 +464,10 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
                         "Không tìm thấy chi tiết phiếu nhập kho!");
             }
         }
+        // Reload dữ liệu
+                else if (o.equals(btnReload)) {
+                capNhatDuLieu();
+}
 
         // Xóa trắng
         else if (o.equals(btnXoaTrang)) {
@@ -472,6 +476,22 @@ public class ChiTietPhieuNhapKho_GUI extends JFrame implements ActionListener {
         }
     }
 
+private void capNhatDuLieu() {
+    cboMaPNK.removeAllItems();
+    ArrayList<PhieuNhapKho> listPNK = pnk_dao.getAllPhieuNhapKho();
+    for (PhieuNhapKho pnk : listPNK) {
+        cboMaPNK.addItem(pnk.getMaPNK());
+    }
+    cboMaSP.removeAllItems();
+    ArrayList<SanPham> listSP = sp_dao.getAllSanPham();
+
+    for (SanPham sp : listSP) {
+        cboMaSP.addItem(sp.getMaSP());
+    }
+    ReadDataFromDB();
+    modelCTPNK.fireTableDataChanged();
+    xoaTrang();
+}
     public static void main(String[] args) {
 
         new ChiTietPhieuNhapKho_GUI().setVisible(true);
