@@ -1,0 +1,12 @@
+{
+    "vmArgs": "-Dfile.encoding=UTF-8",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "ui.Main",
+            "projectName": "BTL_Java"
+        }
+    ],
+}

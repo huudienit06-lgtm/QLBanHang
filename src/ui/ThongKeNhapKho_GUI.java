@@ -57,8 +57,7 @@ public class ThongKeNhapKho_GUI extends JPanel{
     private JTable table;
     private DefaultTableModel model;
 
-    private ChiTietPhieuNhapKho_dao dao =
-            new ChiTietPhieuNhapKho_dao();
+    private ChiTietPhieuNhapKho_dao dao = new ChiTietPhieuNhapKho_dao();
 
     private boolean dangTai = false;
 
