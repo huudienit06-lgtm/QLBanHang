@@ -74,13 +74,11 @@ create table HoaDon(
 	maNV varchar(10),
 	maKM varchar(10),
 	trangThai nvarchar(20),
-	maThue nvarchar(10),
 	phuongThucThanhToan nvarchar(20),
 
 	constraint fk_HoaDon_KhachHang foreign key (maKH) references KhachHang(maKH),
 	constraint fk_HoaDon_NhanVien foreign key (maNV) references NhanVien(maNV),
 	constraint fk_HoaDon_KhuyenMai foreign key (maKM) references KhuyenMai(maKM),
-	constraint fk_HoaDon_Thue foreign key (maThue) references Thue(maThue),
 )
 
 create table ChiTietHoaDon (

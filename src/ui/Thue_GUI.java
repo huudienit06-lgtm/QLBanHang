@@ -1,6 +1,9 @@
 
 package ui;
 
+import connectdb.ConnectDB;
+import dao.Thue_dao;
+import entity.Thue;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -10,7 +13,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -22,10 +24,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
-
-import connectdb.ConnectDB;
-import dao.Thue_dao;
-import entity.Thue;
 
 public class Thue_GUI extends JPanel implements ActionListener, MouseListener {
 
@@ -73,8 +71,8 @@ public class Thue_GUI extends JPanel implements ActionListener, MouseListener {
         Title.add(lblTitle);
         add(Title,BorderLayout.NORTH);
 
-        JPanel pnlTieuDe = new JPanel();
-        pnlTieuDe.add(lblTitle);
+        // JPanel pnlTieuDe = new JPanel();
+        // pnlTieuDe.add(lblTitle);
 
         // Thông tin thuế
         JPanel pnlThongTin = new JPanel();
@@ -135,7 +133,7 @@ public class Thue_GUI extends JPanel implements ActionListener, MouseListener {
         Box box = Box.createVerticalBox();
 
         box.add(Box.createVerticalStrut(10));
-        box.add(pnlTieuDe);
+        box.add(Title);
         box.add(Box.createVerticalStrut(15));
         box.add(pnlThongTin);
         box.add(Box.createVerticalStrut(10));

@@ -1,13 +1,13 @@
 package ui;
 
+import dao.KhachHang_Dao;
+import entity.KhachHang;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import dao.KhachHang_Dao;
-import entity.KhachHang;
-
 public class KhachHang_gui extends JPanel {
+
     private final KhachHang_Dao dao = new KhachHang_Dao();
     private final DefaultTableModel model = new DefaultTableModel(
             new String[]{"Mã KH", "Tên KH", "SĐT", "Gmail", "Địa chỉ", "Loại KH"}, 0) {
@@ -29,17 +29,22 @@ public class KhachHang_gui extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JLabel title = new JLabel("QUẢN LÝ KHÁCH HÀNG", SwingConstants.CENTER);
-        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        title.setPreferredSize(new Dimension(0, 50));
-        title.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+        Color background = new Color(219, 234, 254);
+
+        JLabel lblTitle = new JLabel("Quản lí khách hàng");
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 30));
+        lblTitle.setForeground(new Color(30, 64, 175));
+        JPanel Title = new JPanel(new FlowLayout());
+        Title.setBackground(background);
+        Title.add(lblTitle);
+        
 
         txtMa.setEditable(false);
         txtMa.setText(dao.taoMaKH());
 
         JPanel form = new JPanel(new GridBagLayout());
-        form.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Thông tin khách hàng"));
-        form.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(),BorderFactory.createTitledBorder("Thông tin khách hàng")));
+        form.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Thông tin khách hàng"));
+        form.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createTitledBorder("Thông tin khách hàng")));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -110,7 +115,7 @@ public class KhachHang_gui extends JPanel {
 
         // Định dạng ô nhập liệu
         JTextField[] dsText = {
-                txtMa, txtTen, txtSdt, txtGmail, txtDiaChi, txtTim
+            txtMa, txtTen, txtSdt, txtGmail, txtDiaChi, txtTim
         };
 
         for (JTextField txt : dsText) {
@@ -149,7 +154,7 @@ public class KhachHang_gui extends JPanel {
         btns.add(btnTim);
 
         JPanel north = new JPanel(new BorderLayout());
-        north.add(title, BorderLayout.NORTH);
+        north.add(Title, BorderLayout.NORTH);
         north.add(form, BorderLayout.CENTER);
         north.add(btns, BorderLayout.SOUTH);
 
@@ -167,8 +172,9 @@ public class KhachHang_gui extends JPanel {
         table.getTableHeader().setReorderingAllowed(false);
 
         table.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting())
+            if (!e.getValueIsAdjusting()) {
                 fillForm();
+            }
         });
 
         btnThem.addActionListener(e -> them());
@@ -185,14 +191,15 @@ public class KhachHang_gui extends JPanel {
 
     private void loadData() {
         model.setRowCount(0);
-        for (KhachHang kh : dao.getAllKhachHang())
+        for (KhachHang kh : dao.getAllKhachHang()) {
             addRow(kh);
+        }
     }
 
     private void addRow(KhachHang kh) {
         model.addRow(new Object[]{
-                kh.getMaKH(), kh.getTenKH(), kh.getSdt(),
-                kh.getGmail(), kh.getDiaChi(), kh.getLoaiKH()
+            kh.getMaKH(), kh.getTenKH(), kh.getSdt(),
+            kh.getGmail(), kh.getDiaChi(), kh.getLoaiKH()
         });
     }
 
@@ -206,8 +213,9 @@ public class KhachHang_gui extends JPanel {
 
     private void fillForm() {
         int r = table.getSelectedRow();
-        if (r < 0)
+        if (r < 0) {
             return;
+        }
 
         txtMa.setText(String.valueOf(model.getValueAt(r, 0)));
         txtTen.setText(String.valueOf(model.getValueAt(r, 1)));
@@ -231,12 +239,12 @@ public class KhachHang_gui extends JPanel {
 
     private boolean validateForm() {
         if (txtTen.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this,"Tên khách hàng không được để trống!");
+            JOptionPane.showMessageDialog(this, "Tên khách hàng không được để trống!");
             return false;
         }
 
         if (!txtSdt.getText().trim().matches("0\\d{9}")) {
-            JOptionPane.showMessageDialog(this,"SĐT phải gồm 10 chữ số, bắt đầu bằng 0!");
+            JOptionPane.showMessageDialog(this, "SĐT phải gồm 10 chữ số, bắt đầu bằng 0!");
             return false;
         }
 
@@ -261,19 +269,20 @@ public class KhachHang_gui extends JPanel {
     }
 
     private void them() {
-        if (!validateForm())
+        if (!validateForm()) {
             return;
+        }
 
         String maMoi = dao.taoMaKH();
         if (maMoi == null) {
-            JOptionPane.showMessageDialog(this,"Không tạo được mã khách hàng!");
+            JOptionPane.showMessageDialog(this, "Không tạo được mã khách hàng!");
             return;
         }
 
         txtMa.setText(maMoi);
 
         if (dao.themKhachHang(readForm())) {
-            JOptionPane.showMessageDialog(this,"Thêm khách hàng thành công!");
+            JOptionPane.showMessageDialog(this, "Thêm khách hàng thành công!");
             loadData();
             clearForm();
         } else {
@@ -287,8 +296,9 @@ public class KhachHang_gui extends JPanel {
                     "Hãy chọn khách hàng cần sửa!");
             return;
         }
-        if (!validateForm())
+        if (!validateForm()) {
             return;
+        }
         if (dao.suaKhachHang(readForm())) {
             loadData();
             clearForm();
@@ -299,18 +309,19 @@ public class KhachHang_gui extends JPanel {
 
     private void xoa() {
         if (table.getSelectedRow() < 0) {
-            JOptionPane.showMessageDialog(this,"Hãy chọn khách hàng cần xóa!");
+            JOptionPane.showMessageDialog(this, "Hãy chọn khách hàng cần xóa!");
             return;
         }
 
-        if (JOptionPane.showConfirmDialog(this,"Xóa khách hàng này?", "Xác nhận", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION)
+        if (JOptionPane.showConfirmDialog(this, "Xóa khách hàng này?", "Xác nhận", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
             return;
+        }
 
         if (dao.xoaKhachHang(txtMa.getText().trim())) {
             loadData();
             clearForm();
         } else {
-            JOptionPane.showMessageDialog(this,"Xóa thất bại (có thể khách hàng đã có hóa đơn)!");
+            JOptionPane.showMessageDialog(this, "Xóa thất bại (có thể khách hàng đã có hóa đơn)!");
         }
     }
 
@@ -325,9 +336,10 @@ public class KhachHang_gui extends JPanel {
         model.setRowCount(0);
         KhachHang kh = dao.timkhachHang(ma);
 
-        if (kh != null)
-            addRow(kh);
-        else if (model.getRowCount() == 0)
-            JOptionPane.showMessageDialog(this,"Không tìm thấy khách hàng!");
+        if (kh != null) {
+            addRow(kh); 
+        }else if (model.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng!");
+        }
     }
 }

@@ -151,13 +151,11 @@ public class NhanVien_DAO {
             ResultSet rs = ps.executeQuery()) {
 
             if (rs.next()) {
-                return String.format("NV%03d", rs.getInt("SoMoi"));
+                return String.format("NV%04d", rs.getInt("SoMoi"));
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 }

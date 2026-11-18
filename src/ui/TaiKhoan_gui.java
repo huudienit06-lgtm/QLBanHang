@@ -33,10 +33,14 @@ public class TaiKhoan_gui extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JLabel title = new JLabel("QUẢN LÝ TÀI KHOẢN", SwingConstants.CENTER);
-        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        title.setPreferredSize(new Dimension(0, 50));
-        title.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+        Color background = new Color(219, 234, 254);
+
+        JLabel lblTitle = new JLabel("Quản lí tài khoản");
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 30));
+        lblTitle.setForeground(new Color(30, 64, 175));
+        JPanel Title = new JPanel(new FlowLayout());
+        Title.setBackground(background);
+        Title.add(lblTitle);
 
         JPanel form = new JPanel(new GridBagLayout());
         form.setBorder(BorderFactory.createCompoundBorder(
@@ -128,7 +132,7 @@ public class TaiKhoan_gui extends JPanel {
         // Khu vực phía trên
         JPanel north = new JPanel(new BorderLayout());
 
-        north.add(title, BorderLayout.NORTH);
+        north.add(Title, BorderLayout.NORTH);
         north.add(formContainer, BorderLayout.CENTER);
         north.add(btns, BorderLayout.SOUTH);
 

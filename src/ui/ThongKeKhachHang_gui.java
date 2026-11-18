@@ -1,13 +1,12 @@
 package ui;
 
+import dao.HoaDonDAO;
+import dao.KhachHang_Dao;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
-import dao.HoaDonDAO;
-import dao.KhachHang_Dao;
 
 public class ThongKeKhachHang_gui extends JPanel {
     private final KhachHang_Dao khDao = new KhachHang_Dao();
@@ -28,15 +27,21 @@ public class ThongKeKhachHang_gui extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JLabel title = new JLabel("THỐNG KÊ KHÁCH HÀNG", SwingConstants.CENTER);
-        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        Color background = new Color(219, 234, 254);
+
+        JLabel lblTitle = new JLabel("Lập Hóa Đơn");
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 30));
+        lblTitle.setForeground(new Color(30, 64, 175));
+        JPanel Title = new JPanel(new FlowLayout());
+        Title.setBackground(background);
+        Title.add(lblTitle);
 
         JPanel cards = new JPanel(new GridLayout(1, 2, 20, 0));
         cards.add(card("Số lượng khách hàng", lblSoLuong));
         cards.add(card("Giá trị hóa đơn trung bình (VNĐ)", lblTrungBinh));
 
         JPanel north = new JPanel(new BorderLayout(0, 10));
-        north.add(title, BorderLayout.NORTH);
+        north.add(Title, BorderLayout.NORTH);
         north.add(cards, BorderLayout.CENTER);
         add(north, BorderLayout.NORTH);
 

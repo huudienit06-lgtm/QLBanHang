@@ -1,5 +1,6 @@
 package ui;
 
+import dao.ChiTietHoaDonDAO;
 import dao.HoaDonDAO;
 import entity.HoaDon;
 import java.awt.BorderLayout;
@@ -30,6 +31,7 @@ public class FrmXemLichSuHoaDon extends JDialog implements DocumentListener, Act
     private final DefaultTableModel modelHoaDon;
     private final JTable tblHoaDon;
     private final HoaDonDAO hdDao = new HoaDonDAO();
+    private final ChiTietHoaDonDAO ctDao = new ChiTietHoaDonDAO();
     private final JButton btnXemChiTiet;
     private final JButton btnXoaHoaDon;
     private HoaDon selectedHoaDon;
@@ -145,10 +147,17 @@ public class FrmXemLichSuHoaDon extends JDialog implements DocumentListener, Act
         if (o.equals(btnXoaHoaDon)) {
             int row = tblHoaDon.getSelectedRow();
             if (JOptionPane.showConfirmDialog(this, "Bạn muốn xóa hóa đơn này?", "Xác Nhận", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                if (hdDao.deleteHoaDon(modelHoaDon.getValueAt(row, 0).toString())) {
-                    JOptionPane.showMessageDialog(null, "Xóa thành công hóa đơn");
-                    showDSHoaDon();
+                if (!ctDao.deleteAllByMaHD(modelHoaDon.getValueAt(row, 0).toString())) {
+                    JOptionPane.showMessageDialog(null, "Xóa chi tiết hóa đơn không thành công");
+                    return;
                 }
+
+                if (!hdDao.deleteHoaDon(modelHoaDon.getValueAt(row, 0).toString())) {
+                    JOptionPane.showMessageDialog(null, "Xóa chi tiết không thành công");
+                    return;
+                }
+                JOptionPane.showMessageDialog(null, "Xóa thành công hóa đơn");
+                showDSHoaDon();
             }
         }
         if (o.equals(btnXoaTrang)) {
@@ -174,6 +183,12 @@ public class FrmXemLichSuHoaDon extends JDialog implements DocumentListener, Act
 
     public HoaDon getSelectedHoaDon() {
         return selectedHoaDon;
+    }
+
+    private static class ChiTietHoaDon {
+
+        public ChiTietHoaDon() {
+        }
     }
 
 }

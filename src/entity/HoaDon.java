@@ -49,7 +49,7 @@ public class HoaDon {
         return ngayLap;
     }
 
-    public void setNgayLap(LocalDate ngayLap) {
+    public void setNgayLap(LocalDate ngayLap){
         this.ngayLap = ngayLap;
     }
 

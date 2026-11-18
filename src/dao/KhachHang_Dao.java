@@ -184,7 +184,7 @@ public class KhachHang_Dao {
             ResultSet rs = ps.executeQuery()) {
 
             if (rs.next()) {
-                return String.format("KH%03d", rs.getInt("SoMoi"));
+                return String.format("KH%04d", rs.getInt("SoMoi"));
             }
 
         } catch (SQLException e) {

@@ -110,9 +110,7 @@ public class Main extends JFrame {
                 JOptionPane.showMessageDialog(this, "Chức năng \"" + chucNang + "\" chưa được xây dựng.");
                 break;
         }
-
     }
-
     public static void main(String[] args) {
         new Main().setVisible(true);
     }

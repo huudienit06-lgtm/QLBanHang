@@ -1,11 +1,10 @@
 package ui;
 
+import dao.NhanVien_DAO;
+import entity.NhanVien;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
-import dao.NhanVien_DAO;
-import entity.NhanVien;
 
 public class NhanVien_gui extends JPanel {
     private final NhanVien_DAO dao = new NhanVien_DAO();
@@ -36,9 +35,14 @@ public class NhanVien_gui extends JPanel {
         txtMa.setText(dao.taoMaNhanVien());
 
         // Tiêu đề
-        JLabel title = new JLabel("QUẢN LÝ NHÂN VIÊN", SwingConstants.CENTER);
-        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        title.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+        Color background = new Color(219, 234, 254);
+
+        JLabel lblTitle = new JLabel("Quản lí nhân viên");
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 30));
+        lblTitle.setForeground(new Color(30, 64, 175));
+        JPanel Title = new JPanel(new FlowLayout());
+        Title.setBackground(background);
+        Title.add(lblTitle);
 
         // Form thông tin
         JPanel form = new JPanel(new GridBagLayout());
@@ -133,7 +137,7 @@ public class NhanVien_gui extends JPanel {
         // Khu vực phía trên
         JPanel top = new JPanel(new BorderLayout(0, 10));
         top.setOpaque(false);
-        top.add(title, BorderLayout.NORTH);
+        top.add(Title, BorderLayout.NORTH);
         top.add(form, BorderLayout.CENTER);
         top.add(btns, BorderLayout.SOUTH);
 
