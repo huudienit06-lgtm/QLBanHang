@@ -1,5 +1,8 @@
 package entity;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class ChiTietHoaDon {
     private HoaDon hoaDon;
     private SanPham sanPham;
@@ -13,7 +16,6 @@ public class ChiTietHoaDon {
         this.sanPham = sanPham;
         this.soLuong = soLuong;
     }
-
 
     public HoaDon getHoaDon() {
         return hoaDon;
@@ -41,5 +43,11 @@ public class ChiTietHoaDon {
 
     public double tinhThanhTien(){
         return this.getSanPham().tinhGiaBanSauKhuyenMai() * this.getSoLuong();
+    }
+
+    public String getThanhTienFormatted() {
+        NumberFormat nf = NumberFormat.getInstance(new Locale("vi", "VN"));
+        nf.setMaximumFractionDigits(0);
+        return nf.format(tinhThanhTien()) + "VND";
     }
 }

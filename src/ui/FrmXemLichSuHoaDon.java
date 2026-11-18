@@ -100,7 +100,7 @@ public class FrmXemLichSuHoaDon extends JDialog implements DocumentListener, Act
         ArrayList<HoaDon> list = hdDao.getDSHoaDon();
         modelHoaDon.setRowCount(0);
         for (HoaDon hd : list) {
-            modelHoaDon.addRow(new Object[]{hd.getMaHD(), hd.getKhachHang().getTenKH(), hd.getNhanVien().getTenNV(), hd.getNgayLapFormatted(), hd.tinhThanhTien(), hd.getPhuongThucThanhToan(), hd.getTrangThai()});
+            modelHoaDon.addRow(new Object[]{hd.getMaHD(), hd.getKhachHang().getTenKH(), hd.getNhanVien().getTenNV(), hd.getNgayLapFormatted(), hd.getTongTienFormatted(hd.tinhThanhTien()), hd.getPhuongThucThanhToan(), hd.getTrangThai()});
         }
     }
 
@@ -131,7 +131,7 @@ public class FrmXemLichSuHoaDon extends JDialog implements DocumentListener, Act
         modelHoaDon.setRowCount(0);
 
         for (HoaDon hd : ds) {
-            modelHoaDon.addRow(new Object[]{hd.getMaHD(), hd.getKhachHang().getTenKH(), hd.getNhanVien().getTenNV(), hd.getNgayLapFormatted(), hd.tinhThanhTien(), hd.getPhuongThucThanhToan(), hd.getTrangThai()});
+            modelHoaDon.addRow(new Object[]{hd.getMaHD(), hd.getKhachHang().getTenKH(), hd.getNhanVien().getTenNV(), hd.getNgayLapFormatted(), hd.getTongTienFormatted(hd.tinhThanhTien()), hd.getPhuongThucThanhToan(), hd.getTrangThai()});
         }
     }
 

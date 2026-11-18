@@ -1,5 +1,8 @@
 package entity;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class Thue {
     private String maThue;
     private String tenThue;
@@ -43,12 +46,19 @@ public class Thue {
         this.tiLeThue = tiLeThue;
     }
 
+
     @Override
     public String toString() {
         return this.tenThue+"Mức thuế:"+this.tiLeThue+"%";
     }
     public double tinhThue(double tongTien) {
         return tongTien * this.getTiLeThue() / 100.0;
+    }
+
+    public String getTienThueFormatted(double tongTien) {
+        NumberFormat nf = NumberFormat.getInstance(new Locale("vi", "VN"));
+        nf.setMaximumFractionDigits(0);
+        return nf.format(tinhThue(tongTien)) + "VND";
     }
 
 }

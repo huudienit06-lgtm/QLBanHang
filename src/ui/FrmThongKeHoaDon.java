@@ -12,7 +12,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.text.NumberFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -21,7 +20,6 @@ import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -276,7 +274,6 @@ public class FrmThongKeHoaDon extends JPanel implements ActionListener {
                     khoangNgay[0], khoangNgay[1], maNV);
             modelHoaDon.setRowCount(0);
             double tongDoanhThu = 0;
-            NumberFormat dinhDangTien = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
             for (HoaDon hoaDon : dsHoaDon) {
                 double giaTriHoaDon = hoaDon.tinhThanhTien();
                 if ("Đã thanh toán".equalsIgnoreCase(hoaDon.getTrangThai())) {
@@ -290,12 +287,13 @@ public class FrmThongKeHoaDon extends JPanel implements ActionListener {
                     hoaDon.getNhanVien().getMaNV(),
                     hoaDon.getNhanVien().getTenNV(),
                     hoaDon.getTrangThai(),
-                    dinhDangTien.format(giaTriHoaDon)
+                    hoaDon.getTongTienFormatted(giaTriHoaDon)
                 });
             }
 
             lblTongSoHoaDon.setText(String.valueOf(dsHoaDon.size()));
-            lblTongDoanhThu.setText(dinhDangTien.format(tongDoanhThu));
+            lblTongDoanhThu.setText(
+                    new HoaDon().getTongTienFormatted(tongDoanhThu));
             lblNhanVienLap.setText(nhanVien == null
                     ? "Tất cả nhân viên"
                     : nhanVien.getTenNV() + " (" + nhanVien.getMaNV() + ")");

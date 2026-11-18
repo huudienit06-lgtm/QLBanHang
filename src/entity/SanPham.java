@@ -1,5 +1,8 @@
 package entity;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class SanPham {
     private String maSP;
     private String tenSP;
@@ -85,6 +88,10 @@ public class SanPham {
         return this.giaNhap*(1+this.getDanhMuc().getLoiNhuan());
     }
 
+    public String getGiaBanFormatted() {
+        return formatTien(tinhGiaBan());
+    }
+
     public double tinhGiaBanSauKhuyenMai(){
         double giaBanSauKhuyenMai=tinhGiaBan();
         if(this.getKhuyenMai() != null && this.getKhuyenMai().getDonViTinh().trim().equalsIgnoreCase("Phần trăm")){
@@ -94,5 +101,15 @@ public class SanPham {
             return giaBanSauKhuyenMai - (this.getKhuyenMai().getTiLeGiamGia());
         }
         return giaBanSauKhuyenMai;
+    }
+
+    public String getGiaBanSauKhuyenMaiFormatted() {
+        return formatTien(tinhGiaBanSauKhuyenMai());
+    }
+
+    private String formatTien(double tien) {
+        NumberFormat nf = NumberFormat.getInstance(new Locale("vi", "VN"));
+        nf.setMaximumFractionDigits(0);
+        return nf.format(tien) + "VND";
     }
 }
